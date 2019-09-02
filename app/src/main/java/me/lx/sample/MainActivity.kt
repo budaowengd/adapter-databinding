@@ -1,57 +1,79 @@
 package me.lx.sample
 
+import android.content.res.Configuration
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import com.google.android.material.navigation.NavigationView
+import me.lx.sample.databinding.ActivityMainBinding
 
+
+private const val STATE_TITLE = "title"
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send
-            ), drawerLayout
+        val binding: ActivityMainBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        setSupportActionBar(binding.toolbar)
+        val actionBar = supportActionBar!!
+        actionBar.setDisplayHomeAsUpEnabled(true)
+
+        toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        binding.drawerLayout.addDrawerListener(toggle)
+
+        val listener = NavigationView.OnNavigationItemSelectedListener { menuItem ->
+            val fragment: Fragment = when (menuItem.itemId) {
+                R.id.action_recyclerview -> FragmentRecyclerView()
+                else -> {
+                    binding.drawerLayout.closeDrawers()
+                    return@OnNavigationItemSelectedListener false
+                }
+            }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit()
+            actionBar.title = menuItem.title
+            binding.drawerLayout.closeDrawers()
+            true
+        }
+        binding.navView.setNavigationItemSelectedListener(listener)
+
+        if (savedInstanceState == null) {
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(0))
+        } else {
+            actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        toggle.onConfigurationChanged(newConfig)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return toggle.onOptionsItemSelected(item)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        toggle.syncState()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putCharSequence(STATE_TITLE, supportActionBar!!.title)
     }
 }

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':binding_rv_adapter'
 rootProject.name='adapter-databinding'
