@@ -33,7 +33,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     /**
      * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
      */
-    public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, final int variableId, @LayoutRes final int layoutRes) {
+    public OnItemBindClass<T> bindMap(@NonNull Class<? extends T> itemClass, final int variableId, @LayoutRes final int layoutRes) {
         int index = itemBindingClassList.indexOf(itemClass);
         if (index >= 0) {
             itemBindingList.set(index, itemBind(variableId, layoutRes));
@@ -47,7 +47,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     /**
      * Maps the given class to the given {@link OnItemBind}. This is assignment-compatible match with the object represented by Class.
      */
-    public <E extends T> OnItemBindClass<T> map(@NonNull Class<E> itemClass, @NonNull OnItemBind<E> onItemBind) {
+    public <E extends T> OnItemBindClass<T> bindMap(@NonNull Class<E> itemClass, @NonNull OnItemBind<E> onItemBind) {
         int index = itemBindingClassList.indexOf(itemClass);
         if (index >= 0) {
             itemBindingList.set(index, onItemBind);
@@ -71,7 +71,6 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     @SuppressWarnings("unchecked")
     public void onItemBind(@NonNull ItemBinding<?> itemBinding, int position, T item) {
         for (int i = 0; i < itemBindingClassList.size(); i++) {
-            System.out.println("for循环.onItemBind()...index="+i);
             Class<? extends T> key = itemBindingClassList.get(i);
             if (key.isInstance(item)) {
                 OnItemBind itemBind = itemBindingList.get(i);
@@ -91,6 +90,4 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
             }
         };
     }
-
-
 }

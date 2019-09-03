@@ -6,11 +6,8 @@ import java.lang.ref.WeakReference
 
 internal class AdapterReferenceCollector {
     companion object {
-        @JvmField
-        val QUEUE = ReferenceQueue<Any>()
+        private val QUEUE = ReferenceQueue<Any>()
         private var sThread: PollReferenceThread? = null
-
-
         /**
          * 创建一个[WeakReference]，它将在收集适配器时从给定的observable列表中取消注册给定的回调。
          *      
@@ -28,7 +25,7 @@ internal class AdapterReferenceCollector {
         }
 
 
-        private class PollReferenceThread : Thread() {
+        class PollReferenceThread : Thread() {
             override fun run() {
                 while (true) {
                     try {

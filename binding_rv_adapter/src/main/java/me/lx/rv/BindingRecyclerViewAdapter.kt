@@ -28,62 +28,17 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
     private var inflater: LayoutInflater? = null
     private var itemIds: ItemIds<in T>? = null
     private var viewHolderFactory: ViewHolderFactory? = null
-    // Currently attached recyclerview, we don't have to listen to notifications if null.
     private var recyclerView: RecyclerView? = null
     private var lifecycleOwner: LifecycleOwner? = null
 
-    override fun setItemBinding(itemBinding: ItemBinding<T>) {
-        this.itemBinding = itemBinding
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        if (this.recyclerView == null && items is ObservableList<T>) {
+            callback = WeakReferenceOnListChangedCallback<T>(this, items as ObservableList<T>)
+            (items as ObservableList<T>).addOnListChangedCallback(callback)
+        }
+        this.recyclerView = recyclerView
     }
 
-    /**
-     * Sets the lifecycle owner of this adapter to work with [androidx.lifecycle.LiveData].
-     * This is normally not necessary, but due to an androidx limitation, you need to set this if
-     * the containing view is *not* using databinding.
-     */
-    fun setLifecycleOwner(lifecycleOwner: LifecycleOwner?) {
-        this.lifecycleOwner = lifecycleOwner
-        if (recyclerView != null) {
-            for (i in 0 until recyclerView!!.childCount) {
-                val child = recyclerView!!.getChildAt(i)
-                val binding = DataBindingUtil.getBinding<ViewDataBinding>(child)
-                if (binding != null) {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            }
-        }
-    }
-
-    override fun getItemBinding(): ItemBinding<T> {
-        if (itemBinding == null) {
-            throw NullPointerException("itemBinding == null")
-        }
-        return itemBinding!!
-    }
-
-    override fun setItems(items: List<T>) {
-        if (this.items === items) {
-            return
-        }
-        // If a recyclerview is listening, set up listeners. Otherwise wait until one is attached.
-        // No need to make a sound if nobody is listening right?
-        if (recyclerView != null) {
-            if (this.items is ObservableList<T>) {
-                (this.items as ObservableList<T>).removeOnListChangedCallback(callback)
-                callback = null
-            }
-            if (items is ObservableList<T>) {
-                callback = WeakReferenceOnListChangedCallback(this, items)
-                items.addOnListChangedCallback(callback)
-            }
-        }
-        this.items = items
-        notifyDataSetChanged()
-    }
-
-    override fun getAdapterItem(position: Int): T {
-        return items!![position]
-    }
 
     override fun onCreateBinding(
         inflater: LayoutInflater, @LayoutRes layoutRes: Int,
@@ -105,15 +60,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
                 binding.lifecycleOwner = lifecycleOwner
             }
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        if (this.recyclerView == null && items is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(this, items as ObservableList<T>)
-            println("111111...onAttachedToRecyclerView()....")
-            (items as ObservableList<T>).addOnListChangedCallback(callback)
-        }
-        this.recyclerView = recyclerView
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -146,11 +92,73 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
                     } catch (e: IllegalStateException) {
                         // noop - this shouldn't be happening
                     }
-
                 }
             }
         })
         return holder
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        itemBinding!!.onItemBind(position, items!![position])
+        return itemBinding!!.layoutRes()
+    }
+
+    override fun getItemCount(): Int {
+        return items!!.size
+    }
+
+
+    override fun setItemBinding(itemBinding: ItemBinding<T>) {
+        this.itemBinding = itemBinding
+    }
+
+    /**
+     * Sets the lifecycle owner of this adapter to work with [androidx.lifecycle.LiveData].
+     * This is normally not necessary, but due to an androidx limitation, you need to set this if
+     * the containing view is *not* using databinding.
+     */
+    fun setLifecycleOwner(lifecycleOwner: LifecycleOwner?) {
+        this.lifecycleOwner = lifecycleOwner
+        if (recyclerView != null) {
+            for (i in 0 until recyclerView!!.childCount) {
+                val child = recyclerView!!.getChildAt(i)
+                val binding = DataBindingUtil.getBinding<ViewDataBinding>(child)
+                if (binding != null) {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
+            }
+        }
+    }
+
+    override fun getItemBinding(): ItemBinding<T> {
+        if (itemBinding == null) {
+            throw NullPointerException("itemBinding == null")
+        }
+        return itemBinding!!
+    }
+
+    override fun setItems(items: List<T>) {
+        if (items == this.items) {
+            return
+        }
+        // If a recyclerview is listening, set up listeners. Otherwise wait until one is attached.
+        // No need to make a sound if nobody is listening right?
+        if (recyclerView != null) {
+            if (this.items is ObservableList<T>) {
+                (this.items as ObservableList<T>).removeOnListChangedCallback(callback)
+                callback = null
+            }
+            if (items is ObservableList<T>) {
+                callback = WeakReferenceOnListChangedCallback(this, items)
+                items.addOnListChangedCallback(callback)
+            }
+        }
+        this.items = items
+        notifyDataSetChanged()
+    }
+
+    override fun getAdapterItem(position: Int): T {
+        return items!![position]
     }
 
     /**
@@ -165,9 +173,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         }
     }
 
-
-    private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
-        ViewHolder(binding.root)
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // This won't be called by recyclerview since we are overriding the other overload, call
@@ -205,11 +210,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         return true
     }
 
-    override fun getItemViewType(position: Int): Int {
-        //  System.out.println("getItemViewType()....position="+position);
-        itemBinding!!.onItemBind(position, items!![position])
-        return itemBinding!!.layoutRes()
-    }
 
     /**
      * Set the item id's for the items. If not null, this will set [ ][RecyclerView.Adapter.setHasStableIds] to true.
@@ -229,12 +229,12 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         viewHolderFactory = factory
     }
 
-    override fun getItemCount(): Int {
-        return if (items == null) 0 else items!!.size
-    }
 
     override fun getItemId(position: Int): Long {
-        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(position, items!![position])
+        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(
+            position,
+            items!![position]
+        )
     }
 
     private fun tryGetLifecycleOwner() {
@@ -243,16 +243,11 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         }
     }
 
-    private class WeakReferenceOnListChangedCallback<T>   constructor(
+    private class WeakReferenceOnListChangedCallback<T> constructor(
         adapter: BindingRecyclerViewAdapter<T>,
         items: ObservableList<T>
     ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
         internal val adapterRef: WeakReference<BindingRecyclerViewAdapter<T>>
-//        constructor():super()
-//        constructor(
-//            adapter: BindingRecyclerViewAdapter<T>,
-//            items: ObservableList<T>
-//        ):super()
 
         init {
             this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this)
@@ -307,6 +302,9 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
             adapter.notifyItemRangeRemoved(positionStart, itemCount)
         }
     }
+
+    private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
+        ViewHolder(binding.root)
 
     interface ItemIds<T> {
         fun getItemId(position: Int, item: T): Long

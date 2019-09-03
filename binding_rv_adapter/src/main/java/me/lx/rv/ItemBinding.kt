@@ -5,6 +5,7 @@ import android.util.SparseArray
 import androidx.annotation.LayoutRes
 import androidx.core.util.forEach
 import androidx.databinding.ViewDataBinding
+import me.lx.rv.click.ClickListener
 
 /**
  * author: luoXiong
@@ -13,8 +14,14 @@ import androidx.databinding.ViewDataBinding
  * version: 1.0
  * desc: 当前对象指的是每种Item布局, 包含:布局id、绑定变量id,以及您可能想要提供的任何额外绑定的数据
  */
-class ItemBinding<T>  constructor(private val onItemBind: OnItemBind<T>?) {
-    private var variableId: Int = 0  // 绑定变量id
+class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
+    private var variableId: Int = 0  // 默认绑定变量id
+
+    private var defaultItemVariableId: Int? = null
+
+    private var defaultClickVariableId: Int? = null
+
+    private var clickListener: ClickListener? = null
     @LayoutRes
     private var layoutRes: Int = 0 // 布局id
     private var extraBindings: SparseArray<Any>? = null // 额外的绑定变量字典
@@ -31,7 +38,7 @@ class ItemBinding<T>  constructor(private val onItemBind: OnItemBind<T>?) {
     /**
      * 设置变量id, 一般由[OnItemBind.onItemBind]进行调用
      */
-    fun variableId(variableId: Int): ItemBinding<T> {
+    fun setVariableId(variableId: Int): ItemBinding<T> {
         this.variableId = variableId
         return this
     }
@@ -39,7 +46,7 @@ class ItemBinding<T>  constructor(private val onItemBind: OnItemBind<T>?) {
     /**
      * 设置布局id, 一般由[OnItemBind.onItemBind]进行调用
      */
-    fun layoutRes(@LayoutRes layoutRes: Int): ItemBinding<T> {
+    fun setLayoutRes(@LayoutRes layoutRes: Int): ItemBinding<T> {
         this.layoutRes = layoutRes
         return this
     }
@@ -123,6 +130,16 @@ class ItemBinding<T>  constructor(private val onItemBind: OnItemBind<T>?) {
             return false
         }
         val result = binding.setVariable(variableId, item)
+
+        if (defaultItemVariableId != null) {
+            binding.setVariable(defaultItemVariableId!!, item)
+        }
+
+        if (clickListener != null) {
+            binding.setVariable(defaultClickVariableId!!, clickListener)
+        }
+
+
         if (!result) {
             Utils.throwMissingVariable(binding, variableId, layoutRes)
         }
@@ -162,9 +179,5 @@ class ItemBinding<T>  constructor(private val onItemBind: OnItemBind<T>?) {
         fun <T> of(onItemBind: OnItemBind<T>): ItemBinding<T> {
             return ItemBinding(onItemBind)
         }
-
-
-
-
     }
 }

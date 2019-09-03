@@ -1,4 +1,4 @@
-package me.lx.sample
+package me.lx.sample.vo
 
 import androidx.annotation.MainThread
 import androidx.databinding.ObservableBoolean
@@ -10,10 +10,11 @@ import androidx.databinding.ObservableBoolean
  *  version: 1.0
  *  desc: 比如:这是服务器返回的json对象
  */
-class MutableItemVo(
+class SingleItemVo(
     val index: Int,
     var isCheckedOb: ObservableBoolean = ObservableBoolean()
 ) {
+
     @MainThread
     fun onToggleChecked(): Boolean {
         isCheckedOb.set(!isCheckedOb.get())

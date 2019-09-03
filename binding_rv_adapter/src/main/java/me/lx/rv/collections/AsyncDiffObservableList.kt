@@ -77,8 +77,6 @@ class AsyncDiffObservableList<T> : AbstractList<T>, ObservableList<T> {
     }
 
 
-
-
     override fun listIterator(index: Int): MutableListIterator<T> {
         return differ.currentList.listIterator(index)
     }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="me.lx.sample.vo.SingleItemVo" />
+
+        <variable
+            name="click"
+            type="me.lx.rv.click.BaseItemClickEvent" />
+
+    </data>
+
+    <!--
+       android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:onClick="@{() -> click.onItemClick(item)}"
+        android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text='@{"Item " + item.index}'
+            tools:text="Item 1" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_action_check"
+            android:visibility="@{item.isCheckedOb ? View.VISIBLE : View.GONE}" />
+    </LinearLayout>
+</layout>

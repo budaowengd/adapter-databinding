@@ -2,13 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_listview"
-        android:title="ListView" />
-
+        android:id="@+id/action_single_recyclerview"
+        android:title="single RecyclerView" />
     <item
-        android:id="@+id/action_recyclerview"
-        android:title="RecyclerView" />
-
+        android:id="@+id/action_headerfooter_recyclerview"
+        android:title="header footer RecyclerView" />
+    <item
+        android:id="@+id/action_multi_recyclerview"
+        android:title="multi RecyclerView" />
     <item
         android:id="@+id/action_diff_recyclerview"
         android:title="Diff RecyclerView" />

@@ -4,6 +4,13 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="me.lx.sample.MutableViewModel" />
+
+        <variable
+            name="click"
+            type="me.lx.sample.ClickListeners" />
 
     </data>
 
@@ -13,18 +20,20 @@
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-         />
+            app:rv_adapter="@{viewModel.multiAdapter}"
+            app:rv_itemBinding="@{viewModel.multiItemBinding}"
+            app:rv_items="@{viewModel.multiItems}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#3443">
 
             <Button
                 android:id="@+id/add"
@@ -32,6 +41,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClickListener="@{() -> click.clickAddItem()}"
+
                 android:text="Add Item" />
 
             <Button
@@ -40,6 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClickListener="@{() -> click.clickRemoveItem()}"
                 android:text="Remove Item" />
         </LinearLayout>
     </LinearLayout>

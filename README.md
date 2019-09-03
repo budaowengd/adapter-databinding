@@ -1,4 +1,5 @@
 '''
+https://github.com/evant/binding-collection-adapter
 1个item布局对应:
     1个 OnItemBind
     1个 ItemBinding

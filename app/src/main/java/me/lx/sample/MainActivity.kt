@@ -12,6 +12,7 @@ import me.lx.sample.databinding.ActivityMainBinding
 
 
 private const val STATE_TITLE = "title"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toggle: ActionBarDrawerToggle
@@ -36,9 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         val listener = NavigationView.OnNavigationItemSelectedListener { menuItem ->
             val fragment: Fragment = when (menuItem.itemId) {
-                R.id.action_recyclerview -> FragmentRecyclerView()
+                R.id.action_single_recyclerview -> FragmentSingleRecyclerView()
+                R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
+                R.id.action_headerfooter_recyclerview -> FragmentHeaderFooterRecyclerView()
                 else -> {
-                    binding.drawerLayout.closeDrawers()
                     return@OnNavigationItemSelectedListener false
                 }
             }
