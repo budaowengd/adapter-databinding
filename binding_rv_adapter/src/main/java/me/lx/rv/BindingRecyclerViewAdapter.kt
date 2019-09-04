@@ -100,7 +100,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
 
     override fun getItemViewType(position: Int): Int {
         itemBinding!!.onItemBind(position, items!![position])
-        return itemBinding!!.layoutRes()
+        return itemBinding!!.getLayoutRes()
     }
 
     override fun getItemCount(): Int {
@@ -189,8 +189,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
             val item = items!![position]
             onBindBinding(
                 binding!!,
-                itemBinding!!.variableId(),
-                itemBinding!!.layoutRes(),
+                itemBinding!!.getDefaultVariableId(),
+                itemBinding!!.getLayoutRes(),
                 position,
                 item
             )

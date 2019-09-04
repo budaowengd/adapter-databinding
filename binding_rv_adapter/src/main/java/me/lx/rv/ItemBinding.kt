@@ -15,23 +15,39 @@ import me.lx.rv.click.ClickListener
  * desc: 当前对象指的是每种Item布局, 包含:布局id、绑定变量id,以及您可能想要提供的任何额外绑定的数据
  */
 class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
-    private var variableId: Int = 0  // 默认绑定变量id
 
-    private var defaultItemVariableId: Int? = null
+    private var defaultItemVariableId: Int = BR.item // 默认绑定变量id
 
-    private var defaultClickVariableId: Int? = null
+    private var defaultClickVariableId: Int = BR.click
 
     private var clickListener: ClickListener? = null
     @LayoutRes
     private var layoutRes: Int = 0 // 布局id
+
     private var extraBindings: SparseArray<Any>? = null // 额外的绑定变量字典
+
+    /**
+     * setVariableIdAndLayoutId
+     * 设置变量id和布局id, 一般由[OnItemBind.onItemBind]进行调用
+     */
+    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, clickListener: ClickListener? = null): ItemBinding<T> {
+        this.layoutRes = layoutRes
+        this.clickListener = clickListener
+        if (variableId == 0) {
+            this.defaultItemVariableId = BR.item
+        } else {
+            this.defaultItemVariableId = variableId
+        }
+        return this
+    }
 
     /**
      * 设置变量id和布局id, 一般由[OnItemBind.onItemBind]进行调用
      */
-    fun set(variableId: Int, @LayoutRes layoutRes: Int): ItemBinding<T> {
-        this.variableId = variableId
+    fun set(@LayoutRes layoutRes: Int, clickListener: ClickListener): ItemBinding<T> {
         this.layoutRes = layoutRes
+        this.clickListener = clickListener
+        this.defaultItemVariableId = BR.item
         return this
     }
 
@@ -39,9 +55,10 @@ class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
      * 设置变量id, 一般由[OnItemBind.onItemBind]进行调用
      */
     fun setVariableId(variableId: Int): ItemBinding<T> {
-        this.variableId = variableId
+        this.defaultItemVariableId = variableId
         return this
     }
+
 
     /**
      * 设置布局id, 一般由[OnItemBind.onItemBind]进行调用
@@ -86,15 +103,15 @@ class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
     /**
      * 返回当前布局绑定的变量id
      */
-    fun variableId(): Int {
-        return variableId
+    fun getDefaultVariableId(): Int {
+        return defaultItemVariableId
     }
 
     /**
      *返回当前布局id
      */
     @LayoutRes
-    fun layoutRes(): Int {
+    fun getLayoutRes(): Int {
         return layoutRes
     }
 
@@ -112,10 +129,10 @@ class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
      */
     fun onItemBind(position: Int, item: T) {
         if (onItemBind != null) {
-            variableId = VAR_INVALID
+            defaultItemVariableId = VAR_INVALID
             layoutRes = LAYOUT_NONE
             onItemBind.onItemBind(this, position, item)
-            check(variableId != VAR_INVALID) { "variableId not set in onItemBind()" }
+            check(defaultItemVariableId != VAR_INVALID) { "defaultItemVariableId not set in onItemBind()  defaultItemVariableId=$defaultItemVariableId" }
             check(layoutRes != LAYOUT_NONE) { "layoutRes not set in onItemBind()" }
         }
     }
@@ -126,22 +143,17 @@ class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
      * @throws IllegalStateException 如果该变量id不在布局当中
      */
     fun bind(binding: ViewDataBinding, item: T): Boolean {
-        if (variableId == VAR_NONE) {
+        if (defaultItemVariableId == VAR_NONE) {
             return false
         }
-        val result = binding.setVariable(variableId, item)
-
-        if (defaultItemVariableId != null) {
-            binding.setVariable(defaultItemVariableId!!, item)
-        }
+        val result = binding.setVariable(defaultItemVariableId, item)
 
         if (clickListener != null) {
-            binding.setVariable(defaultClickVariableId!!, clickListener)
+            binding.setVariable(defaultClickVariableId, clickListener)
         }
 
-
         if (!result) {
-            Utils.throwMissingVariable(binding, variableId, layoutRes)
+            Utils.throwMissingVariable(binding, defaultItemVariableId, layoutRes)
         }
         if (extraBindings != null) {
             extraBindings!!.forEach { key, value ->
@@ -167,8 +179,16 @@ class ItemBinding<T> constructor(private val onItemBind: OnItemBind<T>?) {
          *使用给定的变量id和layout构造一个实例。
          */
         fun <T> of(variableId: Int, @LayoutRes layoutRes: Int): ItemBinding<T> {
-            return ItemBinding<T>(null).set(variableId, layoutRes)
+            return ItemBinding<T>(null).set(layoutRes, variableId)
         }
+
+        /**
+         *使用给定的变量id和layout构造一个实例。
+         */
+        fun <T> of(@LayoutRes layoutRes: Int, clickListener: ClickListener): ItemBinding<T> {
+            return ItemBinding<T>(null).set(layoutRes, clickListener = clickListener)
+        }
+
 
         /**
          * 使用给定的回调构造一个实例。 它将被调用为每个item布局设置绑定信息。

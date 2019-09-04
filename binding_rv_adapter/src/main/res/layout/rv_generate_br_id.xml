@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <!--
+         为了自动生成变量,让代码里的BR.item能编译通过
+        -->
+        <variable
+            name="item"
+            type="java.lang.String" />
+
+        <variable
+            name="click"
+            type="java.lang.String" />
+
+    </data>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="New 2-port USB Un" />
+</layout>
+
+
+

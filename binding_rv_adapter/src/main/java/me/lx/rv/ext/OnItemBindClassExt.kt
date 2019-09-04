@@ -3,15 +3,21 @@
 package me.lx.rv.ext
 
 import androidx.annotation.LayoutRes
+import me.lx.rv.BR
 import me.lx.rv.OnItemBind
+import me.lx.rv.click.ClickListener
 import me.lx.rv.itembindings.OnItemBindClass
 
 /**
  * Maps the given type to the given id and layout.
  *
  */
-inline fun <reified T> OnItemBindClass<in T>.map(variableId: Int, @LayoutRes layoutRes: Int) {
-    bindMap(T::class.java, variableId, layoutRes)
+inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, variableId: Int = BR.item) {
+    bindMap(T::class.java, layoutRes, variableId)
+}
+
+inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, clickListener: ClickListener) {
+    bindMap(T::class.java, layoutRes, clickListener = clickListener)
 }
 
 /**

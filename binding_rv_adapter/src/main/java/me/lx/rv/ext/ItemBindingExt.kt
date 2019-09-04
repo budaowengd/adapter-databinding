@@ -4,15 +4,22 @@ package me.lx.rv.ext
 
 
 import androidx.annotation.LayoutRes
+import me.lx.rv.BR
 import me.lx.rv.ItemBinding
 import me.lx.rv.OnItemBind
+import me.lx.rv.click.ClickListener
+
+inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): ItemBinding<T> =
+    ItemBinding.of(layoutRes, clickListener)
+
+
 
 /**
  * Creates an `ItemBinding` with the given id and layout.
  *
  * @see ItemBinding.of
  */
-inline fun <T> itemBindingOf(variableId: Int, @LayoutRes layoutRes: Int): ItemBinding<T> =
+inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int= BR.item): ItemBinding<T> =
     ItemBinding.of(variableId, layoutRes)
 
 /**

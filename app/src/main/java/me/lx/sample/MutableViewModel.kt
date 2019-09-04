@@ -53,23 +53,25 @@ class MutableViewModel : ViewModel(), ClickListeners {
         .insertItem(Type2Vo("type2-1"))
 
     // 布局 ->单一的
-    val simpleItemBinding = itemBindingOf<SingleItemVo>(BR.item, R.layout.item_single)
-        .bindExtra(BR.click, itemClickEvent)
+    val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
+
+    // 布局 ->单一的
+    val simpleItemBinding2 = itemBindingOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
 
     // 布局 -> 多类型
     val multiItemBinding = OnItemBindClass<Any>().apply {
-        map<SingleItemVo>(BR.item, R.layout.item_single)
-        map<Type1Vo>(BR.item, R.layout.item_type_1)
-        map<Type2Vo>(BR.item, R.layout.item_type_2)
+        map<SingleItemVo>(R.layout.item_single, itemClickEvent)
+        map<Type1Vo>(R.layout.item_type_1)
+        map<Type2Vo>(R.layout.item_type_2, BR.item)
     }
 
     // 布局 -> 带头和脚
     val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
         override fun onItemBind(itemBinding: ItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
-                HeaderVo::class -> itemBinding.set(BR.item, R.layout.item_header)
-                SingleItemVo::class -> itemBinding.set(BR.item, R.layout.item_single)
-                FooterVo::class -> itemBinding.set(BR.item, R.layout.item_footer)
+                HeaderVo::class -> itemBinding.set(R.layout.item_header, BR.item, itemClickEvent)
+                SingleItemVo::class -> itemBinding.set(R.layout.item_single, itemClickEvent)
+                FooterVo::class -> itemBinding.set(R.layout.item_footer, itemClickEvent)
             }
         }
     })
