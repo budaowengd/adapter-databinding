@@ -7,10 +7,11 @@ import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.ItemBinding
 import me.lx.rv.R
 import me.lx.rv.collections.AsyncDiffObservableList
+import me.lx.rv.loadmore.LoadMoreWrapper
 
 // RecyclerView
 @BindingAdapter(
-    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig"],
+    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig", "rv_support_loadmore_adapter"],
     requireAll = false
 )
 fun <T> setAdapter(
@@ -21,7 +22,10 @@ fun <T> setAdapter(
     itemIds: BindingRecyclerViewAdapter.ItemIds<in T>?,
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?
+    , isSupportLoadMore: Boolean?
 ) {
+    println("BindingAdapter()..rv_setAdapter()....1111111111111......")
+
     var adapter = rvAdapter
     requireNotNull(itemBinding) { "itemBinding must not be null" }
     val oldAdapter = recyclerView.adapter as? BindingRecyclerViewAdapter<T>
@@ -51,8 +55,28 @@ fun <T> setAdapter(
     adapter.setViewHolderFactory(viewHolderFactory)
 
     if (oldAdapter != adapter) {
-        recyclerView.adapter = adapter
+        if (isSupportLoadMore == true) {
+            setLoadMoreAdapter(recyclerView,adapter)
+        } else {
+            recyclerView.adapter = adapter
+        }
     }
 }
 
+@BindingAdapter(
+    value = ["rv_support_loadmore_adapter"],
+    requireAll = false
+)
+fun  setLoadMoreAdapter(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    println("BindingAdapter().. rv_support_loadmore()....2222222......")
+    LoadMoreWrapper.with(adapter)
+        .setFooterView(R.layout.base_footer)
+        .setLoadFailedView(R.layout.base_load_failed)
+        .setNoMoreView(R.layout.base_no_more)
+        .setShowNoMoreEnabled(true)
+        .setListener {
+            println("设置加载更多了..()....2222222......")
+        }
+        .into(recyclerView)
+}
 

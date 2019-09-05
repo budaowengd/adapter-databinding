@@ -2,6 +2,7 @@ package me.lx.sample
 
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.ItemBinding
 import me.lx.rv.OnItemBind
@@ -23,6 +24,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
+
 
     private val itemClickEvent = object : BaseItemClickEvent<Any>() {
         override fun onItemClick(item: Any) {
@@ -76,6 +78,12 @@ class MutableViewModel : ViewModel(), ClickListeners {
         }
     })
 
+    fun t1(){
+        val aa:RecyclerView?=null
+        aa?.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+
+        })
+    }
 
     override fun clickAddItem() {
         singleItems.add(SingleItemVo(index = singleItems.size))

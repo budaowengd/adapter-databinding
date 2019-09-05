@@ -19,8 +19,7 @@ import java.lang.ref.WeakReference
  * If you give it an [ObservableList] it will also updated itself based on changes to that
  * list.
  */
-class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
-    BindingCollectionAdapter<T> {
+class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),BindingCollectionAdapter<T> {
 
     private var itemBinding: ItemBinding<T>? = null
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
@@ -38,7 +37,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         }
         this.recyclerView = recyclerView
     }
-
 
     override fun onCreateBinding(
         inflater: LayoutInflater, @LayoutRes layoutRes: Int,
@@ -106,7 +104,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
     override fun getItemCount(): Int {
         return items!!.size
     }
-
 
     override fun setItemBinding(itemBinding: ItemBinding<T>) {
         this.itemBinding = itemBinding
@@ -178,6 +175,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         // This won't be called by recyclerview since we are overriding the other overload, call
         // the other overload here in case someone is calling this directly ex: in a test.
         onBindViewHolder(viewHolder, position, emptyList())
+        println("onBindViewHolder()....1111111")
     }
 
     @CallSuper
@@ -198,7 +196,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
     }
 
     private fun isForDataBinding(payloads: List<Any>?): Boolean {
-        if (payloads == null || payloads.size == 0) {
+        if (payloads == null || payloads.isEmpty()) {
             return false
         }
         for (i in payloads.indices) {

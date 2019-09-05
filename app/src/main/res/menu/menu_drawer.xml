@@ -11,9 +11,11 @@
         android:id="@+id/action_multi_recyclerview"
         android:title="multi RecyclerView" />
     <item
+        android:id="@+id/action_loadmore_recyclerview"
+        android:title="loadMore RecyclerView" />
+    <item
         android:id="@+id/action_diff_recyclerview"
         android:title="Diff RecyclerView" />
-
     <item
         android:id="@+id/action_paged_recyclerview"
         android:title="Paged RecyclerView" />

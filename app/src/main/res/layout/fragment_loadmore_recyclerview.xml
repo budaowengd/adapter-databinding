@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="me.lx.sample.MutableViewModel" />
+
+        <variable
+            name="click"
+            type="me.lx.sample.ClickListeners" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
+            app:rv_adapter="@{viewModel.adapter}"
+            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
+            app:rv_items="@{viewModel.singleItems}"
+            app:rv_support_loadmore_adapter="@{true}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <LinearLayout
+            style="?buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#3443">
+
+            <Button
+                android:id="@+id/add"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClickListener="@{() -> click.clickAddItem()}"
+
+                android:text="Add Item" />
+
+            <Button
+                android:id="@+id/remove"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClickListener="@{() -> click.clickRemoveItem()}"
+                android:text="Remove Item" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -38,8 +38,9 @@ class MainActivity : AppCompatActivity() {
         val listener = NavigationView.OnNavigationItemSelectedListener { menuItem ->
             val fragment: Fragment = when (menuItem.itemId) {
                 R.id.action_single_recyclerview -> FragmentSingleRecyclerView()
-                R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
                 R.id.action_headerfooter_recyclerview -> FragmentHeaderFooterRecyclerView()
+                R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
+                R.id.action_loadmore_recyclerview -> FragmentLoadMoreRecyclerView()
                 else -> {
                     return@OnNavigationItemSelectedListener false
                 }
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener(listener)
 
         if (savedInstanceState == null) {
-            listener.onNavigationItemSelected(binding.navView.menu.getItem(0))
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(3))
         } else {
             actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
         }
