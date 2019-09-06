@@ -2,7 +2,7 @@
 https://github.com/evant/binding-collection-adapter
 1个item布局对应:
     1个 OnItemBind
-    1个 ItemBinding
+    1个 XmlItemBinding
 
 OnItemBindModel
     管理1个绑定回调对象,和每个布局对应的变量id
@@ -15,7 +15,7 @@ OnItemBindClass : OnItemBind
 OnItemBind
     绑定回调对象,在Adapter的getItemViewType()调用
 
-ItemBinding
+XmlItemBinding
     布局信息对象
 
 OnItemBindModel : OnItemBind

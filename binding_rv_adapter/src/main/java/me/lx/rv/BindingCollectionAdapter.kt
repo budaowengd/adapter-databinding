@@ -20,14 +20,14 @@ interface BindingCollectionAdapter<T> {
      * 返回ItemBinding对象从适配器里
      */
     /**
-     * 设置 ItemBinding 对象到适配器
+     * 设置 XmlItemBinding 对象到适配器
      */
-    fun setItemBinding(itemBinding: ItemBinding<T>)
+    fun setItemBinding(itemBinding: XmlItemBinding<T>)
 
-    fun getItemBinding(): ItemBinding<T>
+    fun getItemBinding(): XmlItemBinding<T>
 
     /**
-     * 设置适配器的项目。 这些项目将根据[ItemBinding]显示。 如果
+     * 设置适配器的项目。 这些项目将根据[XmlItemBinding]显示。 如果
      * 您传入[ObservableList]，适配器也将根据它自动更新。不需要手动调用 `notifyDataSetChanged()`
      *
      *

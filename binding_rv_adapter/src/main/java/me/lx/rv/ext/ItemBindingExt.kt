@@ -5,36 +5,36 @@ package me.lx.rv.ext
 
 import androidx.annotation.LayoutRes
 import me.lx.rv.BR
-import me.lx.rv.ItemBinding
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.OnItemBind
 import me.lx.rv.click.ClickListener
 
-inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): ItemBinding<T> =
-    ItemBinding.of(layoutRes, clickListener)
+inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> =
+    XmlItemBinding.of(layoutRes, clickListener)
 
 
 
 /**
- * Creates an `ItemBinding` with the given id and layout.
+ * Creates an `XmlItemBinding` with the given id and layout.
  *
- * @see ItemBinding.of
+ * @see XmlItemBinding.of
  */
-inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int= BR.item): ItemBinding<T> =
-    ItemBinding.of(variableId, layoutRes)
+inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int= BR.item): XmlItemBinding<T> =
+    XmlItemBinding.of(variableId, layoutRes)
 
 /**
- * Creates an `ItemBinding` with the given callback.
+ * Creates an `XmlItemBinding` with the given callback.
  *
- * @see ItemBinding.of
+ * @see XmlItemBinding.of
  */
-inline fun <T> itemBindingOf(onItemBind: OnItemBind<T>): ItemBinding<T> = ItemBinding.of(onItemBind)
+inline fun <T> itemBindingOf(onItemBind: OnItemBind<T>): XmlItemBinding<T> = XmlItemBinding.of(onItemBind)
 
 
 /**
- * Converts an `OnItemBind` to a `ItemBinding`.
+ * Converts an `OnItemBind` to a `XmlItemBinding`.
  *
- * @see ItemBinding.of
+ * @see XmlItemBinding.of
  */
-inline fun <T> OnItemBind<T>.toItemBinding(): ItemBinding<T> =
-    ItemBinding.of(this)
+inline fun <T> OnItemBind<T>.toItemBinding(): XmlItemBinding<T> =
+    XmlItemBinding.of(this)
 

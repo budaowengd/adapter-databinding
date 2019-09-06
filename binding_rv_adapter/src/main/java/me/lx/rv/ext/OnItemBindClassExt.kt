@@ -27,7 +27,7 @@ inline fun <reified T> OnItemBindClass<in T>.map(onItemBind: OnItemBind<T>) {
     bindMap(T::class.java, onItemBind)
 //    map(T::class.java) {itemBinding, position, item ->
 //        onItemBind(
-//            itemBinding as ItemBinding<in T>,
+//            itemBinding as XmlItemBinding<in T>,
 //            position,
 //            item
 //        )

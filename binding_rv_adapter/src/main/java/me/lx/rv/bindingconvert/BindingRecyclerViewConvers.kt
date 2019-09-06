@@ -3,7 +3,7 @@ package me.lx.rv.bindingconvert
 import androidx.databinding.BindingConversion
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
-import me.lx.rv.ItemBinding
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.OnItemBind
 
 /**
@@ -14,8 +14,8 @@ import me.lx.rv.OnItemBind
  *  desc:
  */
 @BindingConversion
-fun <T> toItemBinding(onItemBind: OnItemBind<T>): ItemBinding<T> {
-    return ItemBinding.of(onItemBind)
+fun <T> toItemBinding(onItemBind: OnItemBind<T>): XmlItemBinding<T> {
+    return XmlItemBinding.of(onItemBind)
 }
 
 @BindingConversion

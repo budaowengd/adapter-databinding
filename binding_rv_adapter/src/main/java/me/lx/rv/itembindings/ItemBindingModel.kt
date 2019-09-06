@@ -1,6 +1,6 @@
 package me.lx.rv.itembindings
 
-import me.lx.rv.ItemBinding
+import me.lx.rv.XmlItemBinding
 
 
 /**
@@ -12,5 +12,5 @@ interface ItemBindingModel {
      * <pre>`onItemBind.set(BR.item, R.layout.item);
     `</pre> *
      */
-    fun onItemBind(itemBinding: ItemBinding<*>)
+    fun onItemBind(itemBinding: XmlItemBinding<*>)
 }

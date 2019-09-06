@@ -7,9 +7,9 @@ package me.lx.rv
 </T> */
 interface OnItemBind<T> {
     /**
-     * 允许您修改每种ItemBinding对象的数据,
+     * 允许您修改每种 ItemBinding 对象的数据,
      * 请注意，您不应该在此方法中进行复杂处理，因为它被多次调用。
      * 在Adapter执行getItemViewType()方法, 会被多次调用。
      */
-    fun onItemBind(itemBinding: ItemBinding<*>, position: Int, item: T)
+    fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T)
 }

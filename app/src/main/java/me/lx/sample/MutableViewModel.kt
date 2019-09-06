@@ -4,8 +4,8 @@ import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
-import me.lx.rv.ItemBinding
 import me.lx.rv.OnItemBind
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.click.BaseItemClickEvent
 import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
@@ -81,7 +81,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
     // 布局 -> 带头和脚
     val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
-        override fun onItemBind(itemBinding: ItemBinding<*>, position: Int, item: Any) {
+        override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
                 HeaderVo::class -> itemBinding.set(R.layout.item_header, BR.item, itemClickEvent)
                 SingleItemVo::class -> itemBinding.set(R.layout.item_single, itemClickEvent)

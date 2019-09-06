@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.lang.ref.WeakReference
 
 /**
- * A [RecyclerView.Adapter] that binds items to layouts using the given [ItemBinding].
+ * A [RecyclerView.Adapter] that binds items to layouts using the given [XmlItemBinding].
  * If you give it an [ObservableList] it will also updated itself based on changes to that
  * list.
  */
 class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),BindingCollectionAdapter<T> {
 
-    private var itemBinding: ItemBinding<T>? = null
+    private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
     private var items: List<T>? = null
     private var inflater: LayoutInflater? = null
@@ -52,7 +52,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
         item: T
     ) {
         tryGetLifecycleOwner()
-        if (itemBinding!!.bind(binding, item)) {
+        if (xmlItemBinding.bind(binding, item)) {
             binding.executePendingBindings()
             if (lifecycleOwner != null) {
                 binding.lifecycleOwner = lifecycleOwner
@@ -97,16 +97,16 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
     }
 
     override fun getItemViewType(position: Int): Int {
-        itemBinding!!.onItemBind(position, items!![position])
-        return itemBinding!!.getLayoutRes()
+        xmlItemBinding.onItemBind(position, items!![position])
+        return xmlItemBinding.getLayoutRes()
     }
 
     override fun getItemCount(): Int {
         return items!!.size
     }
 
-    override fun setItemBinding(itemBinding: ItemBinding<T>) {
-        this.itemBinding = itemBinding
+    override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
+        this.xmlItemBinding = itemBinding
     }
 
     /**
@@ -127,11 +127,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
         }
     }
 
-    override fun getItemBinding(): ItemBinding<T> {
-        if (itemBinding == null) {
-            throw NullPointerException("itemBinding == null")
-        }
-        return itemBinding!!
+    override fun getItemBinding(): XmlItemBinding<T> {
+        return xmlItemBinding
     }
 
     override fun setItems(items: List<T>) {
@@ -187,8 +184,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
             val item = items!![position]
             onBindBinding(
                 binding!!,
-                itemBinding!!.getDefaultVariableId(),
-                itemBinding!!.getLayoutRes(),
+                xmlItemBinding.getDefaultVariableId(),
+                xmlItemBinding.getLayoutRes(),
                 position,
                 item
             )

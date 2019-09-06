@@ -4,7 +4,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
-import me.lx.rv.ItemBinding
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.R
 import me.lx.rv.collections.AsyncDiffObservableList
 import me.lx.rv.loadmore.LoadMoreWrapper
@@ -16,7 +16,7 @@ import me.lx.rv.loadmore.LoadMoreWrapper
 )
 fun <T> setAdapter(
     recyclerView: RecyclerView,
-    itemBinding: ItemBinding<T>?,
+    itemBinding: XmlItemBinding<T>?,
     items: List<T>?,
     rvAdapter: BindingRecyclerViewAdapter<T>?,
     itemIds: BindingRecyclerViewAdapter.ItemIds<in T>?,

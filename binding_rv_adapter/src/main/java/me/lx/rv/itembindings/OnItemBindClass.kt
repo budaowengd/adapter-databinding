@@ -2,8 +2,8 @@ package me.lx.rv.itembindings
 
 import androidx.annotation.LayoutRes
 import me.lx.rv.BR
-import me.lx.rv.ItemBinding
 import me.lx.rv.OnItemBind
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.click.ClickListener
 import java.util.*
 
@@ -14,12 +14,12 @@ import java.util.*
  * 2、多个item对应的数据对象class
  * <pre>`itemBind = new OnItemBindClass<>()
  * .map(String.class, BR.name, R.layout.item_name)
- * .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer);
+ * .map(Footer.class, XmlItemBinding.VAR_NONE, R.layout.item_footer);
 `</pre> *
  */
 class OnItemBindClass<T> : OnItemBind<T> {
 
-    private val itemBindingClassList: MutableList<Class<out T>> //元素: 每种item对象的vo对象
+    private val itemBindingClassList: MutableList<Class<out T>> //元素: 每种item对应的vo对象
     private val itemBindingList: MutableList<OnItemBind<T>> //元素: 每种item对应的 OnItemBind 对象
 
     init {
@@ -69,7 +69,7 @@ class OnItemBindClass<T> : OnItemBind<T> {
         return itemBindingClassList.size
     }
 
-    override fun onItemBind(itemBinding: ItemBinding<*>, position: Int, item: T) {
+    override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T) {
         for (i in itemBindingClassList.indices) {
             val key = itemBindingClassList[i]
             if (key.isInstance(item)) {
@@ -83,7 +83,7 @@ class OnItemBindClass<T> : OnItemBind<T> {
 
     private fun getOnItemBindObj(@LayoutRes layoutRes: Int, variableId: Int, clickListener: ClickListener? = null): OnItemBind<T> {
         return object : OnItemBind<T> {
-            override fun onItemBind(itemBinding: ItemBinding<*>, position: Int, item: T) {
+            override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T) {
                 itemBinding.set(layoutRes, variableId, clickListener)
             }
         }

@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/action_single_recyclerview"
-        android:title="single RecyclerView" />
+        android:title="单一类型" />
     <item
         android:id="@+id/action_headerfooter_recyclerview"
-        android:title="header footer RecyclerView" />
+        android:title="带头和尾类型" />
     <item
         android:id="@+id/action_multi_recyclerview"
-        android:title="multi RecyclerView" />
+        android:title="多种类型" />
     <item
         android:id="@+id/action_loadmore_recyclerview"
         android:title="loadMore RecyclerView" />
