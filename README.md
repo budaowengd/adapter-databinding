@@ -1,4 +1,4 @@
-# AdapterBinding 介绍(通过数据来驱动UI)
+# AdapterBinding 介绍(通过数据驱动UI)
 基于Databinding打造的高复用、简洁、高效的列表适配器.. 专注于业务, 减少重复代码, 不用再写rv.setAdapter()
 
 ###包含以下几种解决方案.
@@ -27,13 +27,13 @@ implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-re
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/merge.png?raw=true)
 
 ## UML类图
-
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/System.png?raw=true)
 ## 原理讲解
 写适配器的时候，通常需要实现adapter和viewholder，首先我们要明白adapter里面各个方法的调用顺序。下面方法都是由RecyclerView自动去调用的。
-#####1.  首先调用getItemCount()，让Rv知道1个列表该展示多少个item
-#####2.  调用getItemViewType(int position)，Rv要知道每个位置的item对应的类型是什么.默认是0 , 即只有一种类型
-#####3.  调用 onCreateViewHolder(ViewGroup parent, int viewType) 根据每种类型获取不同的item布局
-#####4.  调用 onBindViewHolder(BaseViewHolder holder, int position)  我们滑动下列表,Rv就会调用该方法
+##### 1.首先调用getItemCount()，让Rv知道1个列表该展示多少个item
+##### 2. 调用getItemViewType(int position)，Rv要知道每个位置的item对应的类型是什么.默认是0 , 即只有一种类型
+##### 3. 调用 onCreateViewHolder(ViewGroup parent, int viewType) 根据每种类型获取不同的item布局
+##### 4. 调用 onBindViewHolder(BaseViewHolder holder, int position)  我们滑动下列表,Rv就会调用该方法
 
 如果要实现多类型item, 大部分第3方库通过map或item的某个参数来管理每种类型,,比如:
 ```
