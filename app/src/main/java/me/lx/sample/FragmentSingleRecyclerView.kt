@@ -10,12 +10,10 @@ import me.lx.sample.databinding.FragmentSingleRecyclerviewBinding
 
 class FragmentSingleRecyclerView : Fragment() {
     private lateinit var viewModel: MutableViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

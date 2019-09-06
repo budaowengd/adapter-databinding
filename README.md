@@ -1,5 +1,5 @@
 # AdapterBinding 介绍(通过数据驱动UI)
-基于Databinding打造的高复用、简洁、高效的列表适配器.. 专注于业务, 减少重复代码, 不用再写rv.setAdapter()
+基于Databinding打造的高复用、简洁、高效的列表适配器.. 专注于业务, 减少重复代码, 不用再写rv.setAdapter(),adapter.notify()等固定代码, 除了Databinding和RecyclerView外无引用任何第3方库
 
 ## 包含以下几种解决方案.
 * 普通列表
@@ -9,7 +9,7 @@
 ### 普通列表支持以下类型
 * 单一item类型
 * 带头部和脚部类型
-*  多种item类型
+* 多种item类型
 
 ### 分组列表支持以下类型
 * 带组头组尾
@@ -18,13 +18,117 @@
 * 子项支持多种类型
 * 子项为Grid
 
-## Download
+## 集成方式
+在项目的根目录下的 build.gradle添加
 ```groovy
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.1.1'
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.1.1'
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+```groovy
+  implementation 'com.github.luoxiong94:adapter-databinding:1.0'
 ```
 ## 效果展示
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/merge.png?raw=true)
+## 使用方式
+###单一类型
+在model中定义
+```
+val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
+
+val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
+
+val singleItems = ObservableArrayList<SingleItemVo>().apply {
+        for (i in 0 until 3) {
+            add(SingleItemVo(i))
+        }
+    }
+```
+在xml中引用
+```
+   <androidx.recyclerview.widget.RecyclerView
+            app:rv_adapter="@{viewModel.adapter}"
+            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
+            app:rv_items="@{viewModel.singleItems}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+```
+在Fragment中设置
+```
+class FragmentSingleRecyclerView : Fragment() {
+    override fun onCreateView(  ): View? {
+        return FragmentSingleRecyclerviewBinding.inflate(inflater, container, false).apply {
+            viewModel = viewModel
+            click = viewModel
+        }.root
+    }
+}
+```
+###带头部和脚部类型
+在model中定义
+```
+val multiAdapter = BindingRecyclerViewAdapter<Any>()
+
+// 定义布局的方式1
+val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
+        override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
+            when (item::class) {
+                HeaderVo::class -> itemBinding.set(R.layout.item_header)
+                SingleItemVo::class -> itemBinding.set(R.layout.item_single, itemClickEvent)
+                FooterVo::class -> itemBinding.set(R.layout.item_footer)
+            }
+        }
+    })
+// 定义布局的方式2
+ val headerFooterItemBinding = OnItemBindClass<Any>().apply {
+        map<HeaderVo>(R.layout.item_header, itemClickEvent)
+        map<SingleItemVo>(R.layout.item_single)
+        map<FooterVo>(R.layout.item_footer)
+    }
+
+val headerFooterItems = MergeObservableList<Any>()
+        .insertItem(HeaderVo("Header"))
+        .insertList(singleItems)
+        .insertItem(FooterVo("Footer11"))
+        .insertItem(FooterVo("Footer22"))
+```
+在xml中引用
+```
+   <androidx.recyclerview.widget.RecyclerView
+            app:rv_adapter="@{viewModel.multiAdapter}"
+            app:rv_itemBinding="@{viewModel.headerFooterItemBinding}"
+            app:rv_items="@{viewModel.headerFooterItems}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+```
+###多种item类型
+在model中定义
+```
+val multiAdapter = BindingRecyclerViewAdapter<Any>()
+
+val multiItemBinding = OnItemBindClass<Any>().apply {
+        map<SingleItemVo>(R.layout.item_single, itemClickEvent)
+        map<Type1Vo>(R.layout.item_type_1)
+        map<Type2Vo>(R.layout.item_type_2, BR.item)
+    }
+
+  val multiItems = MergeObservableList<Any>()
+        .insertItem(Type1Vo("type1-0"))
+        .insertItem(Type2Vo("type2-0"))
+        .insertList(singleItems)
+        .insertItem(Type1Vo("type1-1"))
+        .insertItem(Type2Vo("type2-1"))
+```
+在xml中引用
+```
+   <androidx.recyclerview.widget.RecyclerView
+            app:rv_adapter="@{viewModel.multiAdapter}"
+            app:rv_itemBinding="@{viewModel.multiItemBinding}"
+            app:rv_items="@{viewModel.multiItems}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+```
+# 注意: 无论增删,你只需要操作model里的items数据源对象, 列表会自动更新
 
 ## UML类图
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/System.png?raw=true)

@@ -90,6 +90,12 @@ class MutableViewModel : ViewModel(), ClickListeners {
         }
     })
 
+    val headerFooterItemBinding2 = OnItemBindClass<Any>().apply {
+        map<HeaderVo>(R.layout.item_header, itemClickEvent)
+        map<SingleItemVo>(R.layout.item_single)
+        map<FooterVo>(R.layout.item_footer)
+    }
+
     fun t1(){
         val aa:RecyclerView?=null
         aa?.addOnScrollListener(object:RecyclerView.OnScrollListener(){

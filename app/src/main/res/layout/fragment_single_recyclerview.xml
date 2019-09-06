@@ -24,11 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-
             app:rv_adapter="@{viewModel.adapter}"
             app:rv_itemBinding="@{viewModel.simpleItemBinding}"
             app:rv_items="@{viewModel.singleItems}"
-
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <LinearLayout
