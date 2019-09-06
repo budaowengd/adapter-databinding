@@ -37,7 +37,7 @@ implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-re
 
 如果要实现多类型item, 大部分第3方库通过map或item的某个参数来管理每种类型,,比如:
 ```
-      override fun getItemCount(): Int {
+   override fun getItemCount(): Int {
             return listSize + headSize + footSize
       }
      override fun getItemViewType(position: Int): Int {
@@ -50,11 +50,19 @@ implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-re
             }
       }
 ```
-# 在介绍该库的实现原理之前,先简单描述些重要类的作用
+##  该库的实现方案是:
+```
+   override fun getItemCount(): Int {
+        return items.size
+    }
+   override fun getItemViewType(position: Int): Int {
+        return xmlItemBinding.getLayoutRes()
+    }
+```
 ## XmlItemBinding (单个xml布局对象)
-每个item对应的布局id
-每个item的数据对应的BR变量id, 默认是BR.item
-每个item布局对应1个XmlItemBinding对象
+- 每个item对应的布局id
+- 每个item的数据对应的BR变量id, 默认是BR.item
+- 每个item布局对应1个XmlItemBinding对象
 
 ## OnItemBind (接口)
 - Adapter执行getItemViewType()方法, 会回调该onItemBind() 函数,用来设置每个Item的布局id和变量id.
