@@ -38,6 +38,7 @@ class Utils {
     @Nullable
     @MainThread
     static LifecycleOwner findLifecycleOwner(View view) {
+        if(view==null)return null;
         ViewDataBinding binding = DataBindingUtil.findBinding(view);
         LifecycleOwner lifecycleOwner = null;
         if (binding != null) {

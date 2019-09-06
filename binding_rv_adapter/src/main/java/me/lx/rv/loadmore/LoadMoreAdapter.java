@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +17,7 @@ import me.lx.rv.R;
 
 /**
  * 在不改动 RecyclerView 原有 adapter 的情况下，使其拥有加载更多功能和自定义底部视图。
+ *
  * @author Nukc
  */
 public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -107,7 +107,8 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {}
+    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -118,10 +119,14 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
                 mIsLoading = true;
                 // fix Cannot call this method while RecyclerView is computing a layout or scrolling
+                System.out.println("onBindViewHolder()....加载更多回调....."+mRecyclerView.isComputingLayout());
+                if (!mRecyclerView.isComputingLayout()) {
+                    mOnLoadMoreListener.onLoadMore(mEnabled);
+                }
                 mRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        mOnLoadMoreListener.onLoadMore(mEnabled);
+                        System.out.println("onBindViewHolder()....加载更多回调...2秒后.."+mRecyclerView.isComputingLayout());
                     }
                 });
             }
@@ -166,7 +171,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (mRecyclerView == null) {
             throw new NullPointerException("mRecyclerView is null, you should setAdapter(recyclerAdapter);");
         }
-        return ViewCompat.canScrollVertically(mRecyclerView, -1);
+        return mRecyclerView.canScrollVertically(-1);
     }
 
     public void setFooterView(View footerView) {
@@ -240,6 +245,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
         recyclerView.addOnScrollListener(mOnScrollListener);
 
@@ -275,7 +281,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-
+            System.out.println("onScrollStateChanged()...newState=" + newState);
             if (!getLoadMoreEnabled() || mIsLoading) {
                 return;
             }
@@ -296,8 +302,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     isBottom = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition()
                             >= layoutManager.getItemCount() - 1;
                 }
-                System.out.println("onScrollStateChanged()...isBottom()="+isBottom);
+
                 if (isBottom) {
+                    System.out.println("onScrollStateChanged()....加载更多回调.....");
                     mIsLoading = true;
                     mOnLoadMoreListener.onLoadMore(mEnabled);
                 }
@@ -435,6 +442,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mShouldRemove) {
                 mShouldRemove = false;
             }
+            System.out.println("LoadMore....onChanged()...1111...");
             LoadMoreAdapter.this.notifyDataSetChanged();
             mIsLoading = false;
         }
@@ -444,8 +452,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mShouldRemove && positionStart == mAdapter.getItemCount()) {
                 mShouldRemove = false;
             }
+
             LoadMoreAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
             mIsLoading = false;
+            System.out.println("LoadMore....onItemRangeChanged()...1111...");
         }
 
         @Override
@@ -455,6 +465,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             LoadMoreAdapter.this.notifyItemRangeChanged(positionStart, itemCount, payload);
             mIsLoading = false;
+            System.out.println("LoadMore....onItemRangeChanged()...1111...");
         }
 
         @Override
@@ -467,6 +478,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             LoadMoreAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
             notifyFooterHolderChanged();
             mIsLoading = false;
+            System.out.println("LoadMore....onItemRangeInserted()...1111...");
         }
 
         @Override
@@ -495,6 +507,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 setLoadMoreEnabled(true);
             }
             mIsLoading = false;
+            System.out.println("LoadMore....onItemRangeRemoved()...1111...");
         }
 
         @Override
@@ -504,6 +517,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             LoadMoreAdapter.this.notifyItemMoved(fromPosition, toPosition);
             mIsLoading = false;
+            System.out.println("LoadMore....onItemRangeMoved()...1111...");
         }
     };
 

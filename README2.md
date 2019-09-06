@@ -23,3 +23,10 @@ OnItemBindModel : OnItemBind
 
 ItemBindingModel
     item模型对象,让itemVo实现该接口
+
+https://www.cnblogs.com/aademeng/articles/10511741.html
+实现recyclerview的时候，通常需要实现adapter跟viewholder，首先我们要明白adapter里面各个方法的调用顺序。
+1. 首先调用getItemCount()，作为recyclerview里的item数量
+2. 调用getItemViewType(int position)，该方法返回一个int值作为onCreateViewHolder中的viewtype参数
+3. 调用onCreateViewHolder(ViewGroup parent, int viewType)
+4. 调用onBindViewHolder(BaseViewHolder holder, int position)

@@ -175,15 +175,15 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
         // This won't be called by recyclerview since we are overriding the other overload, call
         // the other overload here in case someone is calling this directly ex: in a test.
         onBindViewHolder(viewHolder, position, emptyList())
-        println("onBindViewHolder()....1111111")
+
     }
 
     @CallSuper
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
         val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)
-        if (isForDataBinding(payloads)) {
+        if (isForDataBinding(payloads)) { // 局部更新
             binding!!.executePendingBindings()
-        } else {
+        } else { // 完整更新
             val item = items!![position]
             onBindBinding(
                 binding!!,
@@ -195,8 +195,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
         }
     }
 
-    private fun isForDataBinding(payloads: List<Any>?): Boolean {
-        if (payloads == null || payloads.isEmpty()) {
+    private fun isForDataBinding(payloads: List<Any>): Boolean {
+        if (payloads.isEmpty()) {
             return false
         }
         for (i in payloads.indices) {

@@ -11,6 +11,7 @@ import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
+import me.lx.rv.loadmore.LoadMoreWrapper
 import me.lx.sample.vo.*
 
 /**
@@ -25,6 +26,17 @@ class MutableViewModel : ViewModel(), ClickListeners {
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
+    fun a2(recyclerView:RecyclerView){
+        LoadMoreWrapper.with(adapter)
+            .setFooterView(me.lx.rv.R.layout.base_footer)
+            .setLoadFailedView(me.lx.rv.R.layout.base_load_failed)
+            .setNoMoreView(me.lx.rv.R.layout.base_no_more)
+            .setShowNoMoreEnabled(true)
+            .setListener {
+                println("加载更多回调..()....请求服务器了.......")
+            }
+            .into(recyclerView)
+    }
 
     private val itemClickEvent = object : BaseItemClickEvent<Any>() {
         override fun onItemClick(item: Any) {
