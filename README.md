@@ -50,17 +50,17 @@ implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-re
             }
       }
 ```
-##在介绍该库的实现原理之前,先简单描述些重要类的作用
-### XmlItemBinding (单个xml布局对象)
+# 在介绍该库的实现原理之前,先简单描述些重要类的作用
+## XmlItemBinding (单个xml布局对象)
 每个item对应的布局id
 每个item的数据对应的BR变量id, 默认是BR.item
 每个item布局对应1个XmlItemBinding对象
 
-### OnItemBind (接口)
+## OnItemBind (接口)
 Adapter执行getItemViewType()方法, 会回调该onItemBind() 函数,用来设置每个Item的布局id和变量id.
 每个item布局对应1个OnItemBind对象
 
-### OnItemBindClass (管理多类型item的对象)
+## OnItemBindClass (管理多类型item的对象)
 只包含2个list
 itemBindingClassList:  每种item对应数据对象的class文件
 itemBindingList: 每种item对应的 OnItemBind 对象
