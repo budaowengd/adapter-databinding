@@ -1,4 +1,4 @@
-package me.lx.rv.loadmore;
+package me.lx.rv.loadmore22;
 
 import android.view.View;
 
@@ -8,25 +8,25 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * @author Nukc
  */
-public class LoadMoreWrapper {
+public class LoadMoreWrapper2222 {
 
-    private final LoadMoreAdapter mLoadMoreAdapter;
+    private final LoadMoreAdapter2222 mLoadMoreAdapter;
 
-    public LoadMoreWrapper(LoadMoreAdapter loadMoreAdapter) {
+    public LoadMoreWrapper2222(LoadMoreAdapter2222 loadMoreAdapter) {
         mLoadMoreAdapter = loadMoreAdapter;
     }
 
-    public static LoadMoreWrapper with(RecyclerView.Adapter adapter) {
-        LoadMoreAdapter loadMoreAdapter = new LoadMoreAdapter(adapter);
-        return new LoadMoreWrapper(loadMoreAdapter);
+    public static LoadMoreWrapper2222 with(RecyclerView.Adapter adapter) {
+        LoadMoreAdapter2222 loadMoreAdapter = new LoadMoreAdapter2222(adapter);
+        return new LoadMoreWrapper2222(loadMoreAdapter);
     }
 
-    public LoadMoreWrapper setFooterView(@LayoutRes int resId) {
+    public LoadMoreWrapper2222 setFooterView(@LayoutRes int resId) {
         mLoadMoreAdapter.setFooterView(resId);
         return this;
     }
 
-    public LoadMoreWrapper setFooterView(View footerView) {
+    public LoadMoreWrapper2222 setFooterView(View footerView) {
         mLoadMoreAdapter.setFooterView(footerView);
         return this;
     }
@@ -35,12 +35,12 @@ public class LoadMoreWrapper {
         return mLoadMoreAdapter.getFooterView();
     }
 
-    public LoadMoreWrapper setNoMoreView(@LayoutRes int resId) {
+    public LoadMoreWrapper2222 setNoMoreView(@LayoutRes int resId) {
         mLoadMoreAdapter.setNoMoreView(resId);
         return this;
     }
 
-    public LoadMoreWrapper setNoMoreView(View noMoreView) {
+    public LoadMoreWrapper2222 setNoMoreView(View noMoreView) {
         mLoadMoreAdapter.setNoMoreView(noMoreView);
         return this;
     }
@@ -49,12 +49,12 @@ public class LoadMoreWrapper {
         return mLoadMoreAdapter.getNoMoreView();
     }
 
-    public LoadMoreWrapper setLoadFailedView(@LayoutRes int resId) {
+    public LoadMoreWrapper2222 setLoadFailedView(@LayoutRes int resId) {
         mLoadMoreAdapter.setLoadFailedView(resId);
         return this;
     }
 
-    public LoadMoreWrapper setLoadFailedView(View view) {
+    public LoadMoreWrapper2222 setLoadFailedView(View view) {
         mLoadMoreAdapter.setLoadFailedView(view);
         return this;
     }
@@ -66,9 +66,9 @@ public class LoadMoreWrapper {
     /**
      * 监听加载更多触发事件
      *
-     * @param listener {@link com.github.nukc.LoadMoreWrapper.LoadMoreAdapter.OnLoadMoreListener}
+     * @param listener {@link com.github.nukc.LoadMoreWrapper2222.LoadMoreAdapter2222.OnLoadMoreListener}
      */
-    public LoadMoreWrapper setListener(LoadMoreAdapter.OnLoadMoreListener listener) {
+    public LoadMoreWrapper2222 setListener(LoadMoreAdapter2222.OnLoadMoreListener listener) {
         mLoadMoreAdapter.setLoadMoreListener(listener);
         return this;
     }
@@ -78,7 +78,7 @@ public class LoadMoreWrapper {
      *
      * @param enabled default true
      */
-    public LoadMoreWrapper setLoadMoreEnabled(boolean enabled) {
+    public LoadMoreWrapper2222 setLoadMoreEnabled(boolean enabled) {
         mLoadMoreAdapter.setLoadMoreEnabled(enabled);
         if (!enabled) {
             mLoadMoreAdapter.setShouldRemove(true);
@@ -91,7 +91,7 @@ public class LoadMoreWrapper {
      *
      * @param enabled default false
      */
-    public LoadMoreWrapper setShowNoMoreEnabled(boolean enabled) {
+    public LoadMoreWrapper2222 setShowNoMoreEnabled(boolean enabled) {
         mLoadMoreAdapter.setShowNoMoreEnabled(enabled);
         return this;
     }
@@ -110,7 +110,7 @@ public class LoadMoreWrapper {
         return mLoadMoreAdapter.getOriginalAdapter();
     }
 
-    public LoadMoreAdapter into(RecyclerView recyclerView) {
+    public LoadMoreAdapter2222 into(RecyclerView recyclerView) {
         mLoadMoreAdapter.setHasStableIds(mLoadMoreAdapter.getOriginalAdapter().hasStableIds());
         recyclerView.setAdapter(mLoadMoreAdapter);
         return mLoadMoreAdapter;

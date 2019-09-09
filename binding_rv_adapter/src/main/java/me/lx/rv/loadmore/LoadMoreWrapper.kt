@@ -1,8 +1,6 @@
-package me.lx.rv.load
+package me.lx.rv.loadmore
 
 import androidx.recyclerview.widget.RecyclerView
-import me.lx.rv.loadmore.LoadMoreAdapter
-import me.lx.rv.loadmore.LoadMoreWrapper
 
 /**
  *  author: luoXiong
@@ -11,11 +9,17 @@ import me.lx.rv.loadmore.LoadMoreWrapper
  *  version: 1.0
  *  desc:
  */
-class LoadWrapper {
+class LoadMoreWrapper {
+
+    fun setPageSize(){
+
+    }
+
     companion object {
-        fun with(adapter: RecyclerView.Adapter<*>): LoadMoreWrapper {
+        fun with(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): LoadMoreAdapter {
             val loadMoreAdapter = LoadMoreAdapter(adapter)
-            return LoadMoreWrapper(loadMoreAdapter)
+            // return LoadMoreWrapper()
+            return loadMoreAdapter
         }
     }
 }

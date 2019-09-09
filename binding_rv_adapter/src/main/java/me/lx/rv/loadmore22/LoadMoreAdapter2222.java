@@ -1,4 +1,4 @@
-package me.lx.rv.loadmore;
+package me.lx.rv.loadmore22;
 
 
 import android.view.View;
@@ -20,9 +20,9 @@ import me.lx.rv.R;
  *
  * @author Nukc
  */
-public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LoadMoreAdapter2222 extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = LoadMoreAdapter.class.getSimpleName();
+    private static final String TAG = LoadMoreAdapter2222.class.getSimpleName();
     private static final byte TYPE_FOOTER = -2;
     private static final byte TYPE_NO_MORE = -3;
     private static final byte TYPE_LOAD_FAILED = -4;
@@ -44,16 +44,16 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean mShowNoMoreEnabled;
     private boolean mIsLoadFailed;
 
-    public LoadMoreAdapter(@NonNull RecyclerView.Adapter adapter) {
+    public LoadMoreAdapter2222(@NonNull RecyclerView.Adapter adapter) {
         registerAdapter(adapter);
     }
 
-    public LoadMoreAdapter(@NonNull RecyclerView.Adapter adapter, View footerView) {
+    public LoadMoreAdapter2222(@NonNull RecyclerView.Adapter adapter, View footerView) {
         registerAdapter(adapter);
         mFooterView = footerView;
     }
 
-    public LoadMoreAdapter(@NonNull RecyclerView.Adapter adapter, @LayoutRes int resId) {
+    public LoadMoreAdapter2222(@NonNull RecyclerView.Adapter adapter, @LayoutRes int resId) {
         registerAdapter(adapter);
         mFooterResId = resId;
     }
@@ -76,29 +76,29 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_FOOTER) {
             if (mFooterResId != View.NO_ID) {
-                mFooterView = LoadMoreHelper.inflate(parent, mFooterResId);
+                mFooterView = LoadMoreHelper2222.inflate(parent, mFooterResId);
             }
             if (mFooterView != null) {
                 return new FooterHolder(mFooterView);
             }
-            View view = LoadMoreHelper.inflate(parent, R.layout.base_footer);
+            View view = LoadMoreHelper2222.inflate(parent, R.layout.base_footer);
             return new FooterHolder(view);
         } else if (viewType == TYPE_NO_MORE) {
             if (mNoMoreResId != View.NO_ID) {
-                mNoMoreView = LoadMoreHelper.inflate(parent, mNoMoreResId);
+                mNoMoreView = LoadMoreHelper2222.inflate(parent, mNoMoreResId);
             }
             if (mNoMoreView != null) {
                 return new NoMoreHolder(mNoMoreView);
             }
-            View view = LoadMoreHelper.inflate(parent, R.layout.base_no_more);
+            View view = LoadMoreHelper2222.inflate(parent, R.layout.base_no_more);
             return new NoMoreHolder(view);
         } else if (viewType == TYPE_LOAD_FAILED) {
             if (mLoadFailedResId != View.NO_ID) {
-                mLoadFailedView = LoadMoreHelper.inflate(parent, mLoadFailedResId);
+                mLoadFailedView = LoadMoreHelper2222.inflate(parent, mLoadFailedResId);
             }
             View view = mLoadFailedView;
             if (view == null) {
-                view = LoadMoreHelper.inflate(parent, R.layout.base_load_failed);
+                view = LoadMoreHelper2222.inflate(parent, R.layout.base_load_failed);
             }
             return new LoadFailedHolder(view, mEnabled, mOnLoadMoreListener);
         }
@@ -119,14 +119,11 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
                 mIsLoading = true;
                 // fix Cannot call this method while RecyclerView is computing a layout or scrolling
-                System.out.println("onBindViewHolder()....加载更多回调....."+mRecyclerView.isComputingLayout());
-                if (!mRecyclerView.isComputingLayout()) {
-                    mOnLoadMoreListener.onLoadMore(mEnabled);
-                }
                 mRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("onBindViewHolder()....加载更多回调...2秒后.."+mRecyclerView.isComputingLayout());
+                        System.out.println("onBindViewHolder()....加载更多回调...2秒后..");
+                        mOnLoadMoreListener.onLoadMore(mEnabled);
                     }
                 });
             }
@@ -214,7 +211,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public FooterHolder(View itemView) {
             super(itemView);
-            LoadMoreHelper.setItemViewFullSpan(itemView);
+            LoadMoreHelper2222.setItemViewFullSpan(itemView);
         }
     }
 
@@ -222,7 +219,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public NoMoreHolder(View itemView) {
             super(itemView);
-            LoadMoreHelper.setItemViewFullSpan(itemView);
+            LoadMoreHelper2222.setItemViewFullSpan(itemView);
         }
     }
 
@@ -230,7 +227,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public LoadFailedHolder(View itemView, final Enabled enabled, final OnLoadMoreListener listener) {
             super(itemView);
-            LoadMoreHelper.setItemViewFullSpan(itemView);
+            LoadMoreHelper2222.setItemViewFullSpan(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -443,7 +440,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mShouldRemove = false;
             }
             System.out.println("LoadMore....onChanged()...1111...");
-            LoadMoreAdapter.this.notifyDataSetChanged();
+            LoadMoreAdapter2222.this.notifyDataSetChanged();
             mIsLoading = false;
         }
 
@@ -453,7 +450,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mShouldRemove = false;
             }
 
-            LoadMoreAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
+            LoadMoreAdapter2222.this.notifyItemRangeChanged(positionStart, itemCount);
             mIsLoading = false;
             System.out.println("LoadMore....onItemRangeChanged()...1111...");
         }
@@ -463,7 +460,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mShouldRemove && positionStart == mAdapter.getItemCount()) {
                 mShouldRemove = false;
             }
-            LoadMoreAdapter.this.notifyItemRangeChanged(positionStart, itemCount, payload);
+            LoadMoreAdapter2222.this.notifyItemRangeChanged(positionStart, itemCount, payload);
             mIsLoading = false;
             System.out.println("LoadMore....onItemRangeChanged()...1111...");
         }
@@ -473,9 +470,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             // when no data is initialized (has loadMoreView)
             // should remove loadMoreView before notifyItemRangeInserted
             if (mRecyclerView.getChildCount() == 1) {
-                LoadMoreAdapter.this.notifyItemRemoved(0);
+                LoadMoreAdapter2222.this.notifyItemRemoved(0);
             }
-            LoadMoreAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
+            LoadMoreAdapter2222.this.notifyItemRangeInserted(positionStart, itemCount);
             notifyFooterHolderChanged();
             mIsLoading = false;
             System.out.println("LoadMore....onItemRangeInserted()...1111...");
@@ -499,10 +496,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // recyclerView will auto scroll to bottom, because has one item(loadMoreView)
                 // remove loadMoreView
                 if (getItemCount() == 1) {
-                    LoadMoreAdapter.this.notifyItemRemoved(0);
+                    LoadMoreAdapter2222.this.notifyItemRemoved(0);
                 }
             }
-            LoadMoreAdapter.this.notifyItemRangeRemoved(positionStart, itemCount);
+            LoadMoreAdapter2222.this.notifyItemRangeRemoved(positionStart, itemCount);
             if (shouldSync) {
                 setLoadMoreEnabled(true);
             }
@@ -515,7 +512,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mShouldRemove && (fromPosition == mAdapter.getItemCount() || toPosition == mAdapter.getItemCount())) {
                 throw new IllegalArgumentException("can not move last position after setLoadMoreEnabled(false)");
             }
-            LoadMoreAdapter.this.notifyItemMoved(fromPosition, toPosition);
+            LoadMoreAdapter2222.this.notifyItemMoved(fromPosition, toPosition);
             mIsLoading = false;
             System.out.println("LoadMore....onItemRangeMoved()...1111...");
         }
@@ -526,7 +523,7 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     private void notifyFooterHolderChanged() {
         if (getLoadMoreEnabled()) {
-            LoadMoreAdapter.this.notifyItemChanged(mAdapter.getItemCount());
+            LoadMoreAdapter2222.this.notifyItemChanged(mAdapter.getItemCount());
         } else if (mShouldRemove) {
             mShouldRemove = false;
 
@@ -538,9 +535,9 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             RecyclerView.ViewHolder viewHolder =
                     mRecyclerView.findViewHolderForAdapterPosition(position);
             if (viewHolder instanceof FooterHolder) {
-                LoadMoreAdapter.this.notifyItemRemoved(position);
+                LoadMoreAdapter2222.this.notifyItemRemoved(position);
             } else {
-                LoadMoreAdapter.this.notifyItemChanged(position);
+                LoadMoreAdapter2222.this.notifyItemChanged(position);
             }
         }
     }

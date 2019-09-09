@@ -1,4 +1,4 @@
-package me.lx.rv.loadmore;
+package me.lx.rv.loadmore22;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * @author Nukc.
  */
 
-class LoadMoreHelper {
+class LoadMoreHelper2222 {
 
     static View inflate(ViewGroup parent, @LayoutRes int resource) {
         return LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);

@@ -11,7 +11,7 @@ import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
-import me.lx.rv.loadmore.LoadMoreWrapper
+import me.lx.rv.loadmore22.LoadMoreWrapper2222
 import me.lx.sample.vo.*
 
 /**
@@ -27,7 +27,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
     fun a2(recyclerView:RecyclerView){
-        LoadMoreWrapper.with(adapter)
+        LoadMoreWrapper2222.with(adapter)
             .setFooterView(me.lx.rv.R.layout.base_footer)
             .setLoadFailedView(me.lx.rv.R.layout.base_load_failed)
             .setNoMoreView(me.lx.rv.R.layout.base_no_more)

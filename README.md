@@ -36,7 +36,7 @@
 ## 使用方式
 ###单一类型
 在model中定义
-```
+```java
 val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
 
 val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
@@ -48,7 +48,7 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
     }
 ```
 在xml中引用
-```
+```xml
    <androidx.recyclerview.widget.RecyclerView
             app:rv_adapter="@{viewModel.adapter}"
             app:rv_itemBinding="@{viewModel.simpleItemBinding}"
@@ -56,19 +56,18 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 在Fragment中设置
-```
+```java
 class FragmentSingleRecyclerView : Fragment() {
     override fun onCreateView(  ): View? {
         return FragmentSingleRecyclerviewBinding.inflate(inflater, container, false).apply {
-            viewModel = viewModel
-            click = viewModel
+            setViewModel(viewModel)
         }.root
     }
 }
 ```
 ###带头部和脚部类型
 在model中定义
-```
+```java
 val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
 // 定义布局的方式1
@@ -95,7 +94,7 @@ val headerFooterItems = MergeObservableList<Any>()
         .insertItem(FooterVo("Footer22"))
 ```
 在xml中引用
-```
+```xml
    <androidx.recyclerview.widget.RecyclerView
             app:rv_adapter="@{viewModel.multiAdapter}"
             app:rv_itemBinding="@{viewModel.headerFooterItemBinding}"
@@ -104,7 +103,7 @@ val headerFooterItems = MergeObservableList<Any>()
 ```
 ###多种item类型
 在model中定义
-```
+```java
 val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
 val multiItemBinding = OnItemBindClass<Any>().apply {
@@ -121,14 +120,14 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
         .insertItem(Type2Vo("type2-1"))
 ```
 在xml中引用
-```
+```xml
    <androidx.recyclerview.widget.RecyclerView
             app:rv_adapter="@{viewModel.multiAdapter}"
             app:rv_itemBinding="@{viewModel.multiItemBinding}"
             app:rv_items="@{viewModel.multiItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
-# 注意: 无论增删,你只需要操作model里的items数据源对象, 列表会自动更新
+# 注意: items 属于ObservableList, 所以更新items的时候, 列表会自动更  你想要自己手动调用adapter.notify()刷新, items对象使用ArrayList即可
 
 ## UML类图
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/System.png?raw=true)
@@ -180,7 +179,8 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
 - 根据每种item的布局来实现多类型列表, 简单方便
 - 监听items数据源的变化,自动调用notifyDataChanged, 让开发者只专注于业务
 
-
+##对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。
+交流群： 597802495
 
 
 

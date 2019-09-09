@@ -97,7 +97,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
     }
 
     override fun getItemViewType(position: Int): Int {
-        xmlItemBinding.onItemBind(position, items!![position])
+        xmlItemBinding.xmlOnItemBind(position, items!![position])
         return xmlItemBinding.getLayoutRes()
     }
 
@@ -171,6 +171,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // This won't be called by recyclerview since we are overriding the other overload, call
         // the other overload here in case someone is calling this directly ex: in a test.
+
         onBindViewHolder(viewHolder, position, emptyList())
 
     }
