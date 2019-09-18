@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference
  * If you give it an [ObservableList] it will also updated itself based on changes to that
  * list.
  */
-class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),BindingCollectionAdapter<T> {
+class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), BindingCollectionAdapter<T> {
 
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
@@ -32,7 +32,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         if (this.recyclerView == null && items is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(this, items as ObservableList<T>)
+            callback = WeakReferenceOnListChangedCallback<T>(recyclerView,this,items as ObservableList<T>)
             (items as ObservableList<T>).addOnListChangedCallback(callback)
         }
         this.recyclerView = recyclerView
@@ -143,7 +143,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
                 callback = null
             }
             if (items is ObservableList<T>) {
-                callback = WeakReferenceOnListChangedCallback(this, items)
+                callback = WeakReferenceOnListChangedCallback(recyclerView!!,this, items)
                 items.addOnListChangedCallback(callback)
             }
         }
@@ -171,7 +171,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // This won't be called by recyclerview since we are overriding the other overload, call
         // the other overload here in case someone is calling this directly ex: in a test.
-
         onBindViewHolder(viewHolder, position, emptyList())
 
     }
@@ -240,6 +239,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
     }
 
     private class WeakReferenceOnListChangedCallback<T> constructor(
+        var recyclerView: RecyclerView,
         adapter: BindingRecyclerViewAdapter<T>,
         items: ObservableList<T>
     ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
@@ -250,17 +250,14 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
         }
 
         override fun onChanged(sender: ObservableList<T>) {
-            val adapter = adapterRef.get() ?: return
+            println("BindingRecyclerViewAdapter()....onChanged()...2222.")
+            val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             adapter.notifyDataSetChanged()
         }
 
-        override fun onItemRangeChanged(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
-        ) {
-            val adapter = adapterRef.get() ?: return
+        override fun onItemRangeChanged(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
+            val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeChanged(positionStart, itemCount)
         }
@@ -270,7 +267,9 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
             positionStart: Int,
             itemCount: Int
         ) {
-            val adapter = adapterRef.get() ?: return
+            val adapter = recyclerView.adapter ?: return
+//            println("BindingRecyclerViewAdapter()....onItemRangeInserted()..positionStart=$positionStart  itemCount=$itemCount" +
+//                    "  adapter=${adapter.hashCode()}")
             Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeInserted(positionStart, itemCount)
         }
@@ -281,7 +280,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
             toPosition: Int,
             itemCount: Int
         ) {
-            val adapter = adapterRef.get() ?: return
+            val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             for (i in 0 until itemCount) {
                 adapter.notifyItemMoved(fromPosition + i, toPosition + i)
@@ -293,7 +292,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),Binding
             positionStart: Int,
             itemCount: Int
         ) {
-            val adapter = adapterRef.get() ?: return
+           // val adapter = adapterRef.get() ?: return
+            val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeRemoved(positionStart, itemCount)
         }

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import me.lx.sample.databinding.FragmentLoadmoreRecyclerviewBinding
 
-class FragmentLoadMoreRecyclerView : Fragment() {
+class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
     private lateinit var viewModel: MutableViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,13 +19,23 @@ class FragmentLoadMoreRecyclerView : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return FragmentLoadmoreRecyclerviewBinding.inflate(inflater, container, false).also {
+        savedInstanceState: Bundle?): View? {
+        val binding =  FragmentLoadmoreRecyclerviewBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
             it.viewModel = viewModel
-            it.click = viewModel
+            it.click = this@FragmentLoadMoreRecyclerView
             it.executePendingBindings()
-        }.root
+        }
+        binding.add.text="设置下一页没有更多数据"
+        binding.remove.text="设置下一页有数据"
+        return binding.root
+    }
+
+    override fun clickAddItem() {
+
+    }
+
+    override fun clickRemoveItem() {
+
     }
 }

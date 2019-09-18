@@ -26,7 +26,6 @@ public class LoadMoreAdapter2222 extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final byte TYPE_FOOTER = -2;
     private static final byte TYPE_NO_MORE = -3;
     private static final byte TYPE_LOAD_FAILED = -4;
-
     private RecyclerView.Adapter mAdapter;
     private View mFooterView;
     private int mFooterResId = View.NO_ID;

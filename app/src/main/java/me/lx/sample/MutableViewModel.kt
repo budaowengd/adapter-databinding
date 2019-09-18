@@ -1,5 +1,6 @@
 package me.lx.sample
 
+import android.os.Handler
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
+import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.rv.loadmore22.LoadMoreWrapper2222
 import me.lx.sample.vo.*
 
@@ -22,11 +24,21 @@ import me.lx.sample.vo.*
  *  desc:
  */
 class MutableViewModel : ViewModel(), ClickListeners {
-
+    var isHaveMoreData=true
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
+    val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
+        override fun loadingMore() {
+            println("loadingMore()..请求网络..22222....当前size=${singleItems.size}")
+            Handler().postDelayed({
+                for (i in singleItems.size until singleItems.size + 3) {
+                    singleItems.add(SingleItemVo(i))
+                }
+            }, 500)
+        }
+    }
 
-    fun a2(recyclerView:RecyclerView){
+    fun a2(recyclerView: RecyclerView) {
         LoadMoreWrapper2222.with(adapter)
             .setFooterView(me.lx.rv.R.layout.base_footer)
             .setLoadFailedView(me.lx.rv.R.layout.base_load_failed)
@@ -96,9 +108,9 @@ class MutableViewModel : ViewModel(), ClickListeners {
         map<FooterVo>(R.layout.item_footer)
     }
 
-    fun t1(){
-        val aa:RecyclerView?=null
-        aa?.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+    fun t1() {
+        val aa: RecyclerView? = null
+        aa?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
         })
     }

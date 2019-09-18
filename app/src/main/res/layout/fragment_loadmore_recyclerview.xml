@@ -28,7 +28,7 @@
             app:rv_adapter="@{viewModel.adapter}"
             app:rv_itemBinding="@{viewModel.simpleItemBinding}"
             app:rv_items="@{viewModel.singleItems}"
-            app:rv_support_loadmore_adapter="@{true}"
+            app:rv_loadmore_more_listener="@{viewModel.loadMoreListener}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <LinearLayout

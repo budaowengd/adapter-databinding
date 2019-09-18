@@ -130,7 +130,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      * 更新给定项目和位置的绑定状态。 这由绑定集合适配器在内部调用.
      */
     fun xmlOnItemBind(position: Int, item: T) {
-        println("更新给定项目和位置的绑定状态。 这由绑定集合适配器在内部调用.position=$position mOnItemBind=${mOnItemBind?.hashCode()}")
+        // println("更新给定项目和位置的绑定状态。 这由绑定集合适配器在内部调用.position=$position mOnItemBind=${mOnItemBind?.hashCode()}")
         if (mOnItemBind != null) {
             mDefaultItemVariableId = VAR_INVALID
             mLayoutRes = LAYOUT_NONE

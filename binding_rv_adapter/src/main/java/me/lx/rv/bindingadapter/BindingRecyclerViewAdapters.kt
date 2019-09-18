@@ -4,14 +4,15 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
-import me.lx.rv.XmlItemBinding
 import me.lx.rv.R
+import me.lx.rv.XmlItemBinding
 import me.lx.rv.collections.AsyncDiffObservableList
-import me.lx.rv.loadmore22.LoadMoreWrapper2222
+import me.lx.rv.loadmore.LoadMoreAdapter
+import me.lx.rv.loadmore.LoadMoreWrapper
 
 // RecyclerView
 @BindingAdapter(
-    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig", "rv_support_loadmore_adapter"],
+    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig", "rv_loadmore_more_listener"],
     requireAll = false
 )
 fun <T> setAdapter(
@@ -21,11 +22,10 @@ fun <T> setAdapter(
     rvAdapter: BindingRecyclerViewAdapter<T>?,
     itemIds: BindingRecyclerViewAdapter.ItemIds<in T>?,
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
-    diffConfig: AsyncDifferConfig<T>?
-    , isSupportLoadMore: Boolean?) {
-
-    println("BindingAdapter()..rv_setAdapter()....1111111111111....rvAdapter=${rvAdapter.hashCode()}.")
-    if (recyclerView.adapter == rvAdapter) return
+    diffConfig: AsyncDifferConfig<T>?,
+    loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null) {
+    println("BindingAdapter()..rv_setAdapter()....1111111111111....rvAdapter=${rvAdapter.hashCode()}...  rvAp=${recyclerView.adapter?.hashCode()}")
+    if (recyclerView.adapter != null ) return
     var adapter = rvAdapter
     requireNotNull(itemBinding) { "itemBinding must not be null" }
     val oldAdapter = recyclerView.adapter as? BindingRecyclerViewAdapter<T>
@@ -55,28 +55,26 @@ fun <T> setAdapter(
     adapter.setViewHolderFactory(viewHolderFactory)
 
     if (oldAdapter != adapter) {
-        if (isSupportLoadMore == true) {
-            setLoadMoreAdapter(recyclerView, adapter)
+        if (loadMoreListener != null) {
+            recyclerView.adapter = gtLoadMoreAdapter(adapter, loadMoreListener)
         } else {
             recyclerView.adapter = adapter
         }
     }
 }
 
-@BindingAdapter(
-    value = ["rv_support_loadmore_adapter"],
-    requireAll = false
-)
-fun setLoadMoreAdapter(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    println("BindingAdapter().. rv_support_loadmore()....2222222......")
-    LoadMoreWrapper2222.with(adapter)
-        .setFooterView(R.layout.base_footer)
-        .setLoadFailedView(R.layout.base_load_failed)
-        .setNoMoreView(R.layout.base_no_more)
-        .setShowNoMoreEnabled(true)
-        .setListener {
-            println("加载更多回调..()....请求服务器了.......")
-        }
-        .into(recyclerView)
+
+fun gtLoadMoreAdapter(
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+    loadMoreListener: LoadMoreAdapter.LoadMoreListener
+): LoadMoreAdapter {
+    val loadMoreAdapter = LoadMoreWrapper.with(adapter).setLoadMoreListener(loadMoreListener)
+    println("BindingAdapter().. rv_support_loadmore()....2222222....loadMoreAdapter=${loadMoreAdapter.hashCode()}")
+        // .setFooterView(R.layout.base_footer)
+        // .setLoadFailedView(R.layout.base_load_failed)
+        // .setNoMoreView(R.layout.base_no_more)
+        // .setShowNoMoreEnabled(true)
+//        .into(recyclerView)
+    return loadMoreAdapter
 }
 
