@@ -25,24 +25,37 @@ import me.lx.sample.vo.*
  *  desc:
  */
 class MutableViewModel : ViewModel(), ClickListeners {
-    var isNoMoreData = ObservableBoolean()
+    var isNoMoreData = ObservableBoolean() // 加载更多后,没有更多数据的标识
+    var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
+    var isLoadMoreFail = false // 模拟加载更多失败的标识,没有其他作用
+
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
     val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
         override fun loadingMore() {
-            println("loadingMore()..请求网络..22222....当前size=${singleItems.size}")
+            println("loadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
             Handler().postDelayed({
-                for (i in singleItems.size until singleItems.size + 3) {
-                    singleItems.add(SingleItemVo(i))
+               isLoadMoreFailOb.set(isLoadMoreFail)
+                if (!isLoadMoreFail) {
+                    for (i in singleItems.size until singleItems.size + 3) {
+                        singleItems.add(SingleItemVo(i))
+                    }
                 }
             }, 500)
         }
 
-        override fun getNoMoreDataOb(): ObservableBoolean{
+        override fun getNoMoreDataOb(): ObservableBoolean {
             return isNoMoreData
         }
 
+        override fun getLoadMoreFailOb(): ObservableBoolean {
+            return isLoadMoreFailOb
+        }
     }
+    // 加载失败,点击重试,
+
+    // val loadMoreListener22 = object : LoadMoreDataManager { }
+
 
     fun a2(recyclerView: RecyclerView) {
         LoadMoreWrapper2222.with(adapter)

@@ -12,7 +12,7 @@
         android:title="多种类型" />
     <item
         android:id="@+id/action_loadmore_recyclerview"
-        android:title="loadMore RecyclerView" />
+        android:title="加载更多" />
     <item
         android:id="@+id/action_diff_recyclerview"
         android:title="Diff RecyclerView" />

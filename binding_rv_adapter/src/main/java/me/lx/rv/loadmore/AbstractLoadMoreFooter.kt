@@ -13,7 +13,7 @@ abstract class AbstractLoadMoreFooter {
     /**
      * 设置footer的布局
      */
-    abstract fun setLayoutRes(): Int
+    abstract fun getLayoutRes(): Int
 
     /**
      * footer布局初始化完成

@@ -8,7 +8,6 @@ import me.lx.rv.R
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.collections.AsyncDiffObservableList
 import me.lx.rv.loadmore.LoadMoreAdapter
-import me.lx.rv.loadmore.LoadMoreWrapper
 
 // RecyclerView
 @BindingAdapter(
@@ -56,7 +55,7 @@ fun <T> setAdapter(
 
     if (oldAdapter != adapter) {
         if (loadMoreListener != null) {
-            recyclerView.adapter = gtLoadMoreAdapter(adapter, loadMoreListener)
+            recyclerView.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
         } else {
             recyclerView.adapter = adapter
         }
@@ -64,11 +63,11 @@ fun <T> setAdapter(
 }
 
 
-fun gtLoadMoreAdapter(
+fun getLoadMoreAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener
 ): LoadMoreAdapter {
-    val loadMoreAdapter = LoadMoreWrapper.with(adapter).setLoadMoreListener(loadMoreListener)
+    val loadMoreAdapter = LoadMoreAdapter.with(adapter).setLoadMoreListener(loadMoreListener)
     println("BindingAdapter().. rv_support_loadmore()....2222222....loadMoreAdapter=${loadMoreAdapter.hashCode()}")
         // .setFooterView(R.layout.base_footer)
         // .setLoadFailedView(R.layout.base_load_failed)

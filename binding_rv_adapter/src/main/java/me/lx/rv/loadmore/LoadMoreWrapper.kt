@@ -10,12 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
  *  desc:
  */
 class LoadMoreWrapper {
-
-    fun setPageSize(){
-
-    }
-
     companion object {
+
+
         fun with(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): LoadMoreAdapter {
             val loadMoreAdapter = LoadMoreAdapter(adapter)
             // return LoadMoreWrapper()

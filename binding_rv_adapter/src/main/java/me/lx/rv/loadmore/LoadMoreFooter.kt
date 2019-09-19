@@ -11,7 +11,7 @@ internal class LoadMoreFooter : AbstractLoadMoreFooter() {
 
     private lateinit var mTvText: TextView
 
-    override fun setLayoutRes(): Int {
+    override fun getLayoutRes(): Int {
         return R.layout.rv_load_more_layout
     }
 

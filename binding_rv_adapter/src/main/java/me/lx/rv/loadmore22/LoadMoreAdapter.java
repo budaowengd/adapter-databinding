@@ -113,7 +113,7 @@
 //    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 //        if (viewType == VIEW_TYPE_LOAD_MORE) {
 //            final View footView = LayoutInflater.from(parent.getContext())
-//                    .inflate(mFooter.setLayoutRes(), parent, false);
+//                    .inflate(mFooter.getLayoutRes(), parent, false);
 //            mFooter.onCreate(footView);
 //            return new LoadMoreViewHolder(footView, mFooter);
 //        }

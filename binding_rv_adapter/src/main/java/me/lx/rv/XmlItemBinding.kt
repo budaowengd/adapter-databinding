@@ -63,7 +63,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
     /**
      * 设置布局id
      */
-    fun setLayoutRes(@LayoutRes mLayoutRes: Int): XmlItemBinding<T> {
+    fun getLayoutRes(@LayoutRes mLayoutRes: Int): XmlItemBinding<T> {
         this.mLayoutRes = mLayoutRes
         return this
     }

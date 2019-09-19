@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
+import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.sample.databinding.FragmentLoadmoreRecyclerviewBinding
 
 class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
@@ -13,6 +15,7 @@ class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LoadMoreAdapter.DEFAULT_FOOTER_PATH="me.lx.sample.loadmore.CustomLoadMoreFooter"
         viewModel = ViewModelProviders.of(this).get()
     }
 
@@ -26,16 +29,21 @@ class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
             it.click = this@FragmentLoadMoreRecyclerView
             it.executePendingBindings()
         }
-        binding.add.text="设置下一页没有更多数据"
-        binding.remove.text="设置下一页有数据"
+        binding.add.text="设置下一页没有/有更多数据"
+        binding.remove.text="设置下一页加载失败/成功"
+        println("FragmentLoadMoreRecyclerView....onCreateView().....viewModel=${viewModel.hashCode()}")
         return binding.root
     }
 
     override fun clickAddItem() {
-        viewModel.isNoMoreData.set(true)
+        viewModel.isNoMoreData.set(!viewModel.isNoMoreData.get())
+        val recyclerView = view!!.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.scrollBy(0,13)
+        recyclerView.stopScroll()
     }
 
     override fun clickRemoveItem() {
-        viewModel.isNoMoreData.set(false)
+        viewModel.isLoadMoreFail=!viewModel.isLoadMoreFail
+
     }
 }
