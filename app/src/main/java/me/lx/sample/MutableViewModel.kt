@@ -2,6 +2,7 @@ package me.lx.sample
 
 import android.os.Handler
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
@@ -24,7 +25,7 @@ import me.lx.sample.vo.*
  *  desc:
  */
 class MutableViewModel : ViewModel(), ClickListeners {
-    var isHaveMoreData=true
+    var isNoMoreData = ObservableBoolean()
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
     val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
@@ -36,6 +37,11 @@ class MutableViewModel : ViewModel(), ClickListeners {
                 }
             }, 500)
         }
+
+        override fun getNoMoreDataOb(): ObservableBoolean{
+            return isNoMoreData
+        }
+
     }
 
     fun a2(recyclerView: RecyclerView) {

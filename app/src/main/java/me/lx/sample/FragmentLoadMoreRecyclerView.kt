@@ -32,10 +32,10 @@ class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
     }
 
     override fun clickAddItem() {
-
+        viewModel.isNoMoreData.set(true)
     }
 
     override fun clickRemoveItem() {
-
+        viewModel.isNoMoreData.set(false)
     }
 }
