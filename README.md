@@ -67,7 +67,7 @@ class FragmentSingleRecyclerView : Fragment() {
     }
 }
 ```
-###带头部和脚部类型
+### 带头部和脚部类型
 在model中定义
 ```java
 val multiAdapter = BindingRecyclerViewAdapter<Any>()
@@ -103,7 +103,7 @@ val headerFooterItems = MergeObservableList<Any>()
             app:rv_items="@{viewModel.headerFooterItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
-###多种item类型
+### 多种item类型
 在model中定义
 ```java
 val multiAdapter = BindingRecyclerViewAdapter<Any>()
@@ -256,8 +256,8 @@ class CustomLoadMoreFooter : AbstractLoadMoreFooter() {
 }
 ```
 
-##对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。
-交流群： 597802495
+## 对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。交流群： 597802495
+
 
 
 
