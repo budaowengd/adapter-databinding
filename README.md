@@ -34,6 +34,7 @@
 ```
 ## 效果展示
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/merge.png?raw=true)
+![加载更多](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A.png?raw=true)
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/加载更多.png?raw=true)
 ## 1、普通列表使用方式
 ### 单一类型
