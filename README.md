@@ -3,8 +3,9 @@
 
 ## 包含以下几种解决方案.
 * 普通列表
-* 分组列表
 * 加载更多
+* 分组列表
+
 
 ### 普通列表支持以下类型
 * 单一item类型
@@ -33,8 +34,9 @@
 ```
 ## 效果展示
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/merge.png?raw=true)
-## 使用方式
-###单一类型
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/加载更多.png?raw=true)
+## 1、普通列表使用方式
+### 单一类型
 在model中定义
 ```java
 val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
@@ -127,7 +129,7 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
             app:rv_items="@{viewModel.multiItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
-# 注意: items 属于ObservableList, 所以更新items的时候, 列表会自动更  你想要自己手动调用adapter.notify()刷新, items对象使用ArrayList即可
+# 注意: 数据源items 属于ObservableList, 所以更新items的时候, 列表会自动刷新UI,  你想要自己手动调用adapter.notify()刷新, items对象使用ArrayList即可
 
 ## UML类图
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/System.png?raw=true)
@@ -154,6 +156,7 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
       }
 ```
 ##  该库的实现方案是:
+数据源大小和列表Iitem数量一一对应,,统一管理数据,,Item的每种布局对应一种类型, 不用手动管理ViewType
 ```
    override fun getItemCount(): Int {
         return items.size
@@ -178,6 +181,80 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
 ## BindingRecyclerViewAdapter 核心适配器
 - 根据每种item的布局来实现多类型列表, 简单方便
 - 监听items数据源的变化,自动调用notifyDataChanged, 让开发者只专注于业务
+## 2、加载更多使用方式
+
+在model中定义
+```java
+val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
+
+val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
+
+val singleItems = ObservableArrayList<SingleItemVo>().apply {
+        for (i in 0 until 3) {
+            add(SingleItemVo(i))
+        }
+    }
+var isNoMoreData = ObservableBoolean()  // 加载更多后,没有更多数据的标识
+var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
+val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更多监听
+        override fun loadingMore() {
+            // 模拟数据
+            Handler().postDelayed({
+                for (i in 0 until 3) {
+                    singleItems.add(SingleItemVo(i))
+                }
+            }, 500)
+        }
+
+       // 根据此标识决定是否显示没有更多数据
+        override fun getNoMoreDataOb(): ObservableBoolean {
+            return isNoMoreData
+        }
+
+       // 根据此标识决定是否显示加载失败的布局,点击失败布局,默认触发loadingMore回调
+        override fun getLoadMoreFailOb(): ObservableBoolean {
+            return isLoadMoreFailOb
+        }
+    }
+```
+在xml中引用
+```xml
+   <androidx.recyclerview.widget.RecyclerView
+            app:rv_adapter="@{viewModel.adapter}"
+            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
+            app:rv_items="@{viewModel.singleItems}"
+            app:rv_loadmore_more_listener="@{viewModel.loadMoreListener}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+```
+支持自定义底部加载布局,使用方式
+```java
+ LoadMoreAdapter.DEFAULT_FOOTER_PATH="me.lx.CustomLoadMoreFooter"
+```
+```java
+class CustomLoadMoreFooter : AbstractLoadMoreFooter() {
+    private lateinit var mTvText: TextView
+
+    override fun getLayoutRes(): Int {
+        return R.layout.load_more_custom_layout
+    }
+
+    override fun onCreate(footerView: View) {
+        mTvText = footerView.findViewById(R.id.tvText)
+    }
+
+    override fun loading() {
+        mTvText.text = "正在加载中…"
+    }
+
+    override fun noMoreData() {
+        mTvText.text = "没有更多数据了"
+    }
+
+    override fun loadFailed() {
+        mTvText.text = "加载失败,点击重试"
+    }
+}
+```
 
 ##对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。
 交流群： 597802495
