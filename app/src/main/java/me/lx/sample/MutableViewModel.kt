@@ -68,7 +68,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
             }
             .into(recyclerView)
     }
-
+    // 点击事件
     private val itemClickEvent = object : BaseItemClickEvent<Any>() {
         override fun onItemClick(item: Any) {
             (item as? SingleItemVo)?.onToggleChecked()
@@ -134,8 +134,11 @@ class MutableViewModel : ViewModel(), ClickListeners {
         })
     }
 
+
+
     override fun clickAddItem() {
         singleItems.add(SingleItemVo(index = singleItems.size))
+
     }
 
     override fun clickRemoveItem() {

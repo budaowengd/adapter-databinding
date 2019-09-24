@@ -13,6 +13,14 @@
     <item
         android:id="@+id/action_loadmore_recyclerview"
         android:title="加载更多" />
+    <group
+        android:id="@+id/group_menu_1"
+        >
+        <item
+            android:id="@+id/action_group_rv"
+            android:title="分组列表" />
+
+    </group>
     <item
         android:id="@+id/action_diff_recyclerview"
         android:title="Diff RecyclerView" />

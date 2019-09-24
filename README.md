@@ -224,7 +224,7 @@ val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更
             app:rv_adapter="@{viewModel.adapter}"
             app:rv_itemBinding="@{viewModel.simpleItemBinding}"
             app:rv_items="@{viewModel.singleItems}"
-            app:rv_loadmore_more_listener="@{viewModel.loadMoreListener}"
+            app:rv_loadmore_listener="@{viewModel.loadMoreListener}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 支持自定义底部加载布局,使用方式

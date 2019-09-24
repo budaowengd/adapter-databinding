@@ -5,12 +5,12 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="me.lx.sample.MutableViewModel" />
-
-        <variable
             name="click"
             type="me.lx.sample.ClickListeners" />
+
+        <variable
+            name="viewModel"
+            type="me.lx.sample.group.model.GroupAdapterModel" />
 
     </data>
 
@@ -19,17 +19,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--
+
+        app:rv_adapter="@{viewModel.adapter}"
+            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
+            app:rv_items="@{viewModel.singleItems}"
+        -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
-            app:rv_loadmore_listener="@{viewModel.loadMoreListener}"
+            app:rv_group_adapter="@{viewModel.adapter}"
+            app:rv_group_items="@{viewModel.groupList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"
@@ -55,5 +58,6 @@
                 android:onClickListener="@{() -> click.clickRemoveItem()}"
                 android:text="Remove Item" />
         </LinearLayout>
+
     </LinearLayout>
 </layout>

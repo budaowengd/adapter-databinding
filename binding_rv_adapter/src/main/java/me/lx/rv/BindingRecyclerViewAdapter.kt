@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.lang.ref.WeakReference
 
 /**
- * A [RecyclerView.Adapter] that binds items to layouts using the given [XmlItemBinding].
- * If you give it an [ObservableList] it will also updated itself based on changes to that
- * list.
- */
-class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), BindingCollectionAdapter<T> {
+  * [RecyclerView.Adapter]使用给定的[XmlItemBinding]将项目绑定到布局。
+  * 如果你数据源是[ObservableList]，会根据对更改自行更新
+ */
+class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
+    BindingCollectionAdapter<T> {
 
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
@@ -32,7 +32,11 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         if (this.recyclerView == null && items is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(recyclerView,this,items as ObservableList<T>)
+            callback = WeakReferenceOnListChangedCallback<T>(
+                recyclerView,
+                this,
+                items as ObservableList<T>
+            )
             (items as ObservableList<T>).addOnListChangedCallback(callback)
         }
         this.recyclerView = recyclerView
@@ -143,7 +147,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
                 callback = null
             }
             if (items is ObservableList<T>) {
-                callback = WeakReferenceOnListChangedCallback(recyclerView!!,this, items)
+                callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, items)
                 items.addOnListChangedCallback(callback)
             }
         }
@@ -238,12 +242,12 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         }
     }
 
-    private class WeakReferenceOnListChangedCallback<T> constructor(
+     class WeakReferenceOnListChangedCallback<T> constructor(
         var recyclerView: RecyclerView,
-        adapter: BindingRecyclerViewAdapter<T>,
+        adapter: RecyclerView.Adapter<ViewHolder>,
         items: ObservableList<T>
     ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        internal val adapterRef: WeakReference<BindingRecyclerViewAdapter<T>>
+        internal val adapterRef: WeakReference<RecyclerView.Adapter<ViewHolder>>
 
         init {
             this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this)
@@ -256,7 +260,11 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
             adapter.notifyDataSetChanged()
         }
 
-        override fun onItemRangeChanged(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
+        override fun onItemRangeChanged(
+            sender: ObservableList<T>,
+            positionStart: Int,
+            itemCount: Int
+        ) {
             val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeChanged(positionStart, itemCount)
@@ -292,7 +300,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
             positionStart: Int,
             itemCount: Int
         ) {
-           // val adapter = adapterRef.get() ?: return
+            // val adapter = adapterRef.get() ?: return
             val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeRemoved(positionStart, itemCount)
@@ -307,7 +315,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     }
 
     interface ViewHolderFactory {
-        fun createViewHolder(binding: ViewDataBinding): RecyclerView.ViewHolder
+        fun createViewHolder(binding: ViewDataBinding): ViewHolder
     }
 
     companion object {

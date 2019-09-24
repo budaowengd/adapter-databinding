@@ -7,11 +7,12 @@ import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.R
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.collections.AsyncDiffObservableList
+import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.rv.loadmore.LoadMoreAdapter
 
 // RecyclerView
 @BindingAdapter(
-    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig", "rv_loadmore_more_listener"],
+    value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolder", "rv_diffConfig", "rv_loadmore_listener"],
     requireAll = false
 )
 fun <T> setAdapter(
@@ -62,6 +63,17 @@ fun <T> setAdapter(
     }
 }
 
+@BindingAdapter(
+    value = ["rv_group_adapter","rv_group_items"],
+    requireAll = false
+)
+fun <T> setGroupAdapter(
+    recyclerView: RecyclerView,
+    adapter: GroupedRecyclerViewAdapter<T,*> ,items: List<T>){
+    adapter.setGroupList(items)
+    recyclerView.adapter = adapter
+
+}
 
 fun getLoadMoreAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
