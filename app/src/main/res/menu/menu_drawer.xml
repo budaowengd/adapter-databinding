@@ -18,8 +18,10 @@
         >
         <item
             android:id="@+id/action_group_rv"
-            android:title="分组列表" />
-
+            android:title="带头带尾分组列表" />
+        <item
+            android:id="@+id/action_group_rv_no_header"
+            android:title="不带组头" />
     </group>
     <item
         android:id="@+id/action_diff_recyclerview"

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
 import me.lx.sample.databinding.ActivityMainBinding
 import me.lx.sample.group.FragmentGroupList
+import me.lx.sample.group.FragmentNoHeaderGroupList
 
 
 private const val STATE_TITLE = "title"
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
                 R.id.action_loadmore_recyclerview -> FragmentLoadMoreRecyclerView()
                 R.id.action_group_rv -> FragmentGroupList()
+                R.id.action_group_rv_no_header -> FragmentNoHeaderGroupList()
                 else -> {
                     return@OnNavigationItemSelectedListener false
                 }

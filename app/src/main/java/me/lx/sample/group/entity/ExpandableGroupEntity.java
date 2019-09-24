@@ -9,15 +9,15 @@ public class ExpandableGroupEntity {
 
     private String header;
     private String footer;
-    private ArrayList<ChildEntity> children;
+    private ArrayList<ChildEntity> childList;
     private boolean isExpand;
 
     public ExpandableGroupEntity(String header, String footer, boolean isExpand,
-                                 ArrayList<ChildEntity> children) {
+                                 ArrayList<ChildEntity> childList) {
         this.header = header;
         this.footer = footer;
         this.isExpand = isExpand;
-        this.children = children;
+        this.childList = childList;
     }
 
     public String getHeader() {
@@ -44,11 +44,11 @@ public class ExpandableGroupEntity {
         isExpand = expand;
     }
 
-    public ArrayList<ChildEntity> getChildren() {
-        return children;
+    public ArrayList<ChildEntity> getChildList() {
+        return childList;
     }
 
-    public void setChildren(ArrayList<ChildEntity> children) {
-        this.children = children;
+    public void setChildren(ArrayList<ChildEntity> childList) {
+        this.childList = childList;
     }
 }

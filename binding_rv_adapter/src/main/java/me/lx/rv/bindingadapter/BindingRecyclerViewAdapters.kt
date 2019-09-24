@@ -64,7 +64,7 @@ fun <T> setAdapter(
 }
 
 @BindingAdapter(
-    value = ["rv_group_adapter","rv_group_items"],
+    value = ["rv_group_adapter","rv_group_item_list"],
     requireAll = false
 )
 fun <T> setGroupAdapter(

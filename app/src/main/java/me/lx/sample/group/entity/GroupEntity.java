@@ -9,12 +9,12 @@ public class GroupEntity {
 
     private String header;
     private String footer;
-    private ObservableArrayList<ChildEntity> children;
+    private ObservableArrayList<ChildEntity> childList;
 
-    public GroupEntity(String header, String footer, ObservableArrayList<ChildEntity> children) {
+    public GroupEntity(String header, String footer, ObservableArrayList<ChildEntity> childList) {
         this.header = header;
         this.footer = footer;
-        this.children = children;
+        this.childList = childList;
     }
 
     public String getHeader() {
@@ -33,11 +33,11 @@ public class GroupEntity {
         this.footer = footer;
     }
 
-    public ObservableArrayList<ChildEntity> getChildren() {
-        return children;
+    public ObservableArrayList<ChildEntity> getChildList() {
+        return childList;
     }
 
-    public void setChildren(ObservableArrayList<ChildEntity> children) {
-        this.children = children;
+    public void setChildren(ObservableArrayList<ChildEntity> childList) {
+        this.childList = childList;
     }
 }
