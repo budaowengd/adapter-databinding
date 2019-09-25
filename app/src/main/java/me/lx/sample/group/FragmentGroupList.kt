@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
+import me.lx.sample.BR
 import me.lx.sample.R
-import me.lx.sample.databinding.FragmentGroupRvBinding
 import me.lx.sample.get
 import me.lx.sample.group.model.GroupAdapterModel
 
@@ -32,18 +33,52 @@ class FragmentGroupList : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return FragmentGroupRvBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
-            it.viewModel = viewModel
-            it.click = viewModel
+        return getViewBinding(inflater, container).also {
+            it.setVariable(BR.viewModel, viewModel)
+            it.setVariable(BR.click, viewModel)
             it.executePendingBindings()
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val recyclerView = view!!.findViewById<RecyclerView>(R.id.recyclerView)
-//        val adapter = GroupedListAdapter(GroupModel.getGroups(10, 5))
-//        recyclerView.setAdapter(adapter)
+    private fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): ViewDataBinding {
+        val layoutId: Int = when (arguments?.getString("type")) {
+            bundle_no_header -> {
+                R.layout.fragment_group_rv_no_header
+            }
+            bundle_no_footer -> {
+                R.layout.fragment_group_rv_no_footer
+            }
+            bundle_various -> {
+                R.layout.fragment_group_rv_various
+            }
+            bundle_various_child -> {
+                R.layout.fragment_group_rv_various_child
+            }
+            bundle_expandable -> {
+                R.layout.fragment_group_rv_expandable
+            }
+            else -> {
+                R.layout.fragment_group_rv
+            }
+        }
+        return DataBindingUtil.inflate<ViewDataBinding>(inflater, layoutId, container, false)
     }
+
+    companion object {
+        const val bundle_default = "default"
+        const val bundle_no_header = "no_header"
+        const val bundle_no_footer = "no_footer"
+        const val bundle_various = "various"
+        const val bundle_various_child = "various_child"
+        const val bundle_expandable = "expandable"
+
+        fun newInstance(type: String): FragmentGroupList {
+            val bundle = Bundle()
+            bundle.putString("type", type)
+            val frag = FragmentGroupList()
+            frag.arguments = bundle
+            return frag
+        }
+    }
+
 }

@@ -202,15 +202,15 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         return super.getItemViewType(position)
     }
 
-    fun getHeaderViewType(groupPosition: Int): Int {
+   open fun getHeaderViewType(groupPosition: Int): Int {
         return TYPE_HEADER
     }
 
-    fun getFooterViewType(groupPosition: Int): Int {
+    open fun getFooterViewType(groupPosition: Int): Int {
         return TYPE_FOOTER
     }
 
-    fun getChildViewType(groupPosition: Int, childPosition: Int): Int {
+    open fun getChildViewType(groupPosition: Int, childPosition: Int): Int {
         return TYPE_CHILD
     }
 
@@ -281,7 +281,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         isDataChanged = false
     }
 
-    open fun getGroupCount(): Int {
+     fun getGroupCount(): Int {
         return groupList!!.size
     }
 

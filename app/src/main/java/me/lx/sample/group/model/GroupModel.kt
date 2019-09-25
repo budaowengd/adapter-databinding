@@ -5,7 +5,6 @@ import androidx.databinding.ObservableArrayList
 import me.lx.sample.group.entity.ChildEntity
 import me.lx.sample.group.entity.ExpandableGroupEntity
 import me.lx.sample.group.entity.GroupEntity
-import java.util.*
 
 /**
  * Depiction:
@@ -42,8 +41,8 @@ class GroupModel {
          * @param childrenCount 每个组里的子项数量
          * @return
          */
-        fun getGroups(groupCount: Int, childrenCount: Int): ArrayList<GroupEntity> {
-            val groups = ArrayList<GroupEntity>()
+        fun getGroups(groupCount: Int, childrenCount: Int): ObservableArrayList<GroupEntity> {
+            val groups = ObservableArrayList<GroupEntity>()
             for (i in 0 until groupCount) {
                 val childList = ObservableArrayList<ChildEntity>()
                 for (j in 0 until childrenCount) {
@@ -70,15 +69,14 @@ class GroupModel {
          * @param childrenCount 每个组里的子项数量
          * @return
          */
-        fun getExpandableGroups(groupCount: Int, childrenCount: Int): ArrayList<ExpandableGroupEntity> {
-            val groups = ArrayList<ExpandableGroupEntity>()
+        fun getExpandableGroups(groupCount: Int, childrenCount: Int): ObservableArrayList<ExpandableGroupEntity> {
+            val groups = ObservableArrayList<ExpandableGroupEntity>()
             for (i in 0 until groupCount) {
-                val childList = ArrayList<ChildEntity>()
+                val childList = ObservableArrayList<ChildEntity>()
                 for (j in 0 until childrenCount) {
                     childList.add(getChildEntity(i, j))
                 }
-                groups.add(
-                    ExpandableGroupEntity(
+                groups.add(ExpandableGroupEntity(
                         "第" + (i + 1) + "组头部",
                         "第" + (i + 1) + "组尾部", true, childList
                     )

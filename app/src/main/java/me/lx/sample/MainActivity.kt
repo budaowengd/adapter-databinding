@@ -10,7 +10,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
 import me.lx.sample.databinding.ActivityMainBinding
 import me.lx.sample.group.FragmentGroupList
-import me.lx.sample.group.FragmentNoHeaderGroupList
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_default
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_expandable
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_no_footer
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_no_header
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_various
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_various_child
 
 
 private const val STATE_TITLE = "title"
@@ -43,8 +48,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_headerfooter_recyclerview -> FragmentHeaderFooterRecyclerView()
                 R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
                 R.id.action_loadmore_recyclerview -> FragmentLoadMoreRecyclerView()
-                R.id.action_group_rv -> FragmentGroupList()
-                R.id.action_group_rv_no_header -> FragmentNoHeaderGroupList()
+                R.id.action_group_rv ->  FragmentGroupList.newInstance(bundle_default)
+                R.id.action_group_rv_no_header -> FragmentGroupList.newInstance(bundle_no_header)
+                R.id.action_group_rv_no_footer -> FragmentGroupList.newInstance(bundle_no_footer)
+                R.id.action_group_rv_various -> FragmentGroupList.newInstance(bundle_various)
+                R.id.action_group_rv_various_child -> FragmentGroupList.newInstance(bundle_various_child)
+                R.id.action_group_rv_expandable -> FragmentGroupList.newInstance(bundle_expandable)
                 else -> {
                     return@OnNavigationItemSelectedListener false
                 }

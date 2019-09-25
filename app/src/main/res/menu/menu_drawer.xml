@@ -13,15 +13,25 @@
     <item
         android:id="@+id/action_loadmore_recyclerview"
         android:title="加载更多" />
-    <group
-        android:id="@+id/group_menu_1"
-        >
+    <group android:id="@+id/group_menu_1">
         <item
             android:id="@+id/action_group_rv"
             android:title="带头带尾分组列表" />
         <item
             android:id="@+id/action_group_rv_no_header"
             android:title="不带组头" />
+        <item
+            android:id="@+id/action_group_rv_no_footer"
+            android:title="不带组尾" />
+        <item
+            android:id="@+id/action_group_rv_various"
+            android:title="头,子项,尾都是多类型" />
+        <item
+            android:id="@+id/action_group_rv_various_child"
+            android:title="子项是多类型" />
+        <item
+            android:id="@+id/action_group_rv_expandable"
+            android:title="可展开、收起" />
     </group>
     <item
         android:id="@+id/action_diff_recyclerview"

@@ -46,7 +46,6 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
 
     override fun onBindHeaderViewHolder(holder: BaseViewHolder, groupPosition: Int) {
         val entity = getItems()[groupPosition]
-        // System.out.println("onBindHeaderViewHolder()....22222...groupPosition="+groupPosition+"  text="+entity.getHeader());
         holder.setText(R.id.tv_header, entity.header)
     }
 
