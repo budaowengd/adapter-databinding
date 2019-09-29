@@ -21,12 +21,10 @@ internal class LoadMoreFooter : AbstractLoadMoreFooter() {
 
     override fun loading() {
         mTvText.text = mTvText.context.getString(R.string.load_more_default)
-        println("LoadMoreFooter()...loading()...111111..")
     }
 
     override fun noMoreData() {
         mTvText.text = mTvText.context.getString(R.string.load_more_no_more_data)
-        println("LoadMoreFooter()...noMoreData()...22222..")
     }
 
     override fun loadFailed() {

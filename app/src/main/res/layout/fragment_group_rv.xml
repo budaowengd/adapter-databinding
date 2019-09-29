@@ -36,6 +36,8 @@
             app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
             app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"

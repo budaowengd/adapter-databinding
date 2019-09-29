@@ -264,6 +264,32 @@ class CustomLoadMoreFooter : AbstractLoadMoreFooter() {
 }
 ```
 
+## 3、分组列表
+在xml中引用
+```xml
+ <androidx.recyclerview.widget.RecyclerView
+            app:rv_group_adapter="@{viewModel.groupAdapter}"
+            app:rv_group_item_list="@{viewModel.groupList}"
+            app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
+            app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
+            app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+```
+在model中定义
+```java
+val groupAdapter = GroupedListAdapter()
+
+val groupList = ObservableArrayList<YourBean>()
+
+val clickChildEvent = object : BaseClickGroupListener<ChildEntity>() {
+        override fun clickGroupItem(item: ChildEntity) {
+            Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_LONG).show()
+        }
+}
+```
+这样就可以实现1个分组的列表了, , 注意: 数据源使用ObservableArrayList ,全程不需要你手动刷新adapter ,
+你更改数据源, 列表会自动刷新.
+
 ## 对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。交流群： 597802495
 
 

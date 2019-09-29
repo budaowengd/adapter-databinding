@@ -1,5 +1,6 @@
 package me.lx.rv.group
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -76,7 +77,6 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         // 为每组的childList添加监听
         for (group in groupList) {
             addChildListChangedCallbackByGroup(group)
-            println("给每一组孩子列表....添加监听了.....66666j...... groupSize=${groupList.size}")
         }
     }
 
@@ -273,8 +273,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         for (i in 0 until groupCount) {
             mStructures.add(GroupStructure(hasHeader(i), hasFooter(i), getChildrenCount(i)))
         }
-        println("重置组结构列表...666666....")
         isDataChanged = false
+        if (DEBUG) {
+            Log.d(TAG, "重置组结构列表...666666....")
+        }
     }
 
     fun getGroupCount(): Int {
@@ -677,7 +679,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
                 if (childCount < childPosition + count) {
                     removeCount = childCount - childPosition
                 }
-                // println("notifyChildRangeRemoved()..index=$index  itemCount=$itemCount  childCount=$childCount  removeCount=$removeCount  ")
+                // Log.d(TAG,"notifyChildRangeRemoved()..index=$index  itemCount=$itemCount  childCount=$childCount  removeCount=$removeCount  ")
                 notifyItemRangeRemoved(index, removeCount)
                 notifyItemRangeChanged(index, itemCount - removeCount)
                 structure.childrenCount = childCount - removeCount
@@ -970,7 +972,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         override fun onChanged(sender: ObservableList<T>) {
-            println("GroupedRecyclerViewAdapter()....onChanged()...1111..")
+            if (DEBUG) {
+                Log.d(TAG, "GroupedRecyclerViewAdapter()....onChanged()...1111..")
+            }
             groupAdapter.notifyDataSetChanged()
         }
 
@@ -979,7 +983,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
+            if (DEBUG) {
+                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
+            }
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
 
@@ -988,7 +994,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
+            if (DEBUG) {
+
+                Log.d(TAG, "GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
+            }
             groupAdapter.notifyGroupRangeInserted(positionStart, itemCount)
             for (index in 0 until itemCount) {
 //                if(positionStart+index<sender.size){}
@@ -1002,7 +1011,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             toPosition: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
+            if (DEBUG) {
+
+                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
+            }
             groupAdapter.notifyGroupRangeRemoved(fromPosition, itemCount)
         }
 
@@ -1011,7 +1023,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555.... itemCount=$itemCount")
+            if (DEBUG) {
+
+                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555.... itemCount=$itemCount")
+            }
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
     }
@@ -1045,6 +1060,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
 
     companion object {
+
+        const val TAG = "GroupedAdapter"
+        const val DEBUG = false
 
         @JvmField
         var TYPE_HEADER = R.integer.type_header
