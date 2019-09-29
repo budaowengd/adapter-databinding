@@ -1,5 +1,7 @@
-# AdapterBinding 介绍(通过数据驱动UI)
-基于Databinding打造的高复用、简洁、高效的列表适配器.. 专注于业务, 减少重复代码, 不用再写rv.setAdapter(),adapter.notify()等固定代码, 除了Databinding和RecyclerView外无引用任何第3方库
+# AdapterBinding 介绍
+## 1、通过数据驱动UI (让开发者只需管理数据源)
+## 2、高复用、简洁、高效,
+基于Databinding打造的高复用、简洁、高效的列表适配器.. 专注于业务, 减少重复代码, 不用再写 rv.setAdapter(),  adapter.notify()等固定代码, 除了Databinding和RecyclerView外无引用任何第3方库
 
 ## 包含以下几种解决方案.
 * 普通列表
@@ -134,6 +136,22 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
 
 ## UML类图
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/System.png?raw=true)
+## XmlItemBinding (单个xml布局对象)
+- 每个item对应的布局id
+- 每个item的数据对应的BR变量id, 默认是BR.item
+- 每个item布局对应1个XmlItemBinding对象
+
+## OnItemBind (接口)
+- Adapter执行getItemViewType()方法, 会回调该onItemBind() 函数,用来设置每个Item的布局id和变量id.
+- 每个item布局对应1个OnItemBind对象
+
+## OnItemBindClass (管理多类型item的对象)
+- itemBindingClassList:  每种item对应数据对象的class文件
+- itemBindingList: 每种item对应的 OnItemBind 对象
+
+## BindingRecyclerViewAdapter 核心适配器
+- 根据每种item的布局来实现多类型列表, 简单方便
+- 监听items数据源的变化,自动调用notifyDataChanged, 让开发者只专注于业务
 ## 原理讲解
 写适配器的时候，通常需要实现adapter和viewholder，首先我们要明白adapter里面各个方法的调用顺序。下面方法都是由RecyclerView自动去调用的。
 ## 1. 首先调用getItemCount()，让Rv知道1个列表该展示多少个item
@@ -166,22 +184,7 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
         return xmlItemBinding.getLayoutRes()
     }
 ```
-## XmlItemBinding (单个xml布局对象)
-- 每个item对应的布局id
-- 每个item的数据对应的BR变量id, 默认是BR.item
-- 每个item布局对应1个XmlItemBinding对象
 
-## OnItemBind (接口)
-- Adapter执行getItemViewType()方法, 会回调该onItemBind() 函数,用来设置每个Item的布局id和变量id.
-- 每个item布局对应1个OnItemBind对象
-
-## OnItemBindClass (管理多类型item的对象)
-- itemBindingClassList:  每种item对应数据对象的class文件
-- itemBindingList: 每种item对应的 OnItemBind 对象
-
-## BindingRecyclerViewAdapter 核心适配器
-- 根据每种item的布局来实现多类型列表, 简单方便
-- 监听items数据源的变化,自动调用notifyDataChanged, 让开发者只专注于业务
 ## 2、加载更多使用方式
 
 在model中定义
