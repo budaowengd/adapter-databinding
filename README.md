@@ -37,14 +37,11 @@
 ## 效果展示
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/merge.png?raw=true)
 ![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/加载更多.png?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/分组的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/不带组头的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/不带组尾的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/头、尾和子项都支持多种类型的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/多种子项类型的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/可展开收起的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/子项为Grid的列表.jpg?raw=true)
-![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/子项为Grid的列表(各组子项的Span不同).jpg?raw=true)
+
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/分组的列表.jpg?raw=true)![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/不带组头的列表.jpg?raw=true)
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/不带组尾的列表.jpg?raw=true)![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/头、尾和子项都支持多种类型的列表.jpg?raw=true)
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/多种子项类型的列表.jpg?raw=true)![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/可展开收起的列表.jpg?raw=true)
+![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/子项为Grid的列表.jpg?raw=true)![](https://github.com/luoxiong94/adapter-databinding/blob/master/pic/子项为Grid的列表(各组子项的Span不同).jpg?raw=true)
 ## 1、普通列表使用方式
 ### 单一类型
 在model中定义
