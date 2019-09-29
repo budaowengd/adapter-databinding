@@ -109,6 +109,54 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         return items!!.size
     }
 
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        // This won't be called by recyclerview since we are overriding the other overload, call
+        // the other overload here in case someone is calling this directly ex: in a test.
+        onBindViewHolder(viewHolder, position, emptyList())
+    }
+
+    @CallSuper
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)
+        if (isForDataBinding(payloads)) { // 局部更新
+            binding!!.executePendingBindings()
+        } else { // 完整更新
+            val item = items!![position]
+            onBindBinding(
+                binding!!,
+                xmlItemBinding.getDefaultVariableId(),
+                xmlItemBinding.getLayoutRes(),
+                position,
+                item
+            )
+        }
+    }
+
+    private fun isForDataBinding(payloads: List<Any>): Boolean {
+        if (payloads.isEmpty()) {
+            return false
+        }
+        for (i in payloads.indices) {
+            val obj = payloads[i]
+            if (obj !== DATA_INVALIDATION) {
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * Constructs a view holder for the given databinding. The default implementation is to use
+     * [ViewHolderFactory] if provided, otherwise use a default view holder.
+     */
+    fun onCreateViewHolder(binding: ViewDataBinding): ViewHolder {
+        return if (viewHolderFactory != null) {
+            viewHolderFactory!!.createViewHolder(binding)
+        } else {
+            BindingViewHolder(binding)
+        }
+    }
+
     override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
         this.xmlItemBinding = itemBinding
     }
@@ -157,56 +205,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
 
     override fun getAdapterItem(position: Int): T {
         return items!![position]
-    }
-
-    /**
-     * Constructs a view holder for the given databinding. The default implementation is to use
-     * [ViewHolderFactory] if provided, otherwise use a default view holder.
-     */
-    fun onCreateViewHolder(binding: ViewDataBinding): ViewHolder {
-        return if (viewHolderFactory != null) {
-            viewHolderFactory!!.createViewHolder(binding)
-        } else {
-            BindingViewHolder(binding)
-        }
-    }
-
-
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        // This won't be called by recyclerview since we are overriding the other overload, call
-        // the other overload here in case someone is calling this directly ex: in a test.
-        onBindViewHolder(viewHolder, position, emptyList())
-
-    }
-
-    @CallSuper
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
-        val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)
-        if (isForDataBinding(payloads)) { // 局部更新
-            binding!!.executePendingBindings()
-        } else { // 完整更新
-            val item = items!![position]
-            onBindBinding(
-                binding!!,
-                xmlItemBinding.getDefaultVariableId(),
-                xmlItemBinding.getLayoutRes(),
-                position,
-                item
-            )
-        }
-    }
-
-    private fun isForDataBinding(payloads: List<Any>): Boolean {
-        if (payloads.isEmpty()) {
-            return false
-        }
-        for (i in payloads.indices) {
-            val obj = payloads[i]
-            if (obj !== DATA_INVALIDATION) {
-                return false
-            }
-        }
-        return true
     }
 
 
@@ -307,8 +305,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         }
     }
 
-    private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
-        ViewHolder(binding.root)
+    private class BindingViewHolder internal constructor(binding: ViewDataBinding) : ViewHolder(binding.root)
+
 
     interface ItemIds<T> {
         fun getItemId(position: Int, item: T): Long

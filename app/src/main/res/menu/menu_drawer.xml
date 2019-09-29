@@ -32,6 +32,13 @@
         <item
             android:id="@+id/action_group_rv_expandable"
             android:title="可展开、收起" />
+
+        <item
+            android:id="@+id/action_group_rv_grid"
+            android:title="子项为Grid" />
+        <item
+            android:id="@+id/action_group_rv_diff_grid"
+            android:title="各组子项的Span不同" />
     </group>
     <item
         android:id="@+id/action_diff_recyclerview"

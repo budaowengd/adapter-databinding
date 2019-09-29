@@ -6,8 +6,6 @@ package me.lx.sample.group.adapter
  * 这种列表适用于把多个不同的列表合并成一个列表。
  */
 class VariousChildAdapter : VariousAdapter() {
-
-
     override fun hasHeader(groupPosition: Int): Boolean {
         return false
     }
@@ -15,5 +13,4 @@ class VariousChildAdapter : VariousAdapter() {
     override fun hasFooter(groupPosition: Int): Boolean {
         return false
     }
-
 }

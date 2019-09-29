@@ -23,6 +23,8 @@ import me.lx.sample.group.model.GroupAdapterModel
 class FragmentGroupList : Fragment() {
     private lateinit var viewModel: GroupAdapterModel
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get()
@@ -33,11 +35,17 @@ class FragmentGroupList : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return getViewBinding(inflater, container).also {
+        val binding= getViewBinding(inflater, container).also {
             it.setVariable(BR.viewModel, viewModel)
             it.setVariable(BR.click, viewModel)
             it.executePendingBindings()
-        }.root
+        }
+
+//        if(arguments?.getString("type")==bundle_grid_child){
+//          val recyclerView= binding.root.findViewById<RecyclerView>(R.id.recyclerView)
+//            (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+//        }
+        return binding.root
     }
 
     private fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): ViewDataBinding {
@@ -57,6 +65,12 @@ class FragmentGroupList : Fragment() {
             bundle_expandable -> {
                 R.layout.fragment_group_rv_expandable
             }
+            bundle_grid_child -> {
+                R.layout.fragment_group_rv_grid
+            }
+            bundle_grid_diff_child -> {
+                R.layout.fragment_group_rv_diff_grid
+            }
             else -> {
                 R.layout.fragment_group_rv
             }
@@ -71,6 +85,8 @@ class FragmentGroupList : Fragment() {
         const val bundle_various = "various"
         const val bundle_various_child = "various_child"
         const val bundle_expandable = "expandable"
+        const val bundle_grid_child = "grid_child"
+        const val bundle_grid_diff_child = "grid_diff_child"
 
         fun newInstance(type: String): FragmentGroupList {
             val bundle = Bundle()

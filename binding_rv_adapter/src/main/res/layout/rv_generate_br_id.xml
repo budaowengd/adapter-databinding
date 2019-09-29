@@ -12,10 +12,36 @@
             name="item"
             type="java.lang.String" />
 
+
         <variable
             name="click"
             type="java.lang.String" />
 
+
+        <!--  分组列表需要用到的变量 -->
+        <variable
+            name="childItem"
+            type="java.lang.String" />
+
+        <variable
+            name="childClick"
+            type="java.lang.String" />
+
+        <variable
+            name="headerItem"
+            type="java.lang.String" />
+
+        <variable
+            name="headerClick"
+            type="java.lang.String" />
+
+        <variable
+            name="footerItem"
+            type="java.lang.String" />
+
+        <variable
+            name="footerClick"
+            type="java.lang.String" />
     </data>
 
 

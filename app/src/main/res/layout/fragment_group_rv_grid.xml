@@ -20,22 +20,20 @@
         android:orientation="vertical">
 
         <!--
-
-        app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
+            app:rv_group_rv_layoutManager="@{viewModel.grid2LayoutManager}"
         -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
+            app:rv_group_rv_layoutManager="@{viewModel.grid2LayoutManager}"
             app:rv_group_adapter="@{viewModel.groupAdapter}"
-            app:rv_group_item_list="@{viewModel.groupList}"
             app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
             app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
-            app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:rv_group_item_list="@{viewModel.groupList}" />
+
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"
@@ -49,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickAddItem()}"
-
                 android:text="Add Item" />
 
             <Button

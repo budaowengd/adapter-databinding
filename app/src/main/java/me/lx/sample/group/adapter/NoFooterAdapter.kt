@@ -1,6 +1,7 @@
 package me.lx.sample.group.adapter
 
-import me.lx.rv.group.BaseViewHolder
+import androidx.databinding.ViewDataBinding
+import me.lx.sample.group.entity.GroupEntity
 
 /**
  * 这是不带组尾的Adapter。
@@ -33,7 +34,7 @@ class NoFooterAdapter : GroupedListAdapter() {
      * @param holder
      * @param groupPosition
      */
-    override fun onBindFooterViewHolder(holder: BaseViewHolder, groupPosition: Int) {
+    override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: GroupEntity, groupPosition: Int) {
 
     }
 }

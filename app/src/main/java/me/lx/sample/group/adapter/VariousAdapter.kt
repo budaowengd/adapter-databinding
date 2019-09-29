@@ -1,6 +1,6 @@
 package me.lx.sample.group.adapter
 
-import me.lx.rv.group.BaseViewHolder
+import androidx.databinding.ViewDataBinding
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.sample.R
 import me.lx.sample.group.entity.ChildEntity
@@ -17,8 +17,36 @@ import me.lx.sample.group.entity.GroupEntity
 open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>() {
 
 
-    override fun getChildrenList(group: GroupEntity): List<ChildEntity> {
-        return group.childList
+    override fun setGroupList(groupList: List<GroupEntity>) {
+        super.setGroupList(groupList)
+        groupList.forEachIndexed { groupIndex, groupItem ->
+            groupItem.childList.forEachIndexed { childIndex, childItem ->
+                val childViewType = getChildViewType(groupIndex, childIndex)
+                if (childViewType == TYPE_CHILD_1) {
+                    childItem.child = "第一种子项：" + childItem.child
+                } else if (childViewType == TYPE_CHILD_2) {
+                    childItem.child = "第二种子项：" + childItem.child
+                }
+            }
+            val headerViewType = getHeaderViewType(groupIndex)
+            if (headerViewType == TYPE_HEADER_1) {
+                groupItem.header = "第一种头部：" + groupItem.header
+            } else if (headerViewType == TYPE_HEADER_2) {
+                groupItem.header = "第二种头部：" + groupItem.header
+            }
+
+            val viewType = getFooterViewType(groupIndex)
+            if (viewType == TYPE_FOOTER_1) {
+                groupItem.footer = "第一种尾部：" + groupItem.footer
+            } else if (viewType == TYPE_FOOTER_2) {
+                groupItem.footer = "第二种尾部：" + groupItem.footer
+            }
+        }
+
+    }
+
+    override fun getChildrenList(groupItem: GroupEntity): List<ChildEntity> {
+        return groupItem.childList
     }
 
 
@@ -59,34 +87,21 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
         }
     }
 
-    override fun onBindHeaderViewHolder(holder: BaseViewHolder, groupPosition: Int) {
-        val entity = getItems()[groupPosition]
-        val viewType = getHeaderViewType(groupPosition)
-        if (viewType == TYPE_HEADER_1) {
-            holder.setText(R.id.tv_header, "第一种头部：" + entity.header)
-        } else if (viewType == TYPE_HEADER_2) {
-            holder.setText(R.id.tv_header_2, "第二种头部：" + entity.header)
-        }
+    override fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: GroupEntity, groupPosition: Int) {
+
     }
 
-    override fun onBindFooterViewHolder(holder: BaseViewHolder, groupPosition: Int) {
-        val entity = getItems()[groupPosition]
-        val viewType = getFooterViewType(groupPosition)
-        if (viewType == TYPE_FOOTER_1) {
-            holder.setText(R.id.tv_footer, "第一种尾部：" + entity.footer)
-        } else if (viewType == TYPE_FOOTER_2) {
-            holder.setText(R.id.tv_footer_2, "第二种尾部：" + entity.footer)
-        }
+    override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: GroupEntity, groupPosition: Int) {
     }
 
-    override fun onBindChildViewHolder(holder: BaseViewHolder, groupPosition: Int, childPosition: Int) {
-        val entity = getItems()[groupPosition].childList[childPosition]
-        val viewType = getChildViewType(groupPosition, childPosition)
-        if (viewType == TYPE_CHILD_1) {
-            holder.setText(R.id.tv_child, "第一种子项：" + entity.child)
-        } else if (viewType == TYPE_CHILD_2) {
-            holder.setText(R.id.tv_child_2, "第二种子项：" + entity.child)
-        }
+    override fun onBindChildViewHolder(
+        binding: ViewDataBinding,
+        groupItem: GroupEntity,
+        childItem: ChildEntity,
+        groupPosition: Int,
+        childPosition: Int
+    ) {
+
     }
 
     override fun getHeaderViewType(groupPosition: Int): Int {
@@ -121,6 +136,4 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
         private val TYPE_CHILD_1 = 5
         private val TYPE_CHILD_2 = 6
     }
-
-
 }

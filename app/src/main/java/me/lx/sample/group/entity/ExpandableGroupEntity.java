@@ -10,13 +10,13 @@ public class ExpandableGroupEntity {
     private String header;
     private String footer;
     private ArrayList<ChildEntity> childList;
-    private boolean isExpand;
+    private boolean isExpand = false;
 
     public ExpandableGroupEntity(String header, String footer, boolean isExpand,
                                  ArrayList<ChildEntity> childList) {
         this.header = header;
         this.footer = footer;
-        this.isExpand = isExpand;
+        this.isExpand=isExpand;
         this.childList = childList;
     }
 
@@ -37,11 +37,11 @@ public class ExpandableGroupEntity {
     }
 
     public boolean isExpand() {
-        return isExpand;
+        return isExpand ;
     }
 
     public void setExpand(boolean expand) {
-        isExpand = expand;
+        this.isExpand=expand;
     }
 
     public ArrayList<ChildEntity> getChildList() {

@@ -42,7 +42,7 @@ class ChildListChangedCallback<T, C>(private var adapter: GroupedRecyclerViewAda
     override fun onItemRangeInserted(sender: ObservableList<C>, positionStart: Int, itemCount: Int) {
         // adapter.isDataChanged = true
         val groupPosition = adapter.getGroupPositionByChildPosition(sender)
-        println("ChildListChangedCallback()....onItemRangeInserted()...444444..positionStart=$positionStart  groupPosition=$groupPosition")
+        println("ChildListChangedCallback()....onItemRangeInserted()...444444..positionStart=$positionStart  groupPosition=$groupPosition  itemCount=$itemCount")
         adapter.notifyChildInserted(groupPosition, positionStart)
     }
 

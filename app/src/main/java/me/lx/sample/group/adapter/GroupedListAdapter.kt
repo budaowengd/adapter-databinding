@@ -1,6 +1,6 @@
 package me.lx.sample.group.adapter
 
-import me.lx.rv.group.BaseViewHolder
+import androidx.databinding.ViewDataBinding
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.sample.R
 import me.lx.sample.group.entity.ChildEntity
@@ -15,8 +15,8 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
     //        super(dataList);
     //    }
 
-    override fun getChildrenList(entity: GroupEntity): List<ChildEntity> {
-        return entity.childList
+    override fun getChildrenList(groupItem: GroupEntity): List<ChildEntity> {
+        return groupItem.childList
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
@@ -44,19 +44,14 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
         return R.layout.adapter_child
     }
 
-    override fun onBindHeaderViewHolder(holder: BaseViewHolder, groupPosition: Int) {
-        val entity = getItems()[groupPosition]
-        holder.setText(R.id.tv_header, entity.header)
+    override fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: GroupEntity, groupPosition: Int) {
     }
 
-    override fun onBindFooterViewHolder(holder: BaseViewHolder, groupPosition: Int) {
-        val entity = getItems()[groupPosition]
-        holder.setText(R.id.tv_footer, entity.footer)
+    override fun onBindFooterViewHolder(binding:ViewDataBinding,  groupItem: GroupEntity,groupPosition: Int) {
     }
 
-    override fun onBindChildViewHolder(holder: BaseViewHolder, groupPosition: Int, childPosition: Int) {
-        val entity = getItems()[groupPosition].childList[childPosition]
-        holder.setText(R.id.tv_child, entity.child)
+    override fun onBindChildViewHolder(binding:ViewDataBinding, groupItem: GroupEntity, childItem: ChildEntity,groupPosition: Int,childPosition: Int) {
+        // 而外设置变量
     }
 
 

@@ -1,12 +1,13 @@
 package me.lx.sample.group.adapter
 
 import android.widget.ExpandableListView
-import android.widget.ImageView
-import me.lx.rv.group.BaseViewHolder
+import androidx.databinding.ViewDataBinding
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.sample.R
+import me.lx.sample.databinding.AdapterExpandableHeaderBinding
 import me.lx.sample.group.entity.ChildEntity
 import me.lx.sample.group.entity.ExpandableGroupEntity
+
 
 /**
  * 可展开收起的Adapter。他跟普通的[GroupedListAdapter]基本是一样的。
@@ -21,12 +22,13 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
 
     override fun getChildrenCount(groupPosition: Int): Int {
         //如果当前组收起，就直接返回0，否则才返回子项数。这是实现列表展开和收起的关键。
-        if (!isExpand(groupPosition)) {
-            return 0
+        if (isExpand(groupPosition)) {
+            return getChildrenList(getItems()[groupPosition]).size
         }
-        val children = getItems()[groupPosition].childList
-        return children.size
+        return 0
     }
+
+
 
     override fun hasHeader(groupPosition: Int): Boolean {
         return true
@@ -48,22 +50,22 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
         return R.layout.adapter_child
     }
 
-    override fun onBindHeaderViewHolder(holder: BaseViewHolder, groupPosition: Int) {
-        val entity = getItems()[groupPosition]
-        holder.setText(R.id.tv_expandable_header, entity.header)
-        val ivState = holder.get<ImageView>(R.id.iv_state)
-        if (entity.isExpand) {
-            ivState.rotation = 90f
+    override fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: ExpandableGroupEntity, groupPosition: Int) {
+        val headerBinding = binding as AdapterExpandableHeaderBinding
+        if (groupItem.isExpand) {
+            headerBinding.ivState.rotation = 90f
         } else {
-            ivState.rotation = 0f
+            headerBinding.ivState.rotation = 0f
         }
     }
 
-    override fun onBindFooterViewHolder(holder: BaseViewHolder, groupPosition: Int) {}
+    override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: ExpandableGroupEntity, groupPosition: Int) {}
 
-    override fun onBindChildViewHolder(holder: BaseViewHolder, groupPosition: Int, childPosition: Int) {
-        val entity = getItems()[groupPosition].childList[childPosition]
-        holder.setText(R.id.tv_child, entity.child)
+    override fun onBindChildViewHolder(
+        binding: ViewDataBinding, groupItem: ExpandableGroupEntity, childItem: ChildEntity,
+        groupPosition: Int,
+        childPosition: Int
+    ) {
     }
 
     /**
@@ -84,11 +86,11 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
      * @param animate
      */
     @JvmOverloads
-    fun expandGroup(groupPosition: Int, animate: Boolean = false) {
-        val entity = getItems()[groupPosition]
-        entity.isExpand = true
+    fun expandGroup(item: ExpandableGroupEntity, animate: Boolean = false) {
+        println("扩张...Child=" + item.childList.size + "  animate=" + animate)
+        item.isExpand = true
         if (animate) {
-            notifyChildrenInserted(groupPosition)
+            notifyChildrenInserted(getGroupPosition(item))
         } else {
             notifyDataChanged()
         }
@@ -101,27 +103,18 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
      * @param animate
      */
     @JvmOverloads
-    fun collapseGroup(groupPosition: Int, animate: Boolean = false) {
-        val entity = getItems()[groupPosition]
-        entity.isExpand = false
+    fun collapseGroup(item: ExpandableGroupEntity, animate: Boolean = false) {
+        println("收起前..Child=" + item.childList.size + "  animate=" + animate)
+        item.isExpand = false
         if (animate) {
-            notifyChildrenRemoved(groupPosition)
+            notifyChildrenRemoved(getGroupPosition(item))
         } else {
             notifyDataChanged()
         }
+        println("收起后..Child=" + item.childList.size)
     }
 
-    override fun getChildrenList(group: ExpandableGroupEntity): List<ChildEntity> {
-        return group.childList
+    override fun getChildrenList(groupItem: ExpandableGroupEntity): List<ChildEntity> {
+        return groupItem.childList
     }
 }
-/**
- * 展开一个组
- *
- * @param groupPosition
- */
-/**
- * 收起一个组
- *
- * @param groupPosition
- */

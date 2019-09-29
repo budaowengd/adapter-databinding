@@ -8,6 +8,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.lx.rv.AdapterReferenceCollector
+import me.lx.rv.BR
+import me.lx.rv.R
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -21,9 +23,13 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
-    private var mOnHeaderClickListener: OnHeaderClickListener? = null
-    private var mOnFooterClickListener: OnFooterClickListener? = null
-    private var mOnChildClickListener: OnChildClickListener? = null
+    //    private var mOnHeaderClickListener: OnHeaderClickListener? = null
+//    private var mOnFooterClickListener: OnFooterClickListener? = null
+//    private var mOnChildClickListener: OnChildClickListener? = null
+
+    private var mClickChildListener: ClickChildListener? = null
+    private var mClickHeaderListener: ClickChildListener? = null
+    private var mClickFooterListener: ClickChildListener? = null
     //保存分组列表的组结构
     protected var mStructures = ArrayList<GroupStructure>()
     //数据是否发生变化。如果数据发生变化，要及时更新组结构。
@@ -43,7 +49,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         registerAdapterDataObserver(GroupDataObserver())
     }
 
-    fun setGroupList(groupList: List<T>) {
+    open fun setGroupList(groupList: List<T>) {
         if (groupList == this.groupList) {
             return
         }
@@ -134,50 +140,40 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             parent,
             false
         )
-        return BaseViewHolder(binding.root)
+        return BindingViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val type = judgeType(position)
         val groupPosition = getGroupPositionForPosition(position)
-        if (type == TYPE_HEADER) {
-            if (mOnHeaderClickListener != null) {
-                holder.itemView.setOnClickListener {
-                    if (mOnHeaderClickListener != null) {
-                        mOnHeaderClickListener!!.onHeaderClick(
-                            this@GroupedRecyclerViewAdapter,
-                            holder as BaseViewHolder, groupPosition
-                        )
-                    }
+        val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)!!
+        val groupItem = groupList!![groupPosition]
+        when (type) {
+            TYPE_HEADER -> {
+                binding.setVariable(BR.headerItem, groupItem)
+                if (mClickHeaderListener != null) {
+                    binding.setVariable(BR.headerClick, mClickHeaderListener)
                 }
+                onBindHeaderViewHolder(binding, groupItem, groupPosition)
             }
-            onBindHeaderViewHolder(holder as BaseViewHolder, groupPosition)
-        } else if (type == TYPE_FOOTER) {
-            if (mOnFooterClickListener != null) {
-                holder.itemView.setOnClickListener {
-                    if (mOnFooterClickListener != null) {
-                        mOnFooterClickListener!!.onFooterClick(
-                            this@GroupedRecyclerViewAdapter,
-                            holder as BaseViewHolder, groupPosition
-                        )
-                    }
+            TYPE_FOOTER -> {
+                binding.setVariable(BR.footerItem, groupItem)
+                if (mClickFooterListener != null) {
+                    binding.setVariable(BR.footerClick, mClickFooterListener)
                 }
+                onBindFooterViewHolder(binding, groupItem, groupPosition)
             }
-            onBindFooterViewHolder(holder as BaseViewHolder, groupPosition)
-        } else if (type == TYPE_CHILD) {
-            val childPosition = getChildPositionForPosition(groupPosition, position)
-            if (mOnChildClickListener != null) {
-                holder.itemView.setOnClickListener {
-                    if (mOnChildClickListener != null) {
-                        mOnChildClickListener!!.onChildClick(
-                            this@GroupedRecyclerViewAdapter,
-                            holder as BaseViewHolder, groupPosition, childPosition
-                        )
-                    }
+            TYPE_CHILD -> {
+                val childPosition = getChildPositionForPosition(groupPosition, position)
+                val childItem = getChildrenList(groupItem)[childPosition]
+                binding.setVariable(BR.childItem, childItem)
+                if (mClickChildListener != null) {
+                    binding.setVariable(BR.childClick, mClickChildListener)
                 }
+                onBindChildViewHolder(binding, groupItem, childItem, groupPosition, childPosition)
             }
-            onBindChildViewHolder(holder as BaseViewHolder, groupPosition, childPosition)
         }
+        binding.executePendingBindings()
     }
 
     override fun getItemCount(): Int {
@@ -202,7 +198,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         return super.getItemViewType(position)
     }
 
-   open fun getHeaderViewType(groupPosition: Int): Int {
+    open fun getHeaderViewType(groupPosition: Int): Int {
         return TYPE_HEADER
     }
 
@@ -281,8 +277,21 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         isDataChanged = false
     }
 
-     fun getGroupCount(): Int {
+    fun getGroupCount(): Int {
         return groupList!!.size
+    }
+
+    fun getGroupPosition(groupItem: T): Int {
+        var groupPosition = -1
+        run breaking@{
+            groupList!!.forEachIndexed { index, group ->
+                if (groupItem == group) {
+                    groupPosition = index
+                    return@breaking
+                }
+            }
+        }
+        return groupPosition
     }
 
     /**
@@ -868,30 +877,42 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
      *
      * @param listener
      */
-    fun setOnHeaderClickListener(listener: OnHeaderClickListener) {
-        mOnHeaderClickListener = listener
-    }
+//    fun setOnHeaderClickListener(listener: OnHeaderClickListener) {
+//        mOnHeaderClickListener = listener
+//    }
 
     /**
      * 设置组尾点击事件
      *
      * @param listener
      */
-    fun setOnFooterClickListener(listener: OnFooterClickListener) {
-        mOnFooterClickListener = listener
-    }
+//    fun setOnFooterClickListener(listener: OnFooterClickListener) {
+//        mOnFooterClickListener = listener
+//    }
 
     /**
      * 设置子项点击事件
      *
      * @param listener
      */
-    fun setOnChildClickListener(listener: OnChildClickListener) {
-        mOnChildClickListener = listener
+//    fun setOnChildClickListener(listener: OnChildClickListener) {
+//        mOnChildClickListener = listener
+//    }
+    fun setClickChildListener(listener: ClickChildListener) {
+        mClickChildListener = listener
+    }
+
+    fun setClickHeaderListener(listener: ClickChildListener) {
+        mClickHeaderListener = listener
+    }
+
+    fun setClickFooterListener(listener: ClickChildListener) {
+        mClickFooterListener = listener
     }
 
     abstract fun getChildrenCount(groupPosition: Int): Int
-    abstract fun getChildrenList(group: T): List<C>
+
+    abstract fun getChildrenList(groupItem: T): List<C>
 
     abstract fun hasHeader(groupPosition: Int): Boolean
 
@@ -903,13 +924,15 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     abstract fun getChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(holder: BaseViewHolder, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(holder: BaseViewHolder, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
-        holder: BaseViewHolder,
-        groupPosition: Int, childPosition: Int
+        binding: ViewDataBinding,
+        groupItem: T, childItem: C,
+        groupPosition: Int,
+        childPosition: Int
     )
 
     internal inner class GroupDataObserver : RecyclerView.AdapterDataObserver() {
@@ -956,6 +979,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
+            println("GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
 
@@ -964,11 +988,11 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()..onItemRangeInserted()...2222...sender=${sender.size}  itemCount=$itemCount")
+            println("GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
             groupAdapter.notifyGroupRangeInserted(positionStart, itemCount)
             for (index in 0 until itemCount) {
 //                if(positionStart+index<sender.size){}
-                groupAdapter.addChildListChangedCallbackByGroup(sender[positionStart+index])
+                groupAdapter.addChildListChangedCallbackByGroup(sender[positionStart + index])
             }
         }
 
@@ -978,7 +1002,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             toPosition: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()....onItemRangeMoved()..3333.. itemCount=$itemCount")
+            println("GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
             groupAdapter.notifyGroupRangeRemoved(fromPosition, itemCount)
         }
 
@@ -987,39 +1011,46 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             positionStart: Int,
             itemCount: Int
         ) {
-            println("GroupedRecyclerViewAdapter()....onItemRangeRemoved()...4444.... itemCount=$itemCount")
+            println("GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555.... itemCount=$itemCount")
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
     }
 
 
-    interface OnHeaderClickListener {
-        fun onHeaderClick(
-            adapter: GroupedRecyclerViewAdapter<*, *>,
-            holder: BaseViewHolder,
-            groupPosition: Int
-        )
-    }
+    //    interface OnHeaderClickListener {
+//        fun onHeaderClick(
+//            adapter: GroupedRecyclerViewAdapter<*, *>,
+//            binding:ViewDataBinding,
+//            groupPosition: Int
+//        )
+//    }
+//
+//    interface OnFooterClickListener {
+//        fun onFooterClick(
+//            adapter: GroupedRecyclerViewAdapter<*, *>,
+//            binding:ViewDataBinding,
+//            groupPosition: Int
+//        )
+//    }
+//
+//    interface OnChildClickListener {
+//        fun onChildClick(
+//            adapter: GroupedRecyclerViewAdapter<*, *>, binding:ViewDataBinding,
+//            groupPosition: Int, childPosition: Int
+//        )
+//    }
+    private class BindingViewHolder internal constructor(binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root)
 
-    interface OnFooterClickListener {
-        fun onFooterClick(
-            adapter: GroupedRecyclerViewAdapter<*, *>,
-            holder: BaseViewHolder,
-            groupPosition: Int
-        )
-    }
+    interface ClickChildListener {}
 
-    interface OnChildClickListener {
-        fun onChildClick(
-            adapter: GroupedRecyclerViewAdapter<*, *>, holder: BaseViewHolder,
-            groupPosition: Int, childPosition: Int
-        )
-    }
 
     companion object {
 
-        val TYPE_HEADER = 89274
-        val TYPE_FOOTER = 89275
-        val TYPE_CHILD = 89276
+        @JvmField
+        var TYPE_HEADER = R.integer.type_header
+        @JvmField
+        val TYPE_FOOTER = R.integer.type_footer
+        @JvmField
+        val TYPE_CHILD = R.integer.type_child
     }
 }

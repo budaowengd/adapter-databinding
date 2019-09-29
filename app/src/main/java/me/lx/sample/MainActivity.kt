@@ -12,6 +12,8 @@ import me.lx.sample.databinding.ActivityMainBinding
 import me.lx.sample.group.FragmentGroupList
 import me.lx.sample.group.FragmentGroupList.Companion.bundle_default
 import me.lx.sample.group.FragmentGroupList.Companion.bundle_expandable
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_grid_child
+import me.lx.sample.group.FragmentGroupList.Companion.bundle_grid_diff_child
 import me.lx.sample.group.FragmentGroupList.Companion.bundle_no_footer
 import me.lx.sample.group.FragmentGroupList.Companion.bundle_no_header
 import me.lx.sample.group.FragmentGroupList.Companion.bundle_various
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_group_rv_various -> FragmentGroupList.newInstance(bundle_various)
                 R.id.action_group_rv_various_child -> FragmentGroupList.newInstance(bundle_various_child)
                 R.id.action_group_rv_expandable -> FragmentGroupList.newInstance(bundle_expandable)
+                R.id.action_group_rv_grid -> FragmentGroupList.newInstance(bundle_grid_child)
+                R.id.action_group_rv_diff_grid -> FragmentGroupList.newInstance(bundle_grid_diff_child)
                 else -> {
                     return@OnNavigationItemSelectedListener false
                 }
@@ -68,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener(listener)
 
         if (savedInstanceState == null) {
-            listener.onNavigationItemSelected(binding.navView.menu.getItem(4))
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(10))
         } else {
             actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
         }

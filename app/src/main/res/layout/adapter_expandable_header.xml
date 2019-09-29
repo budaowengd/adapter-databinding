@@ -1,31 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/holo_red_dark_ripple_bg"
-    android:orientation="vertical">
+        <variable
+            name="headerClick"
+            type="me.lx.rv.group.BaseClickGroupListener" />
 
-    <TextView
-        android:id="@+id/tv_expandable_header"
+        <variable
+            name="headerItem"
+            type="me.lx.sample.group.entity.ExpandableGroupEntity" />
+
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        tools:text="aaabbb"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:background="@drawable/holo_red_dark_ripple_bg"
+        android:onClick="@{()->headerClick.clickGroupItem(headerItem)}"
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_state"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/icon_right"
-        android:layout_gravity="center_vertical|right"
-        android:rotation="90"
-        android:layout_marginRight="10dp"/>
+        <TextView
+            android:id="@+id/tv_expandable_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@{headerItem.header}"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            tools:text="aaabbb" />
 
-</FrameLayout>
+
+        <ImageView
+            android:src="@drawable/icon_right"
+            android:id="@+id/iv_state"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+            android:rotation="@{headerItem.isExpand?90:0}"
+            android:scaleType="centerInside"
+         />
+
+    </FrameLayout>
 </layout>

@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/white_ripple_bg"
-    android:layout_marginBottom="1px"
-    android:orientation="vertical">
+        <variable
+            name="childClick"
+            type="me.lx.rv.group.BaseClickGroupListener" />
 
-    <TextView
-        android:id="@+id/tv_child"
+        <variable
+            name="childItem"
+            type="me.lx.sample.group.entity.ChildEntity" />
+
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:padding="8dp"
-        android:textSize="16sp" />
+        android:layout_marginBottom="1px"
+        android:background="@drawable/white_ripple_bg"
+        android:onClick="@{()->childClick.clickGroupItem(childItem)}"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_child"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@{childItem.child}"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 </layout>

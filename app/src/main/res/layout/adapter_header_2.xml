@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
 
+        <variable
+            name="headerClick"
+            type="me.lx.rv.group.BaseClickGroupListener" />
+
+        <variable
+            name="headerItem"
+            type="me.lx.sample.group.entity.GroupEntity" />
+
+    </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{()->headerClick.clickGroupItem(headerItem)}"
         android:background="@drawable/holo_purple_ripple_bg"
         android:orientation="vertical">
 
@@ -12,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:text='@{headerItem.header}'
             android:padding="10dp"
             android:textColor="@android:color/white"
             android:textSize="20sp" />

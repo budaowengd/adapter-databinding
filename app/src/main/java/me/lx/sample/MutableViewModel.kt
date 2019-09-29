@@ -14,7 +14,6 @@ import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
 import me.lx.rv.loadmore.LoadMoreAdapter
-import me.lx.rv.loadmore22.LoadMoreWrapper2222
 import me.lx.sample.vo.*
 
 /**
@@ -25,12 +24,12 @@ import me.lx.sample.vo.*
  *  desc:
  */
 class MutableViewModel : ViewModel(), ClickListeners {
+    // 加载更多相关
     var isNoMoreData = ObservableBoolean() // 加载更多后,没有更多数据的标识
     var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
     var isLoadMoreFail = false // 模拟加载更多失败的标识,没有其他作用
 
-    val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
-    val multiAdapter = BindingRecyclerViewAdapter<Any>()
+
     val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
         override fun loadingMore() {
             println("loadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
@@ -52,22 +51,12 @@ class MutableViewModel : ViewModel(), ClickListeners {
             return isLoadMoreFailOb
         }
     }
-    // 加载失败,点击重试,
 
-    // val loadMoreListener22 = object : LoadMoreDataManager { }
+    // 适配器
+    val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
+    val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
 
-    fun a2(recyclerView: RecyclerView) {
-        LoadMoreWrapper2222.with(adapter)
-            .setFooterView(me.lx.rv.R.layout.base_footer)
-            .setLoadFailedView(me.lx.rv.R.layout.base_load_failed)
-            .setNoMoreView(me.lx.rv.R.layout.base_no_more)
-            .setShowNoMoreEnabled(true)
-            .setListener {
-                println("加载更多回调..()....请求服务器了.......")
-            }
-            .into(recyclerView)
-    }
     // 点击事件
     private val itemClickEvent = object : BaseItemClickEvent<Any>() {
         override fun onItemClick(item: Any) {
