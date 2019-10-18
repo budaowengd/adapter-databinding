@@ -291,7 +291,9 @@ val clickChildEvent = object : BaseClickGroupListener<ChildEntity>() {
 这样就可以实现1个分组的列表了, , 注意: 数据源使用ObservableArrayList ,全程不需要你手动刷新adapter ,
 你更改数据源, 列表会自动刷新.
 
-## 对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。交流群： 597802495
+## 对于使用上有任何疑问或优化建议等，欢迎加入QQ群讨论交流技术问题。
+交流群： 597802495
+个人QQ: 382060748
 
 
 
