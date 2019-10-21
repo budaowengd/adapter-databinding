@@ -78,7 +78,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
         .insertItem(FooterVo("Footer11"))
         .insertItem(FooterVo("Footer22"))
 
-    //  数据 -> 多类型
+    //  数据 -> 多类型 d d
     val multiItems = MergeObservableList<Any>()
         .insertItem(Type1Vo("type1-0"))
         .insertItem(Type2Vo("type2-0"))
