@@ -4,7 +4,7 @@
 
         <variable
             name="footerClick"
-            type="me.lx.rv.group.BaseClickGroupListener" />
+            type="me.lx.rv.group.BaseFun1ClickGroupListener" />
 
         <variable
             name="footerItem"

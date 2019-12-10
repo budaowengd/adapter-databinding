@@ -7,6 +7,6 @@ package me.lx.rv.click
  *  version: 1.0
  *  desc: 普通列表默认点击实现, 包含2个参数
  */
-abstract class BaseFun2ItemClickEvent<T,R> : ClickListener{
-    abstract fun onItemClick(item: T,flag:R)
+abstract class BaseRvFun2ItemClickEvent<T,R> : ClickListener{
+    abstract fun clickRvItem(item: T,flag:R)
 }

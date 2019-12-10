@@ -28,7 +28,7 @@
             app:rv_group_chick_header_listener="@{viewModel.clickExpandHeaderEvent}"
             app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
             app:rv_group_adapter="@{viewModel.expandableAdapter}"
-            app:rv_group_item_list="@{viewModel.expandGroupList}"
+            app:rv_group_items="@{viewModel.expandGroupList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
              />
         <LinearLayout

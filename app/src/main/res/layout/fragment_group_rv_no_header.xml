@@ -34,7 +34,7 @@
             app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
             app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
             app:rv_group_adapter="@{viewModel.noHeaderAdapter}"
-            app:rv_group_item_list="@{viewModel.groupList}"
+            app:rv_group_items="@{viewModel.groupList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         <LinearLayout
             style="?buttonBarStyle"

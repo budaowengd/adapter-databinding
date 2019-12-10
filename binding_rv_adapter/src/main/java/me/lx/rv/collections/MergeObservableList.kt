@@ -25,8 +25,8 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
     /**
      * Inserts the given item into the merge list.
      */
-    fun insertItem(`object`: T): MergeObservableList<T> {
-        lists.add(listOf(`object`))
+    fun insertItem(item: T): MergeObservableList<T> {
+        lists.add(listOf(item))
         modCount += 1
         listeners.notifyInserted(this, size - 1, 1)
         return this

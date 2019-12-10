@@ -1,5 +1,6 @@
 package me.lx.rv
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -12,15 +13,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import java.lang.ref.WeakReference
 
 /**
   * [RecyclerView.Adapter]使用给定的[XmlItemBinding]将项目绑定到布局。
   * 如果你数据源是[ObservableList]，会根据对更改自行更新
  */
-class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
-    BindingCollectionAdapter<T> {
-
+class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), BindingCollectionAdapter<T> {
+    /**
+     * 添加或者删除item元素时,是否移动到指定的位置
+     */
+    private var addOrRemoveSmoothSpecPosition:Boolean?=null
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
     private var items: List<T>? = null
@@ -32,29 +34,17 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         if (this.recyclerView == null && items is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(
-                recyclerView,
-                this,
-                items as ObservableList<T>
-            )
+            callback = WeakReferenceOnListChangedCallback<T>(recyclerView, this, items as ObservableList<T>)
             (items as ObservableList<T>).addOnListChangedCallback(callback)
         }
         this.recyclerView = recyclerView
     }
 
-    override fun onCreateBinding(
-        inflater: LayoutInflater, @LayoutRes layoutRes: Int,
-        viewGroup: ViewGroup
-    ): ViewDataBinding {
+    override fun onCreateBinding(inflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
         return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false)
     }
 
-    override fun onBindBinding(
-        binding: ViewDataBinding,
-        variableId: Int, @LayoutRes layoutRes: Int,
-        position: Int,
-        item: T
-    ) {
+    override fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
         tryGetLifecycleOwner()
         if (xmlItemBinding.bind(binding, item)) {
             binding.executePendingBindings()
@@ -122,13 +112,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
             binding!!.executePendingBindings()
         } else { // 完整更新
             val item = items!![position]
-            onBindBinding(
-                binding!!,
-                xmlItemBinding.getDefaultVariableId(),
-                xmlItemBinding.getLayoutRes(),
-                position,
-                item
-            )
+            onBindBinding(binding!!, xmlItemBinding.getDefaultVariableId(), xmlItemBinding.getLayoutRes(), position, item)
         }
     }
 
@@ -228,10 +212,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
 
 
     override fun getItemId(position: Int): Long {
-        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(
-            position,
-            items!![position]
-        )
+        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(position, items!![position])
     }
 
     private fun tryGetLifecycleOwner() {
@@ -240,67 +221,61 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
         }
     }
 
-     class WeakReferenceOnListChangedCallback<T> constructor(
-        var recyclerView: RecyclerView,
-        adapter: RecyclerView.Adapter<ViewHolder>,
-        items: ObservableList<T>
-    ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        internal val adapterRef: WeakReference<RecyclerView.Adapter<ViewHolder>>
-
-        init {
-            this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this)
+    fun smoothSpecPosition(recyclerView: RecyclerView, positionStart: Int) {
+        if (addOrRemoveSmoothSpecPosition == true) {
+            recyclerView.scrollToPosition(positionStart)
         }
+    }
 
+    fun setAddOrRemoveSmoothSpecPosition(isSmoothSpecPosition: Boolean = true) {
+        addOrRemoveSmoothSpecPosition = isSmoothSpecPosition
+    }
+
+    class WeakReferenceOnListChangedCallback<T> constructor(var recyclerView: RecyclerView,var rvAdapter: BindingRecyclerViewAdapter<T>, items:
+    ObservableList<T>) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
+        //         internal val adapterRef: WeakReference<RecyclerView.Adapter<ViewHolder>> = AdapterReferenceCollector.createRef(adapter, items, this)
         override fun onChanged(sender: ObservableList<T>) {
-            println("BindingRecyclerViewAdapter()....onChanged()...2222.")
-            val adapter = recyclerView.adapter ?: return
+            // println("BindingRecyclerViewAdapter()....onChanged()...2222.")
             Utils.ensureChangeOnMainThread()
+            val adapter = recyclerView.adapter ?: return
             adapter.notifyDataSetChanged()
         }
 
-        override fun onItemRangeChanged(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
-        ) {
-            val adapter = recyclerView.adapter ?: return
+        override fun onItemRangeChanged(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
             Utils.ensureChangeOnMainThread()
+            val adapter = recyclerView.adapter ?: return
             adapter.notifyItemRangeChanged(positionStart, itemCount)
         }
 
-        override fun onItemRangeInserted(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
-        ) {
+        override fun onItemRangeInserted(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
             val adapter = recyclerView.adapter ?: return
-//            println("BindingRecyclerViewAdapter()....onItemRangeInserted()..positionStart=$positionStart  itemCount=$itemCount" +
-//                    "  adapter=${adapter.hashCode()}")
             Utils.ensureChangeOnMainThread()
+            if (DEBUG) {
+                Log.i(TAG, "onItemRangeInserted()..111..positionStart=$positionStart  itemCount=$itemCount")
+            }
+            rvAdapter.smoothSpecPosition(recyclerView,positionStart)
             adapter.notifyItemRangeInserted(positionStart, itemCount)
         }
 
-        override fun onItemRangeMoved(
-            sender: ObservableList<T>,
-            fromPosition: Int,
-            toPosition: Int,
-            itemCount: Int
-        ) {
-            val adapter = recyclerView.adapter ?: return
+        override fun onItemRangeMoved(sender: ObservableList<T>, fromPosition: Int, toPosition: Int, itemCount: Int) {
             Utils.ensureChangeOnMainThread()
+            if (DEBUG) {
+                Log.i(TAG, "onItemRangeMoved()...222...fromPosition=$fromPosition  toPosition=$toPosition" + "  itemCount=$itemCount")
+            }
+            val adapter = recyclerView.adapter ?: return
             for (i in 0 until itemCount) {
                 adapter.notifyItemMoved(fromPosition + i, toPosition + i)
             }
         }
 
-        override fun onItemRangeRemoved(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
-        ) {
+        override fun onItemRangeRemoved(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
+            Utils.ensureChangeOnMainThread()
+            if (DEBUG) {
+                Log.i(TAG, "onItemRangeMoved()...333...positionStart=$positionStart    itemCount=$itemCount")
+            }
+            rvAdapter.smoothSpecPosition(recyclerView,positionStart)
             // val adapter = adapterRef.get() ?: return
             val adapter = recyclerView.adapter ?: return
-            Utils.ensureChangeOnMainThread()
             adapter.notifyItemRangeRemoved(positionStart, itemCount)
         }
     }
@@ -318,5 +293,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(),
 
     companion object {
         private val DATA_INVALIDATION = Any()
+
+        val TAG = "me_lx_rv"
+        val DEBUG = BuildConfig.DEBUG
     }
 }

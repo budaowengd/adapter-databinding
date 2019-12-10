@@ -30,8 +30,8 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      * setVariableIdAndLayoutId
      * 设置变量id和布局id
      */
-    fun set(@LayoutRes mLayoutRes: Int, variableId: Int = 0, mClickListener: ClickListener? = null): XmlItemBinding<T> {
-        this.mLayoutRes = mLayoutRes
+    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, mClickListener: ClickListener? = null): XmlItemBinding<T> {
+        this.mLayoutRes = layoutRes
         this.mClickListener = mClickListener
         if (variableId == 0) {
             this.mDefaultItemVariableId = BR.item
@@ -155,9 +155,9 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
             binding.setVariable(mDefaultClickVariableId, mClickListener)
         }
 
-        if (!result) {
-            Utils.throwMissingVariable(binding, mDefaultItemVariableId, mLayoutRes)
-        }
+//        if (!result) {
+//            Utils.throwMissingVariable(binding, mDefaultItemVariableId, mLayoutRes)
+//        }
         if (mExtraBindings != null) {
             mExtraBindings!!.forEach { key, value ->
                 if (key != VAR_NONE) {
@@ -181,15 +181,15 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
         /**
          *使用给定的变量id和layout构造一个实例。
          */
-        fun <T> of(variableId: Int, @LayoutRes mLayoutRes: Int): XmlItemBinding<T> {
-            return XmlItemBinding<T>(null).set(mLayoutRes, variableId)
+        fun <T> of(@LayoutRes layoutRes: Int,variableId: Int): XmlItemBinding<T> {
+            return XmlItemBinding<T>(null).set(layoutRes, variableId)
         }
 
         /**
          *使用给定的变量id和layout构造一个实例。
          */
-        fun <T> of(@LayoutRes mLayoutRes: Int, mClickListener: ClickListener): XmlItemBinding<T> {
-            return XmlItemBinding<T>(null).set(mLayoutRes, mClickListener = mClickListener)
+        fun <T> of(@LayoutRes layoutRes: Int, mClickListener: ClickListener): XmlItemBinding<T> {
+            return XmlItemBinding<T>(null).set(layoutRes, mClickListener = mClickListener)
         }
 
 
@@ -199,7 +199,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
          * @see OnItemBind
          */
         @JvmStatic
-        fun <T> of(onItemBind: OnItemBind<T>): XmlItemBinding<T> {
+        fun <T> of(onItemBind: OnItemBind<T>?): XmlItemBinding<T> {
             return XmlItemBinding(onItemBind)
         }
     }

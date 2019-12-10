@@ -42,19 +42,15 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
                 groupItem.footer = "第二种尾部：" + groupItem.footer
             }
         }
-
     }
 
     override fun getChildrenList(groupItem: GroupEntity): List<ChildEntity> {
         return groupItem.childList
     }
 
-
-    override fun getChildrenCount(groupPosition: Int): Int {
-        val children = getItems()[groupPosition].childList
-        return children?.size ?: 0
+    override fun getChildrenCount(groupPosition: Int, groupItem: GroupEntity): Int {
+        return groupItem.childList.size
     }
-
     override fun hasHeader(groupPosition: Int): Boolean {
         return true
     }
@@ -136,4 +132,6 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
         private val TYPE_CHILD_1 = 5
         private val TYPE_CHILD_2 = 6
     }
+
+
 }

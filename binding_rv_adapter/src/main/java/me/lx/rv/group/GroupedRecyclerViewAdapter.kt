@@ -1,6 +1,5 @@
 package me.lx.rv.group
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -8,10 +7,8 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import me.lx.rv.AdapterReferenceCollector
-import me.lx.rv.BR
-import me.lx.rv.R
-import java.lang.ref.WeakReference
+import me.lx.rv.*
+import me.lx.rv.tools.Ls
 import java.util.*
 
 /**
@@ -19,18 +16,20 @@ import java.util.*
  * 这个类提供了一系列的对列表的更新、删除和插入等操作的方法。
  * 使用者要使用这些方法的列表进行操作，而不要直接使用RecyclerView.Adapter的方法。
  * 因为当分组列表发生变化时，需要及时更新分组列表的组结构[GroupedRecyclerViewAdapter.mStructures]
+ *
+ * 1、T泛型: 组对象
+ * 2、C泛型: 组里的孩子
  */
 abstract class GroupedRecyclerViewAdapter<T, C> :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+        RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<T> {
 
     //    private var mOnHeaderClickListener: OnHeaderClickListener? = null
 //    private var mOnFooterClickListener: OnFooterClickListener? = null
 //    private var mOnChildClickListener: OnChildClickListener? = null
 
-    private var mClickChildListener: ClickChildListener? = null
-    private var mClickHeaderListener: ClickChildListener? = null
-    private var mClickFooterListener: ClickChildListener? = null
+    private var mClickChildListener: ClickGroupListener? = null
+    private var mClickHeaderListener: ClickGroupListener? = null
+    private var mClickFooterListener: ClickGroupListener? = null
     //保存分组列表的组结构
     protected var mStructures = ArrayList<GroupStructure>()
     //数据是否发生变化。如果数据发生变化，要及时更新组结构。
@@ -43,6 +42,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     private var groupList: List<T>? = null
     private var recyclerView: RecyclerView? = null
 
+    // 当孩子为空的时候,如果存在header,就自动移除header
+    private var childEmptyIsRemoveHeader: Boolean? = null
+
     //    constructor(dataList: List<T>) : super() {
 //        groupList = dataList
 //    }
@@ -51,7 +53,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     }
 
     open fun setGroupList(groupList: List<T>) {
-        if (groupList == this.groupList) {
+        if (System.identityHashCode(groupList) == System.identityHashCode(this.groupList)) {
             return
         }
         if (recyclerView != null) {
@@ -83,7 +85,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     open fun addChildListChangedCallbackByGroup(group: T) {
         val childrenList = getChildrenList(group)
         if (childrenList is ObservableList) {
-            val childListCallback = ChildListChangedCallback<T, C>(this)
+            val childListCallback = ChildListChangedCallback<T, C>(this,childEmptyIsRemoveHeader)
             childrenList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
         }
     }
@@ -97,9 +99,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         super.onAttachedToRecyclerView(recyclerView)
         if (groupList is ObservableList<T>) {
             callback = WeakReferenceOnListChangedCallback<T>(
-                recyclerView,
-                this,
-                groupList!! as ObservableList<T>
+                    recyclerView,
+                    this,
+                    groupList!! as ObservableList<T>
             )
             (groupList as ObservableList<T>).addOnListChangedCallback(callback)
         }
@@ -118,9 +120,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     private fun isStaggeredGridLayout(holder: RecyclerView.ViewHolder): Boolean {
         val layoutParams = holder.itemView.layoutParams
-        return if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            true
-        } else false
+        return layoutParams is StaggeredGridLayoutManager.LayoutParams
     }
 
     private fun handleLayoutIfStaggeredGridLayout(holder: RecyclerView.ViewHolder, position: Int) {
@@ -135,10 +135,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             inflater = LayoutInflater.from(parent.context)
         }
         val binding = DataBindingUtil.inflate<ViewDataBinding>(
-            inflater!!,
-            getLayoutId(mTempPosition, viewType),
-            parent,
-            false
+                inflater!!,
+                getLayoutId(mTempPosition, viewType),
+                parent,
+                false
         )
         return BindingViewHolder(binding)
     }
@@ -259,8 +259,8 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         throw IndexOutOfBoundsException(
-            "can't determine the item type of the position." +
-                    "position = " + position + ",item count = " + getItemCount()
+                "can't determine the item type of the position." +
+                        "position = " + position + ",item count = " + getItemCount()
         )
     }
 
@@ -271,12 +271,12 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         mStructures.clear()
         val groupCount = getGroupCount()
         for (i in 0 until groupCount) {
-            mStructures.add(GroupStructure(hasHeader(i), hasFooter(i), getChildrenCount(i)))
+            mStructures.add(GroupStructure(hasHeader(i), hasFooter(i), getSelfChildrenCount(i)))
         }
         isDataChanged = false
-        if (DEBUG) {
-            Log.d(TAG, "重置组结构列表...666666....")
-        }
+//        if (DEBUG) {
+//            Ls.d( "重置组结构列表...666666....")
+//        }
     }
 
     fun getGroupCount(): Int {
@@ -301,11 +301,11 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
      *
      * @return 组下标 groupPosition
      */
-    fun getGroupPositionByChildPosition(childList: List<C>): Int {
+    fun getGroupPositionByChildList(childList: List<C>): Int {
         var groupIndex = -1
         run breaking@{
             groupList!!.forEachIndexed { index, group ->
-                if (getChildrenList(group) == childList) {
+                if (System.identityHashCode(getChildrenList(group)) == System.identityHashCode(childList)) {
                     groupIndex = index
                     return@breaking
                 }
@@ -344,7 +344,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             val itemCount = countGroupRangeItem(0, groupPosition + 1)
             val structure = mStructures[groupPosition]
             val p =
-                structure.childrenCount - (itemCount - position) + if (structure.hasFooter()) 1 else 0
+                    structure.childrenCount - (itemCount - position) + if (structure.hasFooter()) 1 else 0
             if (p >= 0) {
                 return p
             }
@@ -679,7 +679,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
                 if (childCount < childPosition + count) {
                     removeCount = childCount - childPosition
                 }
-                // Log.d(TAG,"notifyChildRangeRemoved()..index=$index  itemCount=$itemCount  childCount=$childCount  removeCount=$removeCount  ")
+                // Ls.d("notifyChildRangeRemoved()..index=$index  itemCount=$itemCount  childCount=$childCount  removeCount=$removeCount  ")
                 notifyItemRangeRemoved(index, removeCount)
                 notifyItemRangeChanged(index, itemCount - removeCount)
                 structure.childrenCount = childCount - removeCount
@@ -717,8 +717,8 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     fun notifyGroupInserted(groupPosition: Int) {
         var groupPosition = groupPosition
         val structure = GroupStructure(
-            hasHeader(groupPosition),
-            hasFooter(groupPosition), getChildrenCount(groupPosition)
+                hasHeader(groupPosition),
+                hasFooter(groupPosition), getSelfChildrenCount(groupPosition)
         )
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
             mStructures.add(groupPosition, structure)
@@ -747,8 +747,8 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         val list = ArrayList<GroupStructure>()
         for (i in 0 until count) {
             val structure = GroupStructure(
-                hasHeader(i),
-                hasFooter(i), getChildrenCount(i)
+                    hasHeader(i),
+                    hasFooter(i), getSelfChildrenCount(i)
             )
             list.add(structure)
         }
@@ -817,6 +817,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
                 index += structure.childrenCount
             }
             structure.childrenCount = structure.childrenCount + 1
+            Ls.d("notifyChildInserted()...index=$index  itemCount=$itemCount")
             notifyItemInserted(index)
             notifyItemRangeChanged(index + 1, itemCount - index)
         }
@@ -863,7 +864,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             if (structure.hasHeader()) {
                 index++
             }
-            val itemCount = getChildrenCount(groupPosition)
+            val itemCount = getSelfChildrenCount(groupPosition)
             if (itemCount > 0) {
                 structure.childrenCount = itemCount
                 notifyItemRangeInserted(index, itemCount)
@@ -900,19 +901,53 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 //    fun setOnChildClickListener(listener: OnChildClickListener) {
 //        mOnChildClickListener = listener
 //    }
-    fun setClickChildListener(listener: ClickChildListener) {
+    fun setClickChildListener(listener: ClickGroupListener) {
         mClickChildListener = listener
     }
 
-    fun setClickHeaderListener(listener: ClickChildListener) {
+    fun setClickHeaderListener(listener: ClickGroupListener) {
         mClickHeaderListener = listener
     }
 
-    fun setClickFooterListener(listener: ClickChildListener) {
+    fun setClickFooterListener(listener: ClickGroupListener) {
         mClickFooterListener = listener
     }
 
-    abstract fun getChildrenCount(groupPosition: Int): Int
+    override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
+
+    }
+
+    override fun getItemBinding(): XmlItemBinding<T>? {
+        return null
+    }
+
+    override fun setItems(items: List<T>) {
+
+    }
+
+    override fun getAdapterItem(position: Int): T? {
+        return null
+    }
+
+    override fun onCreateBinding(inflater: LayoutInflater, layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding? {
+        return null
+    }
+
+    override fun onBindBinding(binding: ViewDataBinding, variableId: Int, layoutRes: Int, position: Int, item: T) {
+
+    }
+
+
+    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): GroupedRecyclerViewAdapter<T, C> {
+        childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
+        return this
+    }
+
+    private fun getSelfChildrenCount(groupPosition: Int): Int {
+        return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
+    }
+
+    abstract fun getChildrenCount(groupPosition: Int, groupItem: T): Int
 
     abstract fun getChildrenList(groupItem: T): List<C>
 
@@ -931,10 +966,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
-        binding: ViewDataBinding,
-        groupItem: T, childItem: C,
-        groupPosition: Int,
-        childPosition: Int
+            binding: ViewDataBinding,
+            groupItem: T, childItem: C,
+            groupPosition: Int,
+            childPosition: Int
     )
 
     internal inner class GroupDataObserver : RecyclerView.AdapterDataObserver() {
@@ -961,42 +996,39 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     }
 
     class WeakReferenceOnListChangedCallback<T> constructor(
-        var recyclerView: RecyclerView,
-        private var groupAdapter: GroupedRecyclerViewAdapter<T, *>,
-        groupList: ObservableList<T>
+            var recyclerView: RecyclerView,
+            private var groupAdapter: GroupedRecyclerViewAdapter<T, *>,
+            groupList: ObservableList<T>
     ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        internal val adapterRef: WeakReference<RecyclerView.Adapter<RecyclerView.ViewHolder>>
-
-        init {
-            this.adapterRef = AdapterReferenceCollector.createRef(groupAdapter, groupList, this)
-        }
+        // internal val adapterRef: WeakReference<GroupedRecyclerViewAdapter<T, *>> = AdapterReferenceCollector.createRef
+        // (groupAdapter, groupList, this)
 
         override fun onChanged(sender: ObservableList<T>) {
             if (DEBUG) {
-                Log.d(TAG, "GroupedRecyclerViewAdapter()....onChanged()...1111..")
+                Ls.d( "GroupedRecyclerViewAdapter()....onChanged()...1111..")
             }
             groupAdapter.notifyDataSetChanged()
         }
 
         override fun onItemRangeChanged(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
+                sender: ObservableList<T>,
+                positionStart: Int,
+                itemCount: Int
         ) {
             if (DEBUG) {
-                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
+                Ls.d( "GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
 
         override fun onItemRangeInserted(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
+                sender: ObservableList<T>,
+                positionStart: Int,
+                itemCount: Int
         ) {
             if (DEBUG) {
 
-                Log.d(TAG, "GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
+                Ls.d( "GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeInserted(positionStart, itemCount)
             for (index in 0 until itemCount) {
@@ -1006,26 +1038,26 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         override fun onItemRangeMoved(
-            sender: ObservableList<T>,
-            fromPosition: Int,
-            toPosition: Int,
-            itemCount: Int
+                sender: ObservableList<T>,
+                fromPosition: Int,
+                toPosition: Int,
+                itemCount: Int
         ) {
             if (DEBUG) {
 
-                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
+                Ls.d( "GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeRemoved(fromPosition, itemCount)
         }
 
         override fun onItemRangeRemoved(
-            sender: ObservableList<T>,
-            positionStart: Int,
-            itemCount: Int
+                sender: ObservableList<T>,
+                positionStart: Int,
+                itemCount: Int
         ) {
             if (DEBUG) {
 
-                Log.d(TAG, "GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555.... itemCount=$itemCount")
+                Ls.d( "GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555.... itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
@@ -1056,13 +1088,14 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 //    }
     private class BindingViewHolder internal constructor(binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root)
 
-    interface ClickChildListener {}
+    interface ClickGroupListener {}
 
 
     companion object {
 
         const val TAG = "GroupedAdapter"
-        const val DEBUG = false
+        @JvmField
+        val DEBUG = BuildConfig.DEBUG
 
         @JvmField
         var TYPE_HEADER = R.integer.type_header

@@ -206,7 +206,7 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
 var isNoMoreData = ObservableBoolean()  // 加载更多后,没有更多数据的标识
 var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
 val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更多监听
-        override fun loadingMore() {
+        override fun onLoadingMore() {
             // 模拟数据
             Handler().postDelayed({
                 for (i in 0 until 3) {
@@ -216,12 +216,12 @@ val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更
         }
 
        // 根据此标识决定是否显示没有更多数据
-        override fun getNoMoreDataOb(): ObservableBoolean {
+        override fun isShowNoMoreDataOb(): ObservableBoolean {
             return isNoMoreData
         }
 
        // 根据此标识决定是否显示加载失败的布局,点击失败布局,默认触发loadingMore回调
-        override fun getLoadMoreFailOb(): ObservableBoolean {
+        override fun isShowLoadMoreFailOb(): ObservableBoolean {
             return isLoadMoreFailOb
         }
     }
@@ -270,7 +270,7 @@ class CustomLoadMoreFooter : AbstractLoadMoreFooter() {
 ```xml
  <androidx.recyclerview.widget.RecyclerView
             app:rv_group_adapter="@{viewModel.groupAdapter}"
-            app:rv_group_item_list="@{viewModel.groupList}"
+            app:rv_group_items="@{viewModel.groupList}"
             app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
             app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
             app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
@@ -282,7 +282,7 @@ val groupAdapter = GroupedListAdapter()
 
 val groupList = ObservableArrayList<YourBean>()
 
-val clickChildEvent = object : BaseClickGroupListener<ChildEntity>() {
+val clickChildEvent = object : BaseFun1ClickGroupListener<ChildEntity>() {
         override fun clickGroupItem(item: ChildEntity) {
             Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_LONG).show()
         }

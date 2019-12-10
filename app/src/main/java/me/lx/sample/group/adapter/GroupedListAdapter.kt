@@ -19,11 +19,9 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
         return groupItem.childList
     }
 
-    override fun getChildrenCount(groupPosition: Int): Int {
-        val childList = getItems()[groupPosition].childList
-        return childList.size
+    override fun getChildrenCount(groupPosition: Int, groupItem: GroupEntity): Int {
+        return groupItem.childList.size
     }
-
     override fun hasHeader(groupPosition: Int): Boolean {
         return getItems()[groupPosition].childList.size > 0
     }
@@ -53,6 +51,8 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
     override fun onBindChildViewHolder(binding:ViewDataBinding, groupItem: GroupEntity, childItem: ChildEntity,groupPosition: Int,childPosition: Int) {
         // 而外设置变量
     }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
+import androidx.annotation.Nullable
 import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 
@@ -17,14 +18,11 @@ import androidx.databinding.ViewDataBinding
 interface BindingCollectionAdapter<T> {
 
     /**
-     * 返回ItemBinding对象从适配器里
-     */
-    /**
      * 设置 XmlItemBinding 对象到适配器
      */
     fun setItemBinding(itemBinding: XmlItemBinding<T>)
 
-    fun getItemBinding(): XmlItemBinding<T>
+    fun getItemBinding(): XmlItemBinding<T>?
 
     /**
      * 设置适配器的项目。 这些项目将根据[XmlItemBinding]显示。 如果
@@ -35,12 +33,12 @@ interface BindingCollectionAdapter<T> {
      * 它的任何更改*必须* em>在主线程上发生。
      * 此外，如果您不使用`ObservableList`，你*必须* em>调用`notifyDataSetChanged()`或其他相关方法。
      */
-    fun setItems(items: List<T>)
+    fun setItems(@Nullable  items: List<T>)
 
     /**
      * 返回适配器给定位置的项目
      */
-    fun getAdapterItem(position: Int): T
+    fun getAdapterItem(position: Int): T?
 
     /**
      * Adapter中执行 onCreateViewHolder() 方法的回调,支持子类进行覆盖转换特定的布局绑定和获取视图字段
@@ -48,7 +46,7 @@ interface BindingCollectionAdapter<T> {
     fun onCreateBinding(
         inflater: LayoutInflater, @LayoutRes layoutRes: Int,
         viewGroup: ViewGroup
-    ): ViewDataBinding
+    ): ViewDataBinding?
 
     /**
      * Adapter中执行 onBindViewHolder() 方法的回调

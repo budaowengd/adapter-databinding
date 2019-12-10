@@ -17,7 +17,6 @@ import androidx.lifecycle.LifecycleOwner;
  * useful.
  */
 class Utils {
-    private static final String TAG = "BCAdapters";
 
     /**
      * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
@@ -38,7 +37,9 @@ class Utils {
     @Nullable
     @MainThread
     static LifecycleOwner findLifecycleOwner(View view) {
-        if(view==null)return null;
+        if(view==null){
+            return null;
+        }
         ViewDataBinding binding = DataBindingUtil.findBinding(view);
         LifecycleOwner lifecycleOwner = null;
         if (binding != null) {

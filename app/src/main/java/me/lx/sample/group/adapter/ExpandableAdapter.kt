@@ -20,13 +20,16 @@ import me.lx.sample.group.entity.ExpandableGroupEntity
  */
 class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, ChildEntity>() {
 
-    override fun getChildrenCount(groupPosition: Int): Int {
+    override fun getChildrenCount(groupPosition: Int, groupItem: ExpandableGroupEntity): Int {
         //如果当前组收起，就直接返回0，否则才返回子项数。这是实现列表展开和收起的关键。
         if (isExpand(groupPosition)) {
-            return getChildrenList(getItems()[groupPosition]).size
+           // return getChildrenList(getItems()[groupPosition]).size
+            return groupItem.childList.size
         }
         return 0
     }
+
+
 
 
 
@@ -117,4 +120,6 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
     override fun getChildrenList(groupItem: ExpandableGroupEntity): List<ChildEntity> {
         return groupItem.childList
     }
+
+
 }

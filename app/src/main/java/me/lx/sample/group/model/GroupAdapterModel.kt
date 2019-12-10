@@ -2,7 +2,7 @@ package me.lx.sample.group.model
 
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import me.lx.rv.group.BaseClickGroupListener
+import me.lx.rv.group.BaseFun1ClickGroupListener
 import me.lx.rv.group.GroupedGridLayoutManager
 import me.lx.sample.ClickListeners
 import me.lx.sample.MyApp
@@ -25,24 +25,24 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
     val expandGroupList = GroupModel.getExpandableGroups(10, 3)// 展开、收起列表数据
 
     // 点击事件
-    val clickChildEvent = object : BaseClickGroupListener<ChildEntity>() {
+    val clickChildEvent = object : BaseFun1ClickGroupListener<ChildEntity>() {
         override fun clickGroupItem(item: ChildEntity) {
             Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_LONG).show()
         }
     }
 
-    val clickHeaderEvent = object : BaseClickGroupListener<GroupEntity>() {
+    val clickHeaderEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
         override fun clickGroupItem(item: GroupEntity) {
             Toast.makeText(MyApp.sContext, item.header, Toast.LENGTH_LONG).show()
         }
     }
-    val clickFooterEvent = object : BaseClickGroupListener<GroupEntity>() {
+    val clickFooterEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
         override fun clickGroupItem(item: GroupEntity) {
             Toast.makeText(MyApp.sContext, item.footer, Toast.LENGTH_LONG).show()
         }
     }
 
-    val clickExpandHeaderEvent = object : BaseClickGroupListener<ExpandableGroupEntity>() {
+    val clickExpandHeaderEvent = object : BaseFun1ClickGroupListener<ExpandableGroupEntity>() {
         override fun clickGroupItem(item: ExpandableGroupEntity) {
             println("点击前 .....isExpand=" + item.isExpand)
             if (item.isExpand) {

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.OnItemBind
 import me.lx.rv.XmlItemBinding
-import me.lx.rv.click.BaseItemClickEvent
+import me.lx.rv.click.BaseRvFun1ItemClickEvent
 import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
@@ -31,8 +31,8 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
 
     val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
-        override fun loadingMore() {
-            println("loadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
+        override fun onLoadingMore() {
+            println("onLoadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
             Handler().postDelayed({
                isLoadMoreFailOb.set(isLoadMoreFail)
                 if (!isLoadMoreFail) {
@@ -43,11 +43,11 @@ class MutableViewModel : ViewModel(), ClickListeners {
             }, 500)
         }
 
-        override fun getNoMoreDataOb(): ObservableBoolean {
+        override fun isShowNoMoreDataOb(): ObservableBoolean {
             return isNoMoreData
         }
 
-        override fun getLoadMoreFailOb(): ObservableBoolean {
+        override fun isShowLoadMoreFailOb(): ObservableBoolean {
             return isLoadMoreFailOb
         }
     }
@@ -58,8 +58,8 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
 
     // 点击事件
-    private val itemClickEvent = object : BaseItemClickEvent<Any>() {
-        override fun onItemClick(item: Any) {
+    private val itemClickEvent = object : BaseRvFun1ItemClickEvent<Any>() {
+        override fun clickRvItem(item: Any) {
             (item as? SingleItemVo)?.onToggleChecked()
         }
     }
@@ -115,6 +115,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
         map<SingleItemVo>(R.layout.item_single)
         map<FooterVo>(R.layout.item_footer)
     }
+
 
     fun t1() {
         val aa: RecyclerView? = null

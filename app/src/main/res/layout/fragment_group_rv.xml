@@ -31,7 +31,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:rv_group_adapter="@{viewModel.groupAdapter}"
-            app:rv_group_item_list="@{viewModel.groupList}"
+            app:rv_group_items="@{viewModel.groupList}"
             app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
             app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
             app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
