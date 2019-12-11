@@ -36,7 +36,7 @@ class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
     }
 
     override fun clickAddItem() {
-        viewModel.isNoMoreData.set(!viewModel.isNoMoreData.get())
+        viewModel.isShowNoMoreData.set(!viewModel.isShowNoMoreData.get())
         val recyclerView = view!!.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.scrollBy(0,13)
         recyclerView.stopScroll()

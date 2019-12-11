@@ -25,8 +25,8 @@ import me.lx.sample.vo.*
  */
 class MutableViewModel : ViewModel(), ClickListeners {
     // 加载更多相关
-    var isNoMoreData = ObservableBoolean() // 加载更多后,没有更多数据的标识
-    var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
+    var isShowNoMoreData = ObservableBoolean() // 加载更多后,没有更多数据的标识
+    var isShowLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
     var isLoadMoreFail = false // 模拟加载更多失败的标识,没有其他作用
 
 
@@ -34,7 +34,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
         override fun onLoadingMore() {
             println("onLoadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
             Handler().postDelayed({
-               isLoadMoreFailOb.set(isLoadMoreFail)
+               isShowLoadMoreFailOb.set(isLoadMoreFail)
                 if (!isLoadMoreFail) {
                     for (i in singleItems.size until singleItems.size + 3) {
                         singleItems.add(SingleItemVo(i))
@@ -44,11 +44,11 @@ class MutableViewModel : ViewModel(), ClickListeners {
         }
 
         override fun isShowNoMoreDataOb(): ObservableBoolean {
-            return isNoMoreData
+            return isShowNoMoreData
         }
 
         override fun isShowLoadMoreFailOb(): ObservableBoolean {
-            return isLoadMoreFailOb
+            return isShowLoadMoreFailOb
         }
     }
 

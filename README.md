@@ -203,8 +203,8 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
             add(SingleItemVo(i))
         }
     }
-var isNoMoreData = ObservableBoolean()  // 加载更多后,没有更多数据的标识
-var isLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
+var isShowNoMoreData = ObservableBoolean()  // 加载更多后,没有更多数据的标识
+var isShowLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
 val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更多监听
         override fun onLoadingMore() {
             // 模拟数据
@@ -217,12 +217,12 @@ val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更
 
        // 根据此标识决定是否显示没有更多数据
         override fun isShowNoMoreDataOb(): ObservableBoolean {
-            return isNoMoreData
+            return isShowNoMoreData
         }
 
        // 根据此标识决定是否显示加载失败的布局,点击失败布局,默认触发loadingMore回调
         override fun isShowLoadMoreFailOb(): ObservableBoolean {
-            return isLoadMoreFailOb
+            return isShowLoadMoreFailOb
         }
     }
 ```
