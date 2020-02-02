@@ -2,7 +2,9 @@ package me.lx.rv
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+
 import androidx.annotation.LayoutRes
+import androidx.annotation.Nullable
 import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 
@@ -20,7 +22,7 @@ interface BindingCollectionAdapter<T> {
      */
     fun setItemBinding(itemBinding: XmlItemBinding<T>)
 
-    fun getItemBinding(): XmlItemBinding<T>?
+    fun getItemXmlObj(): XmlItemBinding<T>?
 
     /**
      * 设置适配器的项目。 这些项目将根据[XmlItemBinding]显示。 如果
@@ -31,7 +33,7 @@ interface BindingCollectionAdapter<T> {
      * 它的任何更改*必须* em>在主线程上发生。
      * 此外，如果您不使用`ObservableList`，你*必须* em>调用`notifyDataSetChanged()`或其他相关方法。
      */
-    fun setItems(items: List<T>)
+    fun setItems(@Nullable  items: List<T>)
 
     /**
      * 返回适配器给定位置的项目

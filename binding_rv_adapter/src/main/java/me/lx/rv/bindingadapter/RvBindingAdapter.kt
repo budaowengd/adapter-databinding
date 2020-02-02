@@ -24,27 +24,36 @@ fun <T> set_rv_Adapter(recyclerView: RecyclerView, rv_layoutmanager: RecyclerVie
 // RecyclerView
 @BindingAdapter(
     value = ["rv_itemBinding", "rv_items", "rv_adapter", "rv_itemIds", "rv_viewHolderFactory",
-        "rv_diffConfig", "rv_loadmore_listener"],
+        "rv_diffConfig", "rv_loadmore_listener", "rv_layout_span", "rv_SpanSizeLookup"],
     requireAll = false
 )
 fun <T> set_rv_Adapter(
     rv: RecyclerView,
-    xmlAny: Any,
-    items: List<T>,
+    xmlAny: Any?,
+    items: List<T>?,
     rvAdapter: BindingRecyclerViewAdapter<T>?,
     itemIds: BindingRecyclerViewAdapter.ItemIds<in T>?,
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?,
-    loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null
+    loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
+    grid_span: Int = 1,
+    spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
-    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....rvAdapter=${rvAdapter.hashCode()}...  rvAp=${rv.adapter?.hashCode()}")
+    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....Ap=${rvAdapter.hashCode()}...  rvAp=${rv.adapter?.hashCode()}")
     if (rv.adapter != null) return
+    if (items == null) return
+    if (xmlAny == null) return
 
+//    rv.setRecycledViewPool()
+//    rvAdapter.setLifecycleOwner()
     var xmlItem = xmlAny
     if (xmlItem is OnItemBindClass<*>) {
         xmlItem = XmlItemBinding.of(xmlItem)
     }
     if (xmlItem !is XmlItemBinding<*>) return
+    set_rv_layoutmanager(rv, grid_span, spanLookup)
+
+
     var adapter = rvAdapter
     val oldAdapter = rv.adapter
     if (adapter == null) {
@@ -54,6 +63,7 @@ fun <T> set_rv_Adapter(
             adapter = oldAdapter as BindingRecyclerViewAdapter<T>
         }
     }
+    adapter.init()
     adapter.setItemBinding(xmlItem as XmlItemBinding<T>)
 
     if (diffConfig != null) {
@@ -80,6 +90,7 @@ fun <T> set_rv_Adapter(
 }
 
 /**
+ * 不能使用BindingAdapter的原因是,这里会比setAdapter后执行,在loadmoreAdapter里获取不到Lookup对象
  * , "rv_group_layoutmanager"
  *  rv_layoutmanager  rv_layout_is_horizontal
  * @param layoutHorizontal
@@ -90,13 +101,14 @@ fun <T> set_rv_Adapter(
  *          如果大于等于12,说明是瀑布流布局,取个位数作为spanCount
  *          GridLayoutManager.SpanSizeLookup
  */
-@BindingAdapter(value = ["rv_layout_span", "rv_SpanSizeLookup"], requireAll = false)
+//@BindingAdapter(value = ["rv_layout_span", "rv_SpanSizeLookup"], requireAll = false)
 fun set_rv_layoutmanager(
     rv: RecyclerView,
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
     Ls.d("set_rv_layoutmanager().....grid_span=$grid_span")
+
     var layout: RecyclerView.LayoutManager? = null
     if (grid_span == 0 || grid_span == 1) {
         layout = LinearLayoutManager(rv.context, if (grid_span == 0) RecyclerView.HORIZONTAL else RecyclerView.VERTICAL, false)
@@ -117,23 +129,27 @@ fun set_rv_layoutmanager(
 //
 @BindingAdapter(
     value = ["rv_group_adapter", "rv_group_items",
-        "rv_group_loadmore_listener", "rv_group_chick_child_listener", "rv_group_chick_header_listener", "rv_group_chick_footer_listener"],
+        "rv_group_layout_span", "rv_group_SpanSizeLookup",
+        "rv_group_loadmore_listener", "rv_group_chick_child_listener",
+        "rv_group_chick_header_listener", "rv_group_chick_footer_listener"],
     requireAll = false
 )
 fun <T, C> set_rv_GroupAdapter(
-    recyclerView: RecyclerView, adapter: GroupedRecyclerViewAdapter<T, C>?,
-    items: List<T>?
-    , loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null
-    , clickChildListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null
-    , clickHeaderListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null
-    , clickFooterListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null
-
+    rv: RecyclerView, adapter: GroupedRecyclerViewAdapter<T, C>?,
+    items: List<T>?,
+    grid_span: Int = 1,
+    spanLookup: GridLayoutManager.SpanSizeLookup? = null,
+    loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
+    clickChildListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null,
+    clickHeaderListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null,
+    clickFooterListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null
 ) {
 //    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
-    if (recyclerView.adapter != null) return
+    if (rv.adapter != null) return
     if (items == null) return
     if (adapter == null) return
     adapter.setGroupList(items)
+    set_rv_layoutmanager(rv, if(grid_span==0) 1 else grid_span, spanLookup)
     if (clickChildListener != null) {
         adapter.setClickChildListener(clickChildListener)
     }
@@ -144,9 +160,9 @@ fun <T, C> set_rv_GroupAdapter(
         adapter.setClickFooterListener(clickFooterListener)
     }
     if (loadMoreListener != null) {
-        recyclerView.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
+        rv.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
     } else {
-        recyclerView.adapter = adapter
+        rv.adapter = adapter
     }
 
 }

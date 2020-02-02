@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.OnItemBind
 import me.lx.rv.XmlItemBinding
-import me.lx.rv.a1.BindingRecyclerViewAdapter22
 import me.lx.rv.click.BaseRvFun1ItemClickEvent
 import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
@@ -33,7 +32,6 @@ class MutableViewModel : ViewModel(), ClickListeners {
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
 
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
-    val multiAdapter22 = BindingRecyclerViewAdapter22<Any>()
 
     // grid3
     val gridAdapter = BindingRecyclerViewAdapter<SingleItemVo>()
@@ -119,7 +117,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
     // 布局 -> 带头和脚
     val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
-        override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
+        override fun onGetItemViewType(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
                 HeaderVo::class -> itemBinding.set(R.layout.item_header, BR.item, itemClickEvent)
                 Header2Vo::class -> itemBinding.set(R.layout.item_header2, BR.item, itemClickEvent)
@@ -127,6 +125,8 @@ class MutableViewModel : ViewModel(), ClickListeners {
                 FooterVo::class -> itemBinding.set(R.layout.item_footer, itemClickEvent)
             }
         }
+
+
     })
 
     val headerFooterItemBinding2 = OnItemBindClass<Any>().apply {

@@ -24,8 +24,8 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
     private var isSupportTopHaveDivider = false // 最顶部是否支持分割线
     private var isSupportBottomHaveDivider = true // 最底部是否支持分割线
 
-    companion object{
-       public val ATTRS = intArrayOf(android.R.attr.listDivider)
+    companion object {
+        public val ATTRS = intArrayOf(android.R.attr.listDivider)
     }
 
     constructor(context: Context) {
@@ -39,12 +39,12 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
     }
 
 
-    fun setSupportTopHaveDivider(haveDivider: Boolean): SupportTopAndBottomItemDecoration {
+    fun setSupportTopHaveDivider(haveDivider: Boolean = true): SupportTopAndBottomItemDecoration {
         isSupportTopHaveDivider = haveDivider
         return this
     }
 
-    fun setSupportBottomHaveDivider(haveDivider: Boolean): SupportTopAndBottomItemDecoration {
+    fun setSupportBottomHaveDivider(haveDivider: Boolean = true): SupportTopAndBottomItemDecoration {
         isSupportBottomHaveDivider = haveDivider
         return this
     }

@@ -8,7 +8,7 @@
             type="me.lx.rv.group.BaseFun1ClickGroupListener" />
 
         <variable
-            name="headerItem"
+            name="headerGroup"
             type="me.lx.sample.group.entity.ExpandableGroupEntity" />
 
     </data>
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_red_dark_ripple_bg"
-        android:onClick="@{()->headerClick.clickGroupItem(headerItem)}"
+        android:onClick="@{()->headerClick.clickGroupItem(headerGroup)}"
         android:orientation="vertical">
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{headerItem.header}"
+            android:text="@{headerGroup.header}"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             tools:text="aaabbb" />
@@ -38,7 +38,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="10dp"
-            android:rotation="@{headerItem.isExpand?90:0}"
+            android:rotation="@{headerGroup.isExpand?90:0}"
             android:scaleType="centerInside"
          />
 

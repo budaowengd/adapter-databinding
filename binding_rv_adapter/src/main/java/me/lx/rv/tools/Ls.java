@@ -6,7 +6,6 @@ import me.lx.rv.BuildConfig;
 
 
 public class Ls {
-
     /**
      * 日志输出级别NONE
      */

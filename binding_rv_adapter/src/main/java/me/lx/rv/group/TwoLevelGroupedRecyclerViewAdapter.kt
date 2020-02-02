@@ -15,12 +15,21 @@ import java.util.*
  * 通用的分组列表Adapter。通过它可以很方便的实现列表的分组效果。
  * 这个类提供了一系列的对列表的更新、删除和插入等操作的方法。
  * 使用者要使用这些方法的列表进行操作，而不要直接使用RecyclerView.Adapter的方法。
- * 因为当分组列表发生变化时，需要及时更新分组列表的组结构[GroupedRecyclerViewAdapter.mStructures]
+ * 因为当分组列表发生变化时，需要及时更新分组列表的组结构[TwoLevelGroupedRecyclerViewAdapter.mStructures]
  *
  * 1、T泛型: 组对象
  * 2、C泛型: 组里的孩子
+ * 2级分组
+ * group1-header
+ *  child1
+ *      child1-1
+ *      child2-2
+ *  child2
+ *      child2-1
+ *      child2-2
+ *  group1-footer
  */
-abstract class GroupedRecyclerViewAdapter<T, C> :
+abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<T> {
     companion object {
         const val TAG = "GroupedAdapter"
@@ -33,6 +42,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         val TYPE_FOOTER = R.integer.type_footer
         @JvmField
         val TYPE_CHILD = R.integer.type_child
+
+        @JvmField
+        val TYPE_CHILD_CHILD = R.integer.type_child_child
     }
 
     //    private var mOnHeaderClickListener: OnHeaderClickListener? = null
@@ -191,7 +203,8 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     open fun addChildListChangedCallbackByGroup(group: T) {
         val childrenList = getChildrenList(group)
         if (childrenList is ObservableList) {
-            val childListCallback = ChildListChangedCallback<T, C>(this, childEmptyIsRemoveHeader)
+            val childListCallback =
+                TwoLevelChildListChangedCallback<T, C>(this, childEmptyIsRemoveHeader)
             childrenList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
         }
     }
@@ -234,6 +247,8 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             return getFooterLayout(viewType)
         } else if (type == TYPE_CHILD) {
             return getChildLayout(viewType)
+        } else if (type == TYPE_CHILD_CHILD) {
+            return getChildChildLayout(viewType)
         }
         return 0
     }
@@ -976,7 +991,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     }
 
 
-    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): GroupedRecyclerViewAdapter<T, C> {
+    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<T, C> {
         childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
         return this
     }
@@ -998,6 +1013,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     abstract fun getFooterLayout(viewType: Int): Int
 
     abstract fun getChildLayout(viewType: Int): Int
+    abstract fun getChildChildLayout(viewType: Int): Int
 
     abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
 
@@ -1035,15 +1051,15 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     class WeakReferenceOnListChangedCallback<T> constructor(
         var recyclerView: RecyclerView,
-        private var groupAdapter: GroupedRecyclerViewAdapter<T, *>,
+        private var groupAdapter: TwoLevelGroupedRecyclerViewAdapter<T, *>,
         groupList: ObservableList<T>
     ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        // internal val adapterRef: WeakReference<GroupedRecyclerViewAdapter<T, *>> = AdapterReferenceCollector.createRef
+        // internal val adapterRef: WeakReference<TwoLevelGroupedRecyclerViewAdapter<T, *>> = AdapterReferenceCollector.createRef
         // (groupAdapter, groupList, this)
 
         override fun onChanged(sender: ObservableList<T>) {
             if (DEBUG) {
-                Ls.d("GroupedRecyclerViewAdapter()....onChanged()...1111..")
+                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onChanged()...1111..")
             }
             groupAdapter.notifyDataSetChanged()
         }
@@ -1054,7 +1070,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("GroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
+                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
         }
@@ -1065,7 +1081,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("GroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
+                Ls.d("TwoLevelGroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeInserted(positionStart, itemCount)
             for (index in 0 until itemCount) {
@@ -1081,7 +1097,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("GroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
+                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
             }
             groupAdapter.notifyGroupRangeRemoved(fromPosition, itemCount)
         }
@@ -1093,7 +1109,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("GroupedRecyclerViewAdapter()....onItemRangeRemoved()...555...positionStart=$positionStart itemCount=$itemCount")
+                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeRemoved()...555...positionStart=$positionStart itemCount=$itemCount")
             }
             //groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
             groupAdapter.notifyGroupRangeRemoved(positionStart, itemCount)
@@ -1103,7 +1119,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     //    interface OnHeaderClickListener {
 //        fun onHeaderClick(
-//            adapter: GroupedRecyclerViewAdapter<*, *>,
+//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>,
 //            binding:ViewDataBinding,
 //            groupPosition: Int
 //        )
@@ -1111,7 +1127,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 //
 //    interface OnFooterClickListener {
 //        fun onFooterClick(
-//            adapter: GroupedRecyclerViewAdapter<*, *>,
+//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>,
 //            binding:ViewDataBinding,
 //            groupPosition: Int
 //        )
@@ -1119,7 +1135,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 //
 //    interface OnChildClickListener {
 //        fun onChildClick(
-//            adapter: GroupedRecyclerViewAdapter<*, *>, binding:ViewDataBinding,
+//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>, binding:ViewDataBinding,
 //            groupPosition: Int, childPosition: Int
 //        )
 //    }

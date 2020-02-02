@@ -7,14 +7,14 @@
             type="me.lx.rv.group.BaseFun1ClickGroupListener" />
 
         <variable
-            name="footerItem"
+            name="footerGroup"
             type="me.lx.sample.group.entity.GroupEntity" />
 
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->footerClick.clickGroupItem(footerItem)}"
+        android:onClick="@{()->footerClick.clickGroupItem(footerGroup)}"
         android:background="@drawable/holo_green_light_ripple_bg"
         android:orientation="vertical">
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:gravity="center"
-            android:text='@{footerItem.footer}'
+            android:text='@{footerGroup.footer}'
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 

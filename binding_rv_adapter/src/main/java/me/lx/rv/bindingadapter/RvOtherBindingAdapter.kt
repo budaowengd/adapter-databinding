@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.tools.EmptyViewUtils
+import me.lx.rv.tools.Ls
 
 /**
  *  author: luoXiong
@@ -22,12 +23,19 @@ import me.lx.rv.tools.EmptyViewUtils
     requireAll = false
 )
 fun set_rv_divider(
-    recyclerView: RecyclerView,
+    rv: RecyclerView,
     divider: RecyclerView.ItemDecoration?
 ) {
-   // println("set_rv_divider()...1111....")
+    Ls.d("set_rv_divider()...1111....divider=${divider?.hashCode()}")
     if (divider != null) {
-        recyclerView.addItemDecoration(divider)
+        if (rv.itemDecorationCount > 0) {
+            val decoration = rv.getItemDecorationAt(rv.itemDecorationCount-1)
+            if (divider != decoration) {
+                rv.addItemDecoration(divider)
+            }
+        } else {
+            rv.addItemDecoration(divider)
+        }
     }
 }
 
@@ -36,13 +44,15 @@ fun set_rv_divider(
  * 支持懒加载设置空布局,b 自动控制空布局的显示和隐藏
  */
 @BindingAdapter(
-    value = ["rv_support_is_show_empty_view", "rv_support_empty_view_layoutId", "rv_support_empty_text_hint"],
+    value = ["rv_support_is_show_empty_view", "rv_support_empty_view_layoutId",
+        "rv_support_empty_text_hint", "rv_support_empty_img"],
     requireAll = false
 )
 fun set_rv_support_is_show_empty_view(
     emptyViewContain: ViewGroup,
-    isShowEmpty: Boolean?, @LayoutRes emptyLayoutId: Int = 0, emptyTextHint: String? = null
+    isShowEmpty: Boolean?, @LayoutRes emptyLayoutId: Int = 0,
+    textHint: String? = null, imgData: Any? = null
 ) {
-    isShowEmpty?:return
-    EmptyViewUtils.showOrHideEmptyView(emptyViewContain, isShowEmpty, emptyLayoutId, emptyTextHint)
+    isShowEmpty ?: return
+    EmptyViewUtils.showOrHideEmptyView(emptyViewContain, isShowEmpty, emptyLayoutId, textHint, imgData)
 }

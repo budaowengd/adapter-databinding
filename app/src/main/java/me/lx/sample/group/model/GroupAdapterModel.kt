@@ -3,7 +3,6 @@ package me.lx.sample.group.model
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import me.lx.rv.group.BaseFun1ClickGroupListener
-import me.lx.rv.group.GroupedGridLayoutManager
 import me.lx.sample.ClickListeners
 import me.lx.sample.MyApp
 import me.lx.sample.group.adapter.*
@@ -71,17 +70,6 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
     // 布局管理管理器
 
 
-    //直接使用GroupGridLayoutManager实现子项的Grid效果
-    val grid4LayoutManager = object : GroupedGridLayoutManager(MyApp.sContext, 4, groupAdapter) {
-        //重写这个方法 改变子项的SpanSize。
-        //这个跟重写SpanSizeLookup的getSpanSize方法的使用是一样的。
-        override fun getChildSpanSize(groupPosition: Int, childPosition: Int): Int {
-            return if (groupPosition % 2 == 1) {
-                2
-            } else super.getChildSpanSize(groupPosition, childPosition)
-        }
-    }
-
     override fun clickAddItem() {
         groupList.apply {
             if (isNotEmpty()) {
@@ -92,7 +80,7 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
 
     override fun clickRemoveItem() {
         groupList.apply {
-            if (isNotEmpty()) {
+            if (isNotEmpty()&&get(0).childList.isNotEmpty()) {
                 get(0).childList.removeAt(get(0).childList.size - 1)
             }
         }

@@ -26,7 +26,7 @@ inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, variableId: Int = BR.ite
  *
  * @see XmlItemBinding.of
  */
-inline fun <T> itemBindingOf(onItemBind: OnItemBind<T>): XmlItemBinding<T> = XmlItemBinding.of(onItemBind)
+inline fun <T> itemBindingOf(onGetItemViewType: OnItemBind<T>): XmlItemBinding<T> = XmlItemBinding.of(onGetItemViewType)
 
 
 /**

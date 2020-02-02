@@ -11,7 +11,7 @@ interface ViewPagerBindListener<T> {
     /**
      * 获取item的布局文件
      */
-    fun getItemBinding(): XmlItemBinding<T>
+    fun getItemXmlObj(): XmlItemBinding<T>
 
     /**
      * 获取列表数据源

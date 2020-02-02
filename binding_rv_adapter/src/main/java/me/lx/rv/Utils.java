@@ -19,7 +19,7 @@ import androidx.lifecycle.LifecycleOwner;
 class Utils {
 
     /**
-     * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
+     * Helper to throw an exception when {@link ViewDataBinding#setVariable(int,
      * Object)} returns false.
      */
     static void throwMissingVariable(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes) {

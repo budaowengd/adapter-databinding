@@ -12,17 +12,17 @@ import me.lx.rv.loadmore.LoadMoreAdapter
  *  version: 1.0
  *  desc:
  */
-interface RvGroupBindListener<T,C> {
+interface RvGroupBindListener<T, C> {
 
     /**
      * 获取item的布局文件
      */
-  //  fun getItemBinding(): XmlItemBinding<T>
+    //  fun getItemXmlObj(): XmlItemBinding<T>
 
     /**
      * 获取列表数据源
      */
-    fun getItems(): java.util.AbstractList<T>
+    fun getGroups(): java.util.AbstractList<T>
 
     /**
      * 获取列表适配器
@@ -32,22 +32,22 @@ interface RvGroupBindListener<T,C> {
     /**
      * 获取列表分割线
      */
-    fun getItemDecoration():RecyclerView.ItemDecoration? {
+    fun getItemDecoration(): RecyclerView.ItemDecoration? {
         return null
     }
 
     /**
      * 是否显示空布局
      */
-    fun isShowEmptyLayoutCondition():ObservableBoolean?{
+    fun isShowEmptyLayoutCondition(): ObservableBoolean? {
         return null
     }
 
     /**
      * 获取布局管理器
      */
-    fun getLayoutManager(): RecyclerView.LayoutManager? {
-        return null
+    fun getLayoutFlag(): Int {
+        return RecyclerView.VERTICAL
     }
 
     /**
@@ -60,19 +60,19 @@ interface RvGroupBindListener<T,C> {
     /**
      * 获取是否正在刷新中
      */
-    fun getIsRefreshingOb(): ObservableBoolean? {
+    fun getRefreshingOb(): ObservableBoolean? {
         return null
     }
 
-    fun getClickChildListener():GroupedRecyclerViewAdapter.ClickGroupListener?{
+    fun getClickChildListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
         return null
     }
 
-    fun getClickFootListener():GroupedRecyclerViewAdapter.ClickGroupListener?{
+    fun getClickFootListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
         return null
     }
 
-    fun getClickHeadListener():GroupedRecyclerViewAdapter.ClickGroupListener?{
+    fun getClickHeaderListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
         return null
     }
 }

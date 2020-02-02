@@ -25,6 +25,11 @@ abstract class AbstractLoadMoreFooter {
      */
     abstract fun loading()
 
+    /**
+     * 加载更多中
+     */
+    abstract fun hideLoadMore()
+
 //    /**
 //     * 加载完成
 //     */

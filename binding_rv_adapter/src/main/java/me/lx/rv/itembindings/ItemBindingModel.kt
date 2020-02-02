@@ -9,8 +9,8 @@ import me.lx.rv.XmlItemBinding
 interface ItemBindingModel {
     /**
      * Set the binding variable and layout of the given view.
-     * <pre>`onItemBind.set(BR.item, R.layout.item);
+     * <pre>`onGetItemViewType.set(BR.item, R.layout.item);
     `</pre> *
      */
-    fun onItemBind(itemBinding: XmlItemBinding<*>)
+    fun onGetItemViewType(itemBinding: XmlItemBinding<*>)
 }

@@ -13,10 +13,10 @@ import me.lx.rv.tools.Ls
  */
 @SuppressLint("LongLogTag")
 class ChildListChangedCallback<T, C>(
-    private var adapter: GroupedRecyclerViewAdapter<T, C>,
-    private var childEmptyIsRemoveHeader: Boolean? = null
+        private var adapter: GroupedRecyclerViewAdapter<T, C>,
+        private var childEmptyIsRemoveHeader: Boolean? = null
 ) :
-    ObservableList.OnListChangedCallback<ObservableList<C>>() {
+        ObservableList.OnListChangedCallback<ObservableList<C>>() {
     override fun onChanged(sender: ObservableList<C>) {
         if (GroupedRecyclerViewAdapter.DEBUG) {
             Ls.d("ChildListChangedCallback......onChanged()..1111....")
@@ -30,8 +30,8 @@ class ChildListChangedCallback<T, C>(
         val groupPosition = adapter.getGroupPositionByChildList(sender)
         if (GroupedRecyclerViewAdapter.DEBUG) {
             Ls.d(
-                "ChildListChangedCallback......onItemRangeRemoved()..2222..positionStart=$positionStart  itemCount=$itemCount  " +
-                        "itemsSize=${sender.size}  groupPosition=$groupPosition childEmptyIsRemoveHeader=$childEmptyIsRemoveHeader"
+                    "ChildListChangedCallback......onItemRangeRemoved()..2222..positionStart=$positionStart  itemCount=$itemCount  " +
+                            "itemsSize=${sender.size}  groupPosition=$groupPosition childEmptyIsRemoveHeader=$childEmptyIsRemoveHeader"
             )
         }
         adapter.notifyChildRangeRemoved(groupPosition, positionStart, itemCount)
@@ -47,10 +47,10 @@ class ChildListChangedCallback<T, C>(
     }
 
     override fun onItemRangeMoved(
-        sender: ObservableList<C>,
-        fromPosition: Int,
-        toPosition: Int,
-        itemCount: Int
+            sender: ObservableList<C>,
+            fromPosition: Int,
+            toPosition: Int,
+            itemCount: Int
     ) {
         if (GroupedRecyclerViewAdapter.DEBUG) {
             Ls.d("ChildListChangedCallback......onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
@@ -67,13 +67,14 @@ class ChildListChangedCallback<T, C>(
     }
 
     override fun onItemRangeInserted(
-        sender: ObservableList<C>,
-        positionStart: Int,
-        itemCount: Int
+            sender: ObservableList<C>,
+            positionStart: Int,
+            itemCount: Int
     ) {
         if (GroupedRecyclerViewAdapter.DEBUG) {
             Ls.d("ChildListChangedCallback......onItemRangeInserted()..4444..positionStart=$positionStart  itemCount=$itemCount")
         }
+
         val groupPosition = adapter.getGroupPositionByChildList(sender)
         adapter.notifyChildInserted(groupPosition, positionStart)
     }

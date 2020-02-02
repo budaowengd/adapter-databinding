@@ -28,7 +28,7 @@
             type="java.lang.String" />
 
         <variable
-            name="headerItem"
+            name="headerGroup"
             type="java.lang.String" />
 
         <variable
@@ -36,7 +36,7 @@
             type="java.lang.String" />
 
         <variable
-            name="footerItem"
+            name="footerGroup"
             type="java.lang.String" />
 
         <variable

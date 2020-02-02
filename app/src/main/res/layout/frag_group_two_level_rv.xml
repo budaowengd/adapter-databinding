@@ -35,7 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:rv_layout_span="@{1}"
+            app:rv_group_items="@{model.groupList}"
             app:rv_group_adapter="@{model.groupAdapter}" />
 
 

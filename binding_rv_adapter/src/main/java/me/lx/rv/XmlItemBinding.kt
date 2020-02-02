@@ -1,7 +1,6 @@
 package me.lx.rv
 
 import android.util.SparseArray
-
 import androidx.annotation.LayoutRes
 import androidx.core.util.forEach
 import androidx.databinding.ViewDataBinding
@@ -12,7 +11,8 @@ import me.lx.rv.click.ClickListener
  * e-mail: 382060748@qq.com
  * date: 2019/8/28 15:54
  * version: 1.0
- * desc: 当前对象指的是每种Item布局, 包含:布局id、绑定变量id,以及您可能想要提供的任何额外绑定的数据
+ * desc: 1个适配器只有一个该对象
+ * 当前对象指的是每种Item布局, 包含:布局id、绑定变量id,以及您可能想要提供的任何额外绑定的数据.
  */
 class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
 
@@ -30,9 +30,10 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      * setVariableIdAndLayoutId
      * 设置变量id和布局id
      */
-    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, mClickListener: ClickListener? = null): XmlItemBinding<T> {
+    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, clickListener: ClickListener? = null, clickId: Int? = null): XmlItemBinding<T> {
         this.mLayoutRes = layoutRes
-        this.mClickListener = mClickListener
+        this.mClickListener = clickListener
+//        this.mClickListener = clickId
         if (variableId == 0) {
             this.mDefaultItemVariableId = BR.item
         } else {
@@ -44,9 +45,9 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
     /**
      * 设置变量id和布局id
      */
-    fun set(@LayoutRes mLayoutRes: Int, mClickListener: ClickListener): XmlItemBinding<T> {
-        this.mLayoutRes = mLayoutRes
-        this.mClickListener = mClickListener
+    fun set(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> {
+        this.mLayoutRes = layoutRes
+        this.mClickListener = clickListener
         this.mDefaultItemVariableId = BR.item
         return this
     }
@@ -72,10 +73,11 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      * 添加额外的变量, 绑定到视图布局.
      * 比如: 1个item需要多个变量id,可以通过该方法进行绑定
      */
-    fun bindExtra(variableId: Int, value: Any): XmlItemBinding<T> {
+    fun addBindExtra(variableId: Int, value: Any): XmlItemBinding<T> {
         if (mExtraBindings == null) {
             mExtraBindings = SparseArray(1)
         }
+        // Ls.d("添加额外的变量, 绑定到视图布局.()...111..")
         mExtraBindings!!.put(variableId, value)
         return this
     }
@@ -125,18 +127,19 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
     }
 
     /**
+     * 在adapter.getItemViewType()调用,会被大批量频繁调用
      * 如果列表只有1种item类型,mOnItemBind 会一直会为空
      * 只有当列表存在多类型的item时,mOnItemBind 才有值,
      * 更新给定项目和位置的绑定状态。 这由绑定集合适配器在内部调用.
      */
-    fun xmlOnItemBind(position: Int, item: T) {
+    fun onGetItemViewType(position: Int, item: T) {
         // println("更新给定项目和位置的绑定状态。 这由绑定集合适配器在内部调用.position=$position mOnItemBind=${mOnItemBind?.hashCode()}")
         if (mOnItemBind != null) {
             mDefaultItemVariableId = VAR_INVALID
             mLayoutRes = LAYOUT_NONE
-            mOnItemBind.onItemBind(this, position, item)
-            check(mDefaultItemVariableId != VAR_INVALID) { "mDefaultItemVariableId not set in onItemBind()  mDefaultItemVariableId=$mDefaultItemVariableId" }
-            check(mLayoutRes != LAYOUT_NONE) { "mLayoutRes not set in onItemBind()" }
+            mOnItemBind.onGetItemViewType(this, position, item)
+            check(mDefaultItemVariableId != VAR_INVALID) { "mDefaultItemVariableId not set in onGetItemViewType()  mDefaultItemVariableId=$mDefaultItemVariableId" }
+            check(mLayoutRes != LAYOUT_NONE) { "mLayoutRes not set in onGetItemViewType()" }
         }
     }
 
@@ -145,27 +148,23 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      *否则为假。 这由绑定集合适配器在内部调用。
      * @throws IllegalStateException 如果该变量id不在布局当中
      */
-    fun bind(binding: ViewDataBinding, item: T): Boolean {
-        if (mDefaultItemVariableId == VAR_NONE) {
-            return false
-        }
-        val result = binding.setVariable(mDefaultItemVariableId, item)
-
-        if (mClickListener != null) {
-            binding.setVariable(mDefaultClickVariableId, mClickListener)
-        }
-
+    fun bind(binding: ViewDataBinding, item: T) {
+        if (mDefaultItemVariableId != VAR_NONE) {
+            binding.setVariable(mDefaultItemVariableId, item)
+            if (mClickListener != null) {
+                binding.setVariable(mDefaultClickVariableId, mClickListener)
+            }
 //        if (!result) {
 //            Utils.throwMissingVariable(binding, mDefaultItemVariableId, mLayoutRes)
 //        }
-        if (mExtraBindings != null) {
-            mExtraBindings!!.forEach { key, value ->
-                if (key != VAR_NONE) {
-                    binding.setVariable(key, value)
+            if (mExtraBindings != null) {
+                mExtraBindings!!.forEach { key, value ->
+                    if (key != VAR_NONE) {
+                        binding.setVariable(key, value)
+                    }
                 }
             }
         }
-        return true
     }
 
     companion object {
@@ -174,22 +173,22 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
          * 如果布局不需要变量, 使用此常量作为变量id,将不会被绑定到布局中
          * 如:静态页脚。
          */
-        const val VAR_NONE = 0
+        private const val VAR_NONE = 0
         private const val VAR_INVALID = -1
         private const val LAYOUT_NONE = 0
 
         /**
          *使用给定的变量id和layout构造一个实例。
          */
-        fun <T> of(@LayoutRes layoutRes: Int,variableId: Int): XmlItemBinding<T> {
+        fun <T> of(@LayoutRes layoutRes: Int, variableId: Int): XmlItemBinding<T> {
             return XmlItemBinding<T>(null).set(layoutRes, variableId)
         }
 
         /**
          *使用给定的变量id和layout构造一个实例。
          */
-        fun <T> of(@LayoutRes layoutRes: Int, mClickListener: ClickListener): XmlItemBinding<T> {
-            return XmlItemBinding<T>(null).set(layoutRes, mClickListener = mClickListener)
+        fun <T> of(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> {
+            return XmlItemBinding<T>(null).set(layoutRes, clickListener = clickListener)
         }
 
 
@@ -199,8 +198,8 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
          * @see OnItemBind
          */
         @JvmStatic
-        fun <T> of(onItemBind: OnItemBind<T>?): XmlItemBinding<T> {
-            return XmlItemBinding(onItemBind)
+        fun <T> of(onGetItemViewType: OnItemBind<T>?): XmlItemBinding<T> {
+            return XmlItemBinding(onGetItemViewType)
         }
     }
 }

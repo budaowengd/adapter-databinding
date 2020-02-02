@@ -9,7 +9,7 @@ import me.lx.rv.XmlItemBinding
  */
 class OnItemBindModel<T : ItemBindingModel> : OnItemBind<T> {
 
-    override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T) {
-        item.onItemBind(itemBinding)
+    override fun onGetItemViewType(itemBinding: XmlItemBinding<*>, position: Int, item: T) {
+        item.onGetItemViewType(itemBinding)
     }
 }

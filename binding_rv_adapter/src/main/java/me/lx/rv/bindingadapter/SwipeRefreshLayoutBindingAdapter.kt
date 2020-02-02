@@ -13,33 +13,32 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
  *  desc:
  */
 @BindingAdapter(
-        value = ["rv_swipeRefreshLayout_refreshing"]
+    value = ["rv_swipeRefreshLayout_refreshing"]
 )
-fun rv_swipeRefreshLayout_refreshing(
-        swipeRefreshLayout: SwipeRefreshLayout,
-        isRefreshing: Boolean?
+fun set_rv_swipeRefreshLayout_refreshing(
+    swipeRefreshLayout: SwipeRefreshLayout,
+    newValue: Boolean
 ) {
-    if (isRefreshing != null) {
-        swipeRefreshLayout.isRefreshing = isRefreshing
+    if (swipeRefreshLayout.isRefreshing != newValue) {
+        swipeRefreshLayout.isRefreshing = newValue
     }
-    ///EmptyViewUtils.showOrHideEmptyView(emptyViewContain, isShowEmpty, emptyLayoutId, emptyTextHint)
 }
 
 
 @InverseBindingAdapter(
-        attribute = "app:rv_swipeRefreshLayout_refreshing",
-        event = "app:bind_swipeRefreshLayout_refreshingAttrChanged"
+    attribute = "app:rv_swipeRefreshLayout_refreshing",
+    event = "app:bind_swipeRefreshLayout_refreshingAttrChanged"
 )
 fun isSwipeRefreshLayoutRefreshing(swipeRefreshLayout: SwipeRefreshLayout): Boolean = swipeRefreshLayout.isRefreshing
 
 
 @BindingAdapter(
-        "app:bind_swipeRefreshLayout_refreshingAttrChanged",
-        requireAll = false
+    "app:bind_swipeRefreshLayout_refreshingAttrChanged",
+    requireAll = false
 )
 fun setOnRefreshListener(
-        swipeRefreshLayout: SwipeRefreshLayout,
-        bindingListener: InverseBindingListener?
+    swipeRefreshLayout: SwipeRefreshLayout,
+    bindingListener: InverseBindingListener?
 ) {
     if (bindingListener != null)
         swipeRefreshLayout.setOnRefreshListener {

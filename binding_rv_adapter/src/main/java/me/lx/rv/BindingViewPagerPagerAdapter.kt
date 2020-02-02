@@ -32,6 +32,7 @@ class BindingViewPagerPagerAdapter<T> : PagerAdapter(), BindingCollectionAdapter
     }
 
     /**
+     * 正常不需要自己去设置,如果View没有使用Databinding布局,就需要手动设置进来
      * Sets the lifecycle owner of this adapter to work with [androidx.lifecycle.LiveData].
      * This is normally not necessary, but due to an androidx limitation, you need to set this if
      * the containing view is *not* using databinding.
@@ -46,7 +47,7 @@ class BindingViewPagerPagerAdapter<T> : PagerAdapter(), BindingCollectionAdapter
         }
     }
 
-    override fun getItemBinding(): XmlItemBinding<T>? {
+    override fun getItemXmlObj(): XmlItemBinding<T>? {
         if (itemBinding == null) {
             throw NullPointerException("itemBinding == null")
         }
@@ -78,11 +79,10 @@ class BindingViewPagerPagerAdapter<T> : PagerAdapter(), BindingCollectionAdapter
     }
 
     override fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
-        if (itemBinding!!.bind(binding, item)) {
-            binding.executePendingBindings()
-            if (lifecycleOwner != null) {
-                binding.lifecycleOwner = lifecycleOwner
-            }
+        itemBinding!!.bind(binding, item)
+        binding.executePendingBindings()
+        if (lifecycleOwner != null) {
+            binding.lifecycleOwner = lifecycleOwner
         }
     }
 
@@ -108,7 +108,7 @@ class BindingViewPagerPagerAdapter<T> : PagerAdapter(), BindingCollectionAdapter
         tryGetLifecycleOwner(container)
 
         val item = items!![position]
-        itemBinding!!.xmlOnItemBind(position, item)
+        itemBinding!!.onGetItemViewType(position, item)
 
         val binding = onCreateBinding(inflater!!, itemBinding!!.getLayoutRes(), container)
         val view = binding.root
@@ -151,12 +151,13 @@ class BindingViewPagerPagerAdapter<T> : PagerAdapter(), BindingCollectionAdapter
 
 
     private class WeakReferenceOnListChangedCallback<T> internal
-    constructor(adapter: BindingViewPagerPagerAdapter<T>,
-                items: ObservableList<T>) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
+    constructor(
+        adapter: BindingViewPagerPagerAdapter<T>,
+        items: ObservableList<T>
+    ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
 
 
-        internal val adapterRef: WeakReference<BindingViewPagerPagerAdapter<T>>
-                = AdapterReferenceCollector.createRef(adapter, items, this)
+        internal val adapterRef: WeakReference<BindingViewPagerPagerAdapter<T>> = AdapterReferenceCollector.createRef(adapter, items, this)
 
         override fun onChanged(sender: ObservableList<T>) {
             val adapter = adapterRef.get() ?: return

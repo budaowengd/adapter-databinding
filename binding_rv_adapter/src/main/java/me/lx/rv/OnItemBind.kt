@@ -6,10 +6,12 @@ package me.lx.rv
  * @param <T> 每个Item的类型
 </T> */
 interface OnItemBind<T> {
+
     /**
      * 允许您修改每种 XmlItemBinding 对象的数据,
      * 请注意，您不应该在此方法中进行复杂处理，因为它被多次调用。
      * 在Adapter执行getItemViewType()方法, 会被多次调用。
+     * 这里会被频繁调用吗
      */
-    fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T)
+    fun onGetItemViewType(itemBinding: XmlItemBinding<*>, position: Int, item: T)
 }

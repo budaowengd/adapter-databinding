@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import me.lx.rv.RvGroupBindListener
 import me.lx.sample.databinding.FragGroupTwoLevelRvBinding
 import me.lx.sample.model.TwoLevelGroupModel
-import me.lx.sample.vo.SingleItemVo
 
 class TwoLevelGroupFrag : Fragment(), ClickListeners {
     private lateinit var mModel: TwoLevelGroupModel

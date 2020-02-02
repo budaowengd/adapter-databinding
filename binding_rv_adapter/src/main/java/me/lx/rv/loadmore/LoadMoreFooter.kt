@@ -23,6 +23,10 @@ internal class LoadMoreFooter : AbstractLoadMoreFooter() {
         mTvText.text = mTvText.context.getString(R.string.load_more_default)
     }
 
+    override fun hideLoadMore() {
+        mTvText.text=""
+    }
+
     override fun noMoreData() {
         mTvText.text = mTvText.context.getString(R.string.load_more_no_more_data)
     }

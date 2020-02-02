@@ -29,7 +29,6 @@
             app:rv_group_chick_child_listener="@{model.clickChildEvent}"
             app:rv_group_adapter="@{model.expandableAdapter}"
             app:rv_group_items="@{model.expandGroupList}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
              />
         <LinearLayout
             style="?buttonBarStyle"

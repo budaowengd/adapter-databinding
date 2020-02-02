@@ -26,7 +26,7 @@ fun <T> set_viewpager_pagerAdapter(viewPager: ViewPager, itemBinding: XmlItemBin
     if (viewPager.adapter != null) {
         return
     }
-    requireNotNull(itemBinding) { "onItemBind must not be null" }
+    requireNotNull(itemBinding) { "onGetItemViewType must not be null" }
     val adapter = BindingViewPagerPagerAdapter<T>()
     // val oldAdapter = viewPager.adapter as BindingViewPagerPagerAdapter<T>?
     adapter.setItemBinding(itemBinding)

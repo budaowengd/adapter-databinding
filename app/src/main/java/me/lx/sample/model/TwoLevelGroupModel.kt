@@ -1,7 +1,8 @@
 package me.lx.sample.model
 
 import androidx.lifecycle.ViewModel
-import me.lx.sample.group.adapter.GroupedListAdapter
+import me.lx.sample.group.adapter.NoFooterAdapter
+import me.lx.sample.group.model.GroupModel
 
 /**
  *  author: luoXiong
@@ -12,7 +13,10 @@ import me.lx.sample.group.adapter.GroupedListAdapter
  */
 class TwoLevelGroupModel : ViewModel() {
     // 数据 -> item
-    val groupAdapter = GroupedListAdapter()
+    // 数据
+    val groupList = GroupModel.getGroupOb(10, 3) // 普通列表数据
 
+//    val groupAdapter = GroupedListAdapter()
+    val groupAdapter = NoFooterAdapter()
 
 }

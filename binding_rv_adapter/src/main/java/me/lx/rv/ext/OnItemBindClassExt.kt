@@ -23,10 +23,10 @@ inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, clic
 /**
  * Maps the given type to the given callback.
  */
-inline fun <reified T> OnItemBindClass<in T>.map(onItemBind: OnItemBind<T>) {
-    bindMap(T::class.java, onItemBind)
+inline fun <reified T> OnItemBindClass<in T>.map(onGetItemViewType: OnItemBind<T>) {
+    bindMap(T::class.java, onGetItemViewType)
 //    map(T::class.java) {itemBinding, position, item ->
-//        onItemBind(
+//        onGetItemViewType(
 //            itemBinding as XmlItemBinding<in T>,
 //            position,
 //            item

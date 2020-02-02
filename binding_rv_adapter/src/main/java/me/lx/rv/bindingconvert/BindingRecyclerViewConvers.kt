@@ -14,8 +14,8 @@ import me.lx.rv.XmlItemBinding
  *  desc:
  */
 @BindingConversion
-fun <T> toItemBinding(onItemBind: OnItemBind<T>?=null): XmlItemBinding<T> {
-    return XmlItemBinding.of(onItemBind)
+fun <T> toItemBinding(onGetItemViewType: OnItemBind<T>?=null): XmlItemBinding<T> {
+    return XmlItemBinding.of(onGetItemViewType)
 }
 
 @BindingConversion

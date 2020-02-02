@@ -1,8 +1,10 @@
 package me.lx.rv.tools
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -22,7 +24,9 @@ class EmptyViewUtils {
             emptyLayoutContain: ViewGroup,
             isShowEmpty: Boolean,
             lId: Int,
-            emptyTextHint: String? = null) {
+            emptyTextHint: String? = null,
+            imgData: Any? = null
+        ) {
             var emptyView = emptyLayoutContain.tag
             if (isShowEmpty) {
                 var layoutId = lId
@@ -32,8 +36,16 @@ class EmptyViewUtils {
                 if (emptyView == null) {
                     emptyView = createListEmptyView(emptyLayoutContain, layoutId, emptyTextHint)
                     emptyLayoutContain.tag = emptyView
-                    if (!emptyTextHint.isNullOrEmpty()) {
+                    // 设置文字
+                    if (!TextUtils.isEmpty(emptyTextHint)) {
                         emptyView.findViewById<TextView>(R.id.tvEmptyHint)?.text = emptyTextHint
+                    }
+                    // 设置图片
+                    if (imgData != null) {
+                        if (imgData is Int) {
+                            val imgView = emptyView.findViewById<ImageView>(R.id.ivEmpty)
+                            (imgView as ImageView).setImageResource(imgData)
+                        }
                     }
                 } else if (emptyView is View) {
                     emptyView.visibility = View.VISIBLE

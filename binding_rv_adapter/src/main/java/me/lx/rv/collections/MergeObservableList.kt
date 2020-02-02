@@ -6,10 +6,10 @@ import java.util.*
 
 /**
  * An [ObservableList] that presents multiple lists and items as one contiguous source.
- * Changes to any of the given lists will be reflected here. You cannot modify `MergeObservableList22` itself other than adding and removing backing lists or items with [ ][.insertItem] and [.insertList] respectively.  This is a good case
+ * Changes to any of the given lists will be reflected here. You cannot modify `MergeObservableList` itself other than adding and removing backing lists or items with [ ][.insertItem] and [.insertList] respectively.  This is a good case
  * where you have multiple data sources, or a handful of fixed items mixed in with lists of data.
  */
-class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
+class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
     private val lists = ArrayList<List<T>>()
     private val callback = ListChangeCallback() as ObservableList.OnListChangedCallback<Nothing>
     private val listeners = ListChangeRegistry()
@@ -25,7 +25,17 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
     /**
      * Inserts the given item into the merge list.
      */
-    fun insertItem(item: T): MergeObservableList22<T> {
+    fun insertItem(index: Int, item: T): MergeObservableList<T> {
+        lists.add(index, listOf(item))
+        modCount += 1
+        listeners.notifyInserted(this, index, 1)
+        return this
+    }
+
+    /**
+     * Inserts the given item into the merge list.
+     */
+    fun insertItem(item: T): MergeObservableList<T> {
         lists.add(listOf(item))
         modCount += 1
         listeners.notifyInserted(this, size - 1, 1)
@@ -36,7 +46,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
      * Inserts the given [ObservableList] into the merge list. Any changes in the given list
      * will be reflected and propagated here.
      */
-    fun insertList(list: ObservableList<out T>): MergeObservableList22<T> {
+    fun insertList(list: ObservableList<out T>): MergeObservableList<T> {
         list.addOnListChangedCallback(callback)
         val oldSize = size
         lists.add(list)
@@ -50,7 +60,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
     /**
      * Removes the given item from the merge list.
      */
-    fun removeItem(`object`: T?): Boolean {
+    fun removeItem(removeItem: T?): Boolean {
         var size = 0
         var i = 0
         val listsSize = lists.size
@@ -58,7 +68,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
             val list = lists[i]
             if (list !is ObservableList<T>) {
                 val item = list[0]
-                if (if (`object` == null) item == null else `object` == item) {
+                if (if (removeItem == null) item == null else removeItem == item) {
                     lists.removeAt(i)
                     modCount += 1
                     listeners.notifyRemoved(this, size, 1)
@@ -171,8 +181,8 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
         throw IllegalArgumentException()
     }
 
-    override fun get(location: Int): T {
-        if (location < 0) {
+    override fun get(index: Int): T {
+        if (index < 0) {
             throw IndexOutOfBoundsException()
         }
         var size = 0
@@ -180,8 +190,8 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
         val listsSize = lists.size
         while (i < listsSize) {
             val list = lists[i]
-            if (location - size < list.size) {
-                return list[location - size]
+            if (index - size < list.size) {
+                return list[index - size]
             }
             size += list.size
             i++
@@ -204,10 +214,10 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
         return size
     }
 
-     inner class ListChangeCallback : ObservableList.OnListChangedCallback<ObservableList<*>>() {
+    inner class ListChangeCallback : ObservableList.OnListChangedCallback<ObservableList<*>>() {
         override fun onChanged(sender: ObservableList<*>) {
             modCount += 1
-            listeners.notifyChanged(this@MergeObservableList22)
+            listeners.notifyChanged(this@MergeObservableList)
         }
 
         override fun onItemRangeChanged(
@@ -222,7 +232,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyChanged(
-                        this@MergeObservableList22,
+                        this@MergeObservableList,
                         size + positionStart,
                         itemCount
                     )
@@ -246,7 +256,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyInserted(
-                        this@MergeObservableList22,
+                        this@MergeObservableList,
                         size + positionStart,
                         itemCount
                     )
@@ -270,7 +280,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyMoved(
-                        this@MergeObservableList22,
+                        this@MergeObservableList,
                         size + fromPosition,
                         size + toPosition,
                         itemCount
@@ -295,7 +305,7 @@ class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyRemoved(
-                        this@MergeObservableList22,
+                        this@MergeObservableList,
                         size + positionStart,
                         itemCount
                     )

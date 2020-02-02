@@ -1,6 +1,7 @@
 package me.lx.rv
 
 import androidx.databinding.ObservableBoolean
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.loadmore.LoadMoreAdapter
 
@@ -14,11 +15,12 @@ import me.lx.rv.loadmore.LoadMoreAdapter
 interface RvBindListener<T> {
 
 
+
     /**
      * 获取item的布局文件
      * 需要返回 XmlItemBinding 或者 OnItemBindClass
      */
-    fun getItemBinding(): Any
+    fun getItemXmlObj(): Any
 
     /**
      * 获取列表数据源
@@ -29,6 +31,17 @@ interface RvBindListener<T> {
      * 获取列表适配器
      */
     fun getAdapter(): BindingRecyclerViewAdapter<T>
+
+    fun getItemIds(): BindingRecyclerViewAdapter.ItemIds<T>? {
+        return null
+    }
+    /**
+     * 获取是否正在刷新中
+     */
+    fun getViewHolderFactory(): BindingRecyclerViewAdapter.ViewHolderFactory? {
+        return null
+    }
+
 
     /**
      * 获取列表分割线
@@ -45,13 +58,6 @@ interface RvBindListener<T> {
     }
 
     /**
-     * 获取布局管理器
-     */
-    fun getLayoutManager(): RecyclerView.LayoutManager? {
-        return null
-    }
-
-    /**
      * 获取加载更多的监听
      */
     fun getLoadMoreListener(): LoadMoreAdapter.LoadMoreListener? {
@@ -61,9 +67,21 @@ interface RvBindListener<T> {
     /**
      * 获取是否正在刷新中
      */
-    fun getIsRefreshingOb(): ObservableBoolean? {
+    fun getRefreshingOb(): ObservableBoolean? {
         return null
     }
 
+    /**
+     * 获取是否正在刷新中
+     */
+    fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup? {
+        return null
+    }
 
+    /**
+     * 获取布局管理器
+     */
+    fun getLayoutFlag(): Int {
+        return RecyclerView.VERTICAL
+    }
 }
