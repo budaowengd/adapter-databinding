@@ -10,8 +10,11 @@
 
         <variable
             name="model"
-            type="me.lx.sample.group.model.GroupAdapterModel" />
+            type="me.lx.sample.model.TwoLevelGroupModel" />
 
+        <variable
+            name="rvBindGroup"
+            type="me.lx.rv.RvGroupBindListener&lt;Object,Object&gt;" />
     </data>
 
     <LinearLayout
@@ -20,19 +23,21 @@
         android:orientation="vertical">
 
         <!--
-            app:rv_layout_span="@{model.grid2LayoutManager}"
-              app:rv_layout_span="@{model.grid2LayoutManager}"
+           app:rv_group_adapter="@{rvBindGroup.getAdapter()}"
+            app:rv_group_chick_child_listener="@{rvBindGroup.getClickChildListener()}"
+            app:rv_group_chick_footer_listener="@{rvBindGroup.getClickFootListener()}"
+            app:rv_group_chick_header_listener="@{rvBindGroup.getClickHeaderListener()}"
+            app:rv_group_items="@{rvBindGroup.getGroups()}"
+            app:rv_layout_span="@{rvBindGroup.getLayoutFlag()}"
         -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_group_chick_footer_listener="@{model.clickFooterEvent}"
-            app:rv_group_adapter="@{model.groupAdapter}"
-            app:rv_group_chick_child_listener="@{model.clickChildEvent}"
-            app:rv_group_chick_header_listener="@{model.clickHeaderEvent}"
-            app:rv_group_items="@{model.groupList}" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:rv_group_adapter="@{model.groupAdapter}" />
+
 
         <LinearLayout
             style="?buttonBarStyle"
@@ -47,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickAddItem()}"
+
                 android:text="Add Item" />
 
             <Button
