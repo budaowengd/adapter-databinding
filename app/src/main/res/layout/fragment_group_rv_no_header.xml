@@ -9,7 +9,7 @@
             type="me.lx.sample.ClickListeners" />
 
         <variable
-            name="viewModel"
+            name="model"
             type="me.lx.sample.group.model.GroupAdapterModel" />
 
     </data>
@@ -21,20 +21,20 @@
 
         <!--
 
-        app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
+        app:rv_adapter="@{model.adapter}"
+            app:rv_itemBinding="@{model.simpleItemBinding}"
+            app:rv_items="@{model.singleItems}"
         -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
-            app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
-            app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
-            app:rv_group_adapter="@{viewModel.noHeaderAdapter}"
-            app:rv_group_items="@{viewModel.groupList}"
+            app:rv_group_chick_child_listener="@{model.clickChildEvent}"
+            app:rv_group_chick_header_listener="@{model.clickHeaderEvent}"
+            app:rv_group_chick_footer_listener="@{model.clickFooterEvent}"
+            app:rv_group_adapter="@{model.noHeaderAdapter}"
+            app:rv_group_items="@{model.groupList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         <LinearLayout
             style="?buttonBarStyle"

@@ -8,7 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
+import me.lx.rv.group.GroupedGridLayoutManager
 import me.lx.sample.BR
+import me.lx.sample.MyApp
 import me.lx.sample.R
 import me.lx.sample.get
 import me.lx.sample.group.model.GroupAdapterModel
@@ -21,13 +24,13 @@ import me.lx.sample.group.model.GroupAdapterModel
  *  desc:
  */
 class FragmentGroupList : Fragment() {
-    private lateinit var viewModel: GroupAdapterModel
+    private lateinit var mModel: GroupAdapterModel
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get()
+        mModel = ViewModelProviders.of(this).get()
     }
 
     override fun onCreateView(
@@ -36,8 +39,8 @@ class FragmentGroupList : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding= getViewBinding(inflater, container).also {
-            it.setVariable(BR.viewModel, viewModel)
-            it.setVariable(BR.click, viewModel)
+            it.setVariable(BR.model, mModel)
+            it.setVariable(BR.click, mModel)
             it.executePendingBindings()
         }
 
@@ -45,7 +48,34 @@ class FragmentGroupList : Fragment() {
 //          val recyclerView= binding.root.findViewById<RecyclerView>(R.id.recyclerView)
 //            (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 //        }
+        initLayout(binding)
         return binding.root
+    }
+
+    private fun initLayout(binding: ViewDataBinding) {
+        when (arguments?.getString("type")) {
+            bundle_no_header -> {
+            }
+            bundle_no_footer -> {
+            }
+            bundle_various -> {
+            }
+            bundle_various_child -> {
+            }
+            bundle_expandable -> {
+            }
+            bundle_grid_child -> {
+            }
+            bundle_grid_diff_child -> {
+                val grid2LayoutManager = GroupedGridLayoutManager(MyApp.sContext, 2, mModel.groupAdapter)
+                (binding.root.findViewById(R.id.recyclerView) as RecyclerView).layoutManager=grid2LayoutManager
+            }
+
+            else -> {
+                R.layout.fragment_group_rv
+            }
+        }
+
     }
 
     private fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): ViewDataBinding {

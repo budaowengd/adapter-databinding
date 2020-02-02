@@ -1,6 +1,5 @@
 package me.lx.rv
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -13,16 +12,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import me.lx.rv.tools.Ls
 
 /**
+ * 参考： https://github.com/evant/binding-collection-adapter
   * [RecyclerView.Adapter]使用给定的[XmlItemBinding]将项目绑定到布局。
   * 如果你数据源是[ObservableList]，会根据对更改自行更新
  */
-class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), BindingCollectionAdapter<T> {
+class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>() {
     /**
      * 添加或者删除item元素时,是否移动到指定的位置
      */
-    private var addOrRemoveSmoothSpecPosition:Boolean?=null
+    private var addOrRemoveSmoothSpecPosition: Boolean? = null
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
     private var items: List<T>? = null
@@ -31,26 +32,28 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     private var viewHolderFactory: ViewHolderFactory? = null
     private var recyclerView: RecyclerView? = null
     private var lifecycleOwner: LifecycleOwner? = null
-
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         if (this.recyclerView == null && items is ObservableList<T>) {
             callback = WeakReferenceOnListChangedCallback<T>(recyclerView, this, items as ObservableList<T>)
             (items as ObservableList<T>).addOnListChangedCallback(callback)
+            Ls.d("onAttachedToRecyclerView()..000...thisAp=${hashCode()}  rv=${recyclerView.hashCode()}")
         }
         this.recyclerView = recyclerView
     }
 
-    override fun onCreateBinding(inflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
+     fun onCreateBinding(inflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
         return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false)
     }
 
-    override fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
+     fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
         tryGetLifecycleOwner()
-        if (xmlItemBinding.bind(binding, item)) {
-            binding.executePendingBindings()
-            if (lifecycleOwner != null) {
-                binding.lifecycleOwner = lifecycleOwner
-            }
+//        if (DEBUG) {
+//            Ls.d("onBindBinding()....position=$position   mExtraBindings")
+//        }
+        xmlItemBinding.bind(binding, item)
+
+        if (lifecycleOwner != null) {
+            binding.lifecycleOwner = lifecycleOwner
         }
     }
 
@@ -89,15 +92,16 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         })
         return holder
     }
+    override fun getItemCount(): Int {
+        return items!!.size
+    }
 
     override fun getItemViewType(position: Int): Int {
         xmlItemBinding.xmlOnItemBind(position, items!![position])
         return xmlItemBinding.getLayoutRes()
     }
 
-    override fun getItemCount(): Int {
-        return items!!.size
-    }
+
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // This won't be called by recyclerview since we are overriding the other overload, call
@@ -107,14 +111,16 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
     @CallSuper
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
-        val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)
-        if (isForDataBinding(payloads)) { // 局部更新
-            binding!!.executePendingBindings()
-        } else { // 完整更新
-            val item = items!![position]
-            onBindBinding(binding!!, xmlItemBinding.getDefaultVariableId(), xmlItemBinding.getLayoutRes(), position, item)
-        }
+        val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)!!
+//        if (isForDataBinding(payloads)) { // 局部更新
+        // 完整更新
+        val item = items!![position]
+        onBindBinding(binding, xmlItemBinding.getDefaultVariableId(), xmlItemBinding.getLayoutRes(), position, item)
+        // 对外开放接口
+        binding.executePendingBindings()
     }
+
+
 
     private fun isForDataBinding(payloads: List<Any>): Boolean {
         if (payloads.isEmpty()) {
@@ -141,7 +147,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         }
     }
 
-    override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
+     fun setItemBinding(itemBinding: XmlItemBinding<T>) {
         this.xmlItemBinding = itemBinding
     }
 
@@ -163,21 +169,24 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         }
     }
 
-    override fun getItemBinding(): XmlItemBinding<T> {
+     fun getItemXmlObj(): XmlItemBinding<T> {
         return xmlItemBinding
     }
 
-    override fun setItems(items: List<T>) {
+
+     fun setItems(items: List<T>) {
         if (items == this.items) {
             return
         }
         // If a recyclerview is listening, set up listeners. Otherwise wait until one is attached.
         // No need to make a sound if nobody is listening right?
+         Ls.d("setItems()....items is Ob=${items is ObservableList<T>}  rv=${recyclerView?.hashCode()}")
         if (recyclerView != null) {
             if (this.items is ObservableList<T>) {
                 (this.items as ObservableList<T>).removeOnListChangedCallback(callback)
                 callback = null
             }
+
             if (items is ObservableList<T>) {
                 callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, items)
                 items.addOnListChangedCallback(callback)
@@ -187,19 +196,33 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         notifyDataSetChanged()
     }
 
-    override fun getAdapterItem(position: Int): T {
+     fun getAdapterItem(position: Int): T {
         return items!![position]
     }
 
 
     /**
+     * IllegalStateException -> Cannot change whether this adapter has stable IDs while the adapter has registered observers
      * Set the item id's for the items. If not null, this will set [ ][RecyclerView.Adapter.setHasStableIds] to true.
      */
-    fun setItemIds(itemIds: ItemIds<in T>?) {
-        if (this.itemIds !== itemIds) {
-            this.itemIds = itemIds
-            setHasStableIds(itemIds != null)
+    fun setItemIds(ids: ItemIds<in T>?) {
+        if (itemIds == null && itemIds != ids) {
+            this.itemIds = ids
+            setHasStableIds(true)
         }
+    }
+
+    /**
+     * 此方法只在setHasStableIds设置为true才会生效
+     * 1、如果只返回position,当item位置改变,数据会错乱
+     * 2、不重写的话,grid=2的布局时刷新会闪烁,因为item重新测量,要么写死item的宽高解决问题
+     * 3、要么返回具体的itemId.如果返回postion, 列表滑动到下面,此时刷新还是会闪烁
+     */
+    override fun getItemId(position: Int): Long {
+//        Ls.d("getItemId()...111...position=$position")
+//        return position.toLong()
+//        // super.getItemId(position)
+        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(position, items!![position])
     }
 
     /**
@@ -210,10 +233,6 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         viewHolderFactory = factory
     }
 
-
-    override fun getItemId(position: Int): Long {
-        return if (itemIds == null) position.toLong() else itemIds!!.getItemId(position, items!![position])
-    }
 
     private fun tryGetLifecycleOwner() {
         if (lifecycleOwner == null || lifecycleOwner!!.lifecycle.currentState == Lifecycle.State.DESTROYED) {
@@ -231,8 +250,10 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         addOrRemoveSmoothSpecPosition = isSmoothSpecPosition
     }
 
-    class WeakReferenceOnListChangedCallback<T> constructor(var recyclerView: RecyclerView,var rvAdapter: BindingRecyclerViewAdapter<T>, items:
-    ObservableList<T>) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
+    class WeakReferenceOnListChangedCallback<T> constructor(
+        var recyclerView: RecyclerView, var rvAdapter: BindingRecyclerViewAdapter<T>, items:
+        ObservableList<T>
+    ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
         //         internal val adapterRef: WeakReference<RecyclerView.Adapter<ViewHolder>> = AdapterReferenceCollector.createRef(adapter, items, this)
         override fun onChanged(sender: ObservableList<T>) {
             // println("BindingRecyclerViewAdapter()....onChanged()...2222.")
@@ -251,17 +272,18 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
             val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
             if (DEBUG) {
-                Log.i(TAG, "onItemRangeInserted()..111..positionStart=$positionStart  itemCount=$itemCount")
+                Ls.d("onItemRangeInserted()..111..positionStart=$positionStart  itemCount=$itemCount rvAp=${rvAdapter.hashCode()}" +
+                        "  rawAp=${recyclerView.adapter?.hashCode()}")
             }
-            rvAdapter.smoothSpecPosition(recyclerView,positionStart)
-            adapter.notifyItemRangeInserted(positionStart, itemCount)
+            rvAdapter.smoothSpecPosition(recyclerView, positionStart)
+            rvAdapter.notifyItemRangeInserted(positionStart, itemCount)
         }
 
         override fun onItemRangeMoved(sender: ObservableList<T>, fromPosition: Int, toPosition: Int, itemCount: Int) {
             Utils.ensureChangeOnMainThread()
-            if (DEBUG) {
-                Log.i(TAG, "onItemRangeMoved()...222...fromPosition=$fromPosition  toPosition=$toPosition" + "  itemCount=$itemCount")
-            }
+//            if (DEBUG) {
+//                Log.i(TAG, "onItemRangeMoved()...222...fromPosition=$fromPosition  toPosition=$toPosition" + "  itemCount=$itemCount")
+//            }
             val adapter = recyclerView.adapter ?: return
             for (i in 0 until itemCount) {
                 adapter.notifyItemMoved(fromPosition + i, toPosition + i)
@@ -270,10 +292,10 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
         override fun onItemRangeRemoved(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
             Utils.ensureChangeOnMainThread()
-            if (DEBUG) {
-                Log.i(TAG, "onItemRangeMoved()...333...positionStart=$positionStart    itemCount=$itemCount")
-            }
-            rvAdapter.smoothSpecPosition(recyclerView,positionStart)
+//            if (DEBUG) {
+//                Log.i(TAG, "onItemRangeMoved()...333...positionStart=$positionStart    itemCount=$itemCount")
+//            }
+            rvAdapter.smoothSpecPosition(recyclerView, positionStart)
             // val adapter = adapterRef.get() ?: return
             val adapter = recyclerView.adapter ?: return
             adapter.notifyItemRangeRemoved(positionStart, itemCount)

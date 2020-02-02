@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="me.lx.sample.MutableViewModel" />
+            name="model"
+            type="me.lx.sample.model.LoadMoreModel" />
 
         <variable
             name="click"
@@ -24,36 +24,44 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
-            app:rv_loadmore_listener="@{viewModel.loadMoreListener}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:rv_adapter="@{model.adapter}"
+            app:rv_itemBinding="@{model.simpleItemBinding}"
+            app:rv_items="@{model.singleItems}"
+            app:rv_loadmore_listener="@{model.loadMoreListener}" />
 
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:background="#3443">
 
             <Button
                 android:id="@+id/add"
                 style="?buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickAddItem()}"
-
                 android:text="Add Item" />
 
             <Button
                 android:id="@+id/remove"
                 style="?buttonBarButtonStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickRemoveItem()}"
                 android:text="Remove Item" />
+
+            <Button
+                android:id="@+id/btn3"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClickListener="@{() -> click.clickBtn3()}"
+                android:text="Btn3" />
         </LinearLayout>
     </LinearLayout>
 </layout>

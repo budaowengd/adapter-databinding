@@ -118,7 +118,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
     /**
      * 返回给定变量id的绑定对象，如果不存在，则返回null。
      */
-    fun extraBinding(variableId: Int): Any? {
+    fun getBindingAnyByVariableId(variableId: Int): Any? {
         return if (mExtraBindings == null) {
             null
         } else mExtraBindings!!.get(variableId)

@@ -2,9 +2,7 @@ package me.lx.rv
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
 import androidx.annotation.LayoutRes
-import androidx.annotation.Nullable
 import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 
@@ -33,7 +31,7 @@ interface BindingCollectionAdapter<T> {
      * 它的任何更改*必须* em>在主线程上发生。
      * 此外，如果您不使用`ObservableList`，你*必须* em>调用`notifyDataSetChanged()`或其他相关方法。
      */
-    fun setItems(@Nullable  items: List<T>)
+    fun setItems(items: List<T>)
 
     /**
      * 返回适配器给定位置的项目

@@ -6,10 +6,10 @@ import java.util.*
 
 /**
  * An [ObservableList] that presents multiple lists and items as one contiguous source.
- * Changes to any of the given lists will be reflected here. You cannot modify `MergeObservableList` itself other than adding and removing backing lists or items with [ ][.insertItem] and [.insertList] respectively.  This is a good case
+ * Changes to any of the given lists will be reflected here. You cannot modify `MergeObservableList22` itself other than adding and removing backing lists or items with [ ][.insertItem] and [.insertList] respectively.  This is a good case
  * where you have multiple data sources, or a handful of fixed items mixed in with lists of data.
  */
-class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
+class MergeObservableList22<T> : AbstractList<T>(), ObservableList<T> {
     private val lists = ArrayList<List<T>>()
     private val callback = ListChangeCallback() as ObservableList.OnListChangedCallback<Nothing>
     private val listeners = ListChangeRegistry()
@@ -25,7 +25,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
     /**
      * Inserts the given item into the merge list.
      */
-    fun insertItem(item: T): MergeObservableList<T> {
+    fun insertItem(item: T): MergeObservableList22<T> {
         lists.add(listOf(item))
         modCount += 1
         listeners.notifyInserted(this, size - 1, 1)
@@ -36,7 +36,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
      * Inserts the given [ObservableList] into the merge list. Any changes in the given list
      * will be reflected and propagated here.
      */
-    fun insertList(list: ObservableList<out T>): MergeObservableList<T> {
+    fun insertList(list: ObservableList<out T>): MergeObservableList22<T> {
         list.addOnListChangedCallback(callback)
         val oldSize = size
         lists.add(list)
@@ -207,7 +207,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
      inner class ListChangeCallback : ObservableList.OnListChangedCallback<ObservableList<*>>() {
         override fun onChanged(sender: ObservableList<*>) {
             modCount += 1
-            listeners.notifyChanged(this@MergeObservableList)
+            listeners.notifyChanged(this@MergeObservableList22)
         }
 
         override fun onItemRangeChanged(
@@ -222,7 +222,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyChanged(
-                        this@MergeObservableList,
+                        this@MergeObservableList22,
                         size + positionStart,
                         itemCount
                     )
@@ -246,7 +246,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyInserted(
-                        this@MergeObservableList,
+                        this@MergeObservableList22,
                         size + positionStart,
                         itemCount
                     )
@@ -270,7 +270,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyMoved(
-                        this@MergeObservableList,
+                        this@MergeObservableList22,
                         size + fromPosition,
                         size + toPosition,
                         itemCount
@@ -295,7 +295,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
                 val list = lists[i]
                 if (list === sender) {
                     listeners.notifyRemoved(
-                        this@MergeObservableList,
+                        this@MergeObservableList22,
                         size + positionStart,
                         itemCount
                     )

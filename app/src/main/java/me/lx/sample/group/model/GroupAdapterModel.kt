@@ -69,7 +69,7 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
 
 
     // 布局管理管理器
-    val grid2LayoutManager = GroupedGridLayoutManager(MyApp.sContext, 2, groupAdapter)
+
 
     //直接使用GroupGridLayoutManager实现子项的Grid效果
     val grid4LayoutManager = object : GroupedGridLayoutManager(MyApp.sContext, 4, groupAdapter) {

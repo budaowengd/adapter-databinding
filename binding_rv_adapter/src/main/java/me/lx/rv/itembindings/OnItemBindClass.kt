@@ -28,14 +28,14 @@ class OnItemBindClass<T> : OnItemBind<T> {
     }
 
     /**
-     * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
+     * Maps the given class to the given itemVariableId and layout. This is assignment-compatible match with the object represented by Class.
      */
     fun bindMap(
-        itemClass: Class<out T>, @LayoutRes layoutRes: Int, variableId: Int = 0,
+        itemClass: Class<out T>, @LayoutRes layoutRes: Int, itemVariableId: Int = 0,
         clickListener: ClickListener? = null
     ): OnItemBindClass<T> {
-        var vId = variableId
-        if (variableId == 0) {
+        var vId = itemVariableId
+        if (itemVariableId == 0) {
             vId = BR.item
         }
         val index = itemBindingClassList.indexOf(itemClass)
@@ -81,10 +81,10 @@ class OnItemBindClass<T> : OnItemBind<T> {
         throw IllegalArgumentException("Missing class for item $item")
     }
 
-    private fun getOnItemBindObj(@LayoutRes layoutRes: Int, variableId: Int, clickListener: ClickListener? = null): OnItemBind<T> {
+    private fun getOnItemBindObj(@LayoutRes layoutRes: Int, itemVariableId: Int, clickListener: ClickListener? = null): OnItemBind<T> {
         return object : OnItemBind<T> {
             override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: T) {
-                itemBinding.set(layoutRes, variableId, clickListener)
+                itemBinding.set(layoutRes, itemVariableId, clickListener)
             }
         }
     }

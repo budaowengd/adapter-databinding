@@ -6,20 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import me.lx.sample.databinding.FragmentMultiRecyclerviewBinding
-import me.lx.sample.vo.SingleItemVo
+import me.lx.sample.databinding.FragmentGridRecyclerviewBinding
+import me.lx.sample.model.GridDividerModel
 
-class FragmentMultiRecyclerView : Fragment() ,ClickListeners{
-    private lateinit var mModel: MutableViewModel
-    override fun clickAddItem() {
-        mModel.multiItems.apply {
-            insertItem(SingleItemVo(size))
-        }
-    }
-
-    override fun clickRemoveItem() {
-        mModel.clickRemoveItem()
-    }
+class FragmentGridView : Fragment() {
+    private lateinit var mModel: GridDividerModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +22,9 @@ class FragmentMultiRecyclerView : Fragment() ,ClickListeners{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return FragmentMultiRecyclerviewBinding.inflate(inflater, container, false).also {
+        return FragmentGridRecyclerviewBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
             it.model = mModel
-            it.click = this@FragmentMultiRecyclerView
             it.executePendingBindings()
         }.root
     }

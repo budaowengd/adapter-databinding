@@ -61,9 +61,9 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
 在xml中引用
 ```xml
    <androidx.recyclerview.widget.RecyclerView
-            app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
+            app:rv_adapter="@{mModel.adapter}"
+            app:rv_itemBinding="@{mModel.simpleItemBinding}"
+            app:rv_items="@{mModel.singleItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 在Fragment中设置
@@ -71,7 +71,7 @@ val singleItems = ObservableArrayList<SingleItemVo>().apply {
 class FragmentSingleRecyclerView : Fragment() {
     override fun onCreateView(  ): View? {
         return FragmentSingleRecyclerviewBinding.inflate(inflater, container, false).apply {
-            setViewModel(viewModel)
+            setViewModel(mModel)
         }.root
     }
 }
@@ -107,9 +107,9 @@ val headerFooterItems = MergeObservableList<Any>()
 在xml中引用
 ```xml
    <androidx.recyclerview.widget.RecyclerView
-            app:rv_adapter="@{viewModel.multiAdapter}"
-            app:rv_itemBinding="@{viewModel.headerFooterItemBinding}"
-            app:rv_items="@{viewModel.headerFooterItems}"
+            app:rv_adapter="@{mModel.multiAdapter}"
+            app:rv_itemBinding="@{mModel.headerFooterItemBinding}"
+            app:rv_items="@{mModel.headerFooterItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 ### 多种item类型
@@ -133,9 +133,9 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
 在xml中引用
 ```xml
    <androidx.recyclerview.widget.RecyclerView
-            app:rv_adapter="@{viewModel.multiAdapter}"
-            app:rv_itemBinding="@{viewModel.multiItemBinding}"
-            app:rv_items="@{viewModel.multiItems}"
+            app:rv_adapter="@{mModel.multiAdapter}"
+            app:rv_itemBinding="@{mModel.multiItemBinding}"
+            app:rv_items="@{mModel.multiItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 # 注意: 数据源items 属于ObservableList, 所以更新items的时候, 列表会自动刷新UI,  你想要自己手动调用adapter.notify()刷新, items对象使用ArrayList即可
@@ -230,10 +230,10 @@ val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {  // 加载更
 在xml中引用
 ```xml
    <androidx.recyclerview.widget.RecyclerView
-            app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
-            app:rv_loadmore_listener="@{viewModel.loadMoreListener}"
+            app:rv_adapter="@{mModel.adapter}"
+            app:rv_itemBinding="@{mModel.simpleItemBinding}"
+            app:rv_items="@{mModel.singleItems}"
+            app:rv_loadmore_listener="@{mModel.loadMoreListener}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 支持自定义底部加载布局,使用方式
@@ -270,11 +270,11 @@ class CustomLoadMoreFooter : AbstractLoadMoreFooter() {
 在xml中引用
 ```xml
  <androidx.recyclerview.widget.RecyclerView
-            app:rv_group_adapter="@{viewModel.groupAdapter}"
-            app:rv_group_items="@{viewModel.groupList}"
-            app:rv_group_chick_child_listener="@{viewModel.clickChildEvent}"
-            app:rv_group_chick_header_listener="@{viewModel.clickHeaderEvent}"
-            app:rv_group_chick_footer_listener="@{viewModel.clickFooterEvent}"
+            app:rv_group_adapter="@{mModel.groupAdapter}"
+            app:rv_group_items="@{mModel.groupList}"
+            app:rv_group_chick_child_listener="@{mModel.clickChildEvent}"
+            app:rv_group_chick_header_listener="@{mModel.clickHeaderEvent}"
+            app:rv_group_chick_footer_listener="@{mModel.clickFooterEvent}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 ```
 在model中定义

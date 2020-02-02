@@ -1,19 +1,20 @@
 package me.lx.sample
 
-import android.os.Handler
 import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.OnItemBind
 import me.lx.rv.XmlItemBinding
+import me.lx.rv.a1.BindingRecyclerViewAdapter22
 import me.lx.rv.click.BaseRvFun1ItemClickEvent
 import me.lx.rv.collections.MergeObservableList
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
-import me.lx.rv.loadmore.LoadMoreAdapter
+import me.lx.rv.tools.Ls
+import me.lx.sample.divider.BaseThreeGridItemDecoration
+import me.lx.sample.divider.GridSpaceDividerSupportMatch
 import me.lx.sample.vo.*
 
 /**
@@ -24,37 +25,54 @@ import me.lx.sample.vo.*
  *  desc:
  */
 class MutableViewModel : ViewModel(), ClickListeners {
-    // 加载更多相关
-    var isShowNoMoreData = ObservableBoolean() // 加载更多后,没有更多数据的标识
-    var isShowLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
-    var isLoadMoreFail = false // 模拟加载更多失败的标识,没有其他作用
 
 
-    val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
-        override fun onLoadingMore() {
-            println("onLoadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
-            Handler().postDelayed({
-               isShowLoadMoreFailOb.set(isLoadMoreFail)
-                if (!isLoadMoreFail) {
-                    for (i in singleItems.size until singleItems.size + 3) {
-                        singleItems.add(SingleItemVo(i))
-                    }
-                }
-            }, 500)
-        }
 
-        override fun isShowNoMoreDataOb(): ObservableBoolean {
-            return isShowNoMoreData
-        }
-
-        override fun isShowLoadMoreFailOb(): ObservableBoolean {
-            return isShowLoadMoreFailOb
-        }
-    }
 
     // 适配器
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
+
     val multiAdapter = BindingRecyclerViewAdapter<Any>()
+    val multiAdapter22 = BindingRecyclerViewAdapter22<Any>()
+
+    // grid3
+    val gridAdapter = BindingRecyclerViewAdapter<SingleItemVo>()
+    val rightLayoutManager = GridLayoutManager(MyApp.sContext, 3)
+    val grid3Items = ObservableArrayList<SingleItemVo>().apply {
+        for (i in 0 until 12) {
+            add(SingleItemVo(i))
+        }
+    }
+    val grid3Xml = itemBindingOf<SingleItemVo>(R.layout.item_grid3,
+        object : BaseRvFun1ItemClickEvent<SingleItemVo>() {
+            override fun clickRvItem(item: SingleItemVo) {
+                item.isCheckedOb.set(!item.isCheckedOb.get())
+            }
+        })
+    val gridDivider2 = object : BaseThreeGridItemDecoration(rightLayoutManager) {
+        override fun getLeftRightGap(): Int {
+            return 10
+        }
+
+        override fun isHaveHeadLayout(): Boolean {
+            return false
+        }
+
+        override fun getMiddleGap(): Int {
+            return 10
+        }
+
+    }
+    // var gridDivider = object : GridSpaceDivider(rightLayoutManager) {
+    var gridDivider = object : GridSpaceDividerSupportMatch() {
+        override fun getAvgGap(): Int {
+            return 12
+        }
+
+        override fun getTopGap(): Int {
+            return 16
+        }
+    }
 
 
     // 点击事件
@@ -73,7 +91,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
     //  数据 -> 包含头部、item、底部
     val headerFooterItems = MergeObservableList<Any>()
-        .insertItem(HeaderVo("Header"))
+        .insertItem(Header2Vo())
         .insertList(singleItems)
         .insertItem(FooterVo("Footer11"))
         .insertItem(FooterVo("Footer22"))
@@ -104,6 +122,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
         override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
                 HeaderVo::class -> itemBinding.set(R.layout.item_header, BR.item, itemClickEvent)
+                Header2Vo::class -> itemBinding.set(R.layout.item_header2, BR.item, itemClickEvent)
                 SingleItemVo::class -> itemBinding.set(R.layout.item_single, itemClickEvent)
                 FooterVo::class -> itemBinding.set(R.layout.item_footer, itemClickEvent)
             }
@@ -112,16 +131,9 @@ class MutableViewModel : ViewModel(), ClickListeners {
 
     val headerFooterItemBinding2 = OnItemBindClass<Any>().apply {
         map<HeaderVo>(R.layout.item_header, itemClickEvent)
+        map<Header2Vo>(R.layout.item_header2)
         map<SingleItemVo>(R.layout.item_single)
         map<FooterVo>(R.layout.item_footer)
-    }
-
-
-    fun t1() {
-        val aa: RecyclerView? = null
-        aa?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-        })
     }
 
 
@@ -129,6 +141,11 @@ class MutableViewModel : ViewModel(), ClickListeners {
     override fun clickAddItem() {
         singleItems.add(SingleItemVo(index = singleItems.size))
 
+        val header = headerFooterItems.get(0) as? Header2Vo
+        header?.name="我是${singleItems.size}"
+        header?.nameOb?.set("我是${singleItems.size}")
+        Ls.d("clickAddItem()...1111...singleItems=${singleItems.size}  header=${header?.name}")
+        // multiAdapter.notifyDataSetChanged()
     }
 
     override fun clickRemoveItem() {

@@ -8,42 +8,60 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.loadmore.LoadMoreAdapter
+import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragmentLoadmoreRecyclerviewBinding
+import me.lx.sample.model.LoadMoreModel
 
 class FragmentLoadMoreRecyclerView : Fragment(),ClickListeners {
-    private lateinit var viewModel: MutableViewModel
+    private lateinit var mModel: LoadMoreModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LoadMoreAdapter.DEFAULT_FOOTER_PATH="me.lx.sample.loadmore.CustomLoadMoreFooter"
-        viewModel = ViewModelProviders.of(this).get()
+        mModel = ViewModelProviders.of(this).get()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
+
+        Ls.d("onCreateView().....111111......")
         val binding =  FragmentLoadmoreRecyclerviewBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
-            it.viewModel = viewModel
+            it.model = mModel
             it.click = this@FragmentLoadMoreRecyclerView
             it.executePendingBindings()
         }
+        Ls.d("onCreateView().....22222222......")
         binding.add.text="设置下一页没有/有更多数据"
         binding.remove.text="设置下一页加载失败/成功"
-        println("FragmentLoadMoreRecyclerView....onCreateView().....viewModel=${viewModel.hashCode()}")
+        initView(binding)
         return binding.root
     }
 
+    private fun initView(binding: FragmentLoadmoreRecyclerviewBinding?) {
+        binding!!.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Ls.d("onScrollStateChanged()...3333...newState=$newState")
+            }
+        })
+    }
+
+    override fun clickBtn3() {
+        mModel.isShowNoMoreData.set(!mModel.isShowNoMoreData.get())
+    }
+
     override fun clickAddItem() {
-        viewModel.isShowNoMoreData.set(!viewModel.isShowNoMoreData.get())
+        mModel.isShowNoMoreData.set(!mModel.isShowNoMoreData.get())
         val recyclerView = view!!.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.scrollBy(0,13)
         recyclerView.stopScroll()
     }
 
     override fun clickRemoveItem() {
-        viewModel.isLoadMoreFail=!viewModel.isLoadMoreFail
+        mModel.isLoadMoreFail=!mModel.isLoadMoreFail
 
     }
 }

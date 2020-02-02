@@ -5,7 +5,7 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="model"
             type="me.lx.sample.MutableViewModel" />
 
         <variable
@@ -26,16 +26,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             android:dropDownWidth="120dp"
-            android:spinnerMode="dialog"
+            android:spinnerMode="dropdown"
             android:entries="@array/print_width_type"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_adapter="@{viewModel.adapter}"
-            app:rv_itemBinding="@{viewModel.simpleItemBinding}"
-            app:rv_items="@{viewModel.singleItems}"
+            app:rv_adapter="@{model.adapter}"
+            app:rv_itemBinding="@{model.simpleItemBinding}"
+            app:rv_items="@{model.singleItems}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <LinearLayout
@@ -51,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickAddItem()}"
-
                 android:text="Add Item" />
 
             <Button

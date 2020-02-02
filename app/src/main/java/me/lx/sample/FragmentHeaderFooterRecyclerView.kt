@@ -11,11 +11,11 @@ import me.lx.sample.databinding.FragmentHeaderfooterRecyclerviewBinding
 class FragmentHeaderFooterRecyclerView : Fragment() {
 
 
-    private lateinit var viewModel: MutableViewModel
+    private lateinit var mModel: MutableViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get()
+        mModel = ViewModelProviders.of(this).get()
     }
 
     override fun onCreateView(
@@ -25,8 +25,8 @@ class FragmentHeaderFooterRecyclerView : Fragment() {
     ): View? {
         return FragmentHeaderfooterRecyclerviewBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
-            it.viewModel = viewModel
-            it.click = viewModel
+            it.model = mModel
+            it.click = mModel
             it.executePendingBindings()
         }.root
     }

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="model"
-            type="me.lx.sample.MutableViewModel" />
+            type="me.lx.sample.model.SwitchSpanModel" />
 
         <variable
             name="click"
@@ -17,23 +18,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:cbind3_test="@{3}"
+        app:bbind2_test="@{2}"
+        app:abind1_test="@{1}"
         android:orientation="vertical">
 
-        <!--
-             app:rv_adapter2="@{model.multiAdapter22}"
-            app:rv_itemBinding2="@{model.headerFooterItemBinding}"
-            app:rv_items2="@{model.headerFooterItems}"
-        -->
+        <Spinner
+            android:id="@+id/spinnerWidth"
+            android:layout_width="120dp"
+            android:layout_height="47dp"
+            android:dropDownWidth="120dp"
+            android:entries="@array/print_width_type"
+            android:spinnerMode="dialog"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_adapter="@{model.multiAdapter}"
-            app:rv_itemBinding="@{model.headerFooterItemBinding}"
-            app:rv_items="@{model.headerFooterItems}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:rv_layout_span="@{model.layout}"
+            app:rv_adapter="@{model.adapter}"
+            app:rv_itemBinding="@{model.getXmlItem()}"
+            app:rv_items="@{model.singleItems}"
+             />
+<!-- app:rv_layoutmanager="@{(v) -> model.getLm(v)}"  -->
         <LinearLayout
             style="?buttonBarStyle"
             android:layout_width="match_parent"
@@ -47,8 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickAddItem()}"
-
-                android:text="Add Item2" />
+                android:text="Add Item" />
 
             <Button
                 android:id="@+id/remove"
@@ -57,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClickListener="@{() -> click.clickRemoveItem()}"
-                android:text="Remove Item2" />
+                android:text="Remove Item" />
         </LinearLayout>
     </LinearLayout>
 </layout>

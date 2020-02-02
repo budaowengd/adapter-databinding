@@ -46,18 +46,27 @@ class MainActivity : AppCompatActivity() {
 
         val listener = NavigationView.OnNavigationItemSelectedListener { menuItem ->
             val fragment: Fragment = when (menuItem.itemId) {
+                R.id.action_grid_rv -> FragmentGridView()
                 R.id.action_single_recyclerview -> FragmentSingleRecyclerView()
                 R.id.action_headerfooter_recyclerview -> FragmentHeaderFooterRecyclerView()
                 R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
                 R.id.action_loadmore_recyclerview -> FragmentLoadMoreRecyclerView()
-                R.id.action_group_rv ->  FragmentGroupList.newInstance(bundle_default)
+                R.id.action_switch_span_rv -> FragSwitchSpanRv()
+
+
+                R.id.action_group_rv -> FragmentGroupList.newInstance(bundle_default)
                 R.id.action_group_rv_no_header -> FragmentGroupList.newInstance(bundle_no_header)
                 R.id.action_group_rv_no_footer -> FragmentGroupList.newInstance(bundle_no_footer)
                 R.id.action_group_rv_various -> FragmentGroupList.newInstance(bundle_various)
-                R.id.action_group_rv_various_child -> FragmentGroupList.newInstance(bundle_various_child)
+                R.id.action_group_rv_various_child -> FragmentGroupList.newInstance(
+                    bundle_various_child
+                )
                 R.id.action_group_rv_expandable -> FragmentGroupList.newInstance(bundle_expandable)
                 R.id.action_group_rv_grid -> FragmentGroupList.newInstance(bundle_grid_child)
-                R.id.action_group_rv_diff_grid -> FragmentGroupList.newInstance(bundle_grid_diff_child)
+                R.id.action_group_rv_diff_grid -> FragmentGroupList.newInstance(
+                    bundle_grid_diff_child
+                )
+
                 else -> {
                     return@OnNavigationItemSelectedListener false
                 }
@@ -72,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener(listener)
 
         if (savedInstanceState == null) {
-            listener.onNavigationItemSelected(binding.navView.menu.getItem(10))
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(4))
         } else {
             actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
         }

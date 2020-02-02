@@ -16,8 +16,8 @@ inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, vari
     bindMap(T::class.java, layoutRes, variableId)
 }
 
-inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, clickListener: ClickListener) {
-    bindMap(T::class.java, layoutRes, clickListener = clickListener)
+inline fun <reified T> OnItemBindClass<in T>.map(@LayoutRes layoutRes: Int, clickListener: ClickListener,itemVariableId: Int = BR.item) {
+    bindMap(T::class.java, layoutRes, itemVariableId, clickListener)
 }
 
 /**

@@ -17,6 +17,8 @@ import me.lx.sample.group.entity.ExpandableGroupEntity
  * 两个方法达到列表的展开和收起的效果。
  * 这种列表类似于[ExpandableListView]的效果。
  * 这里我把列表的组尾去掉是为了效果上更像ExpandableListView。
+ *
+ * 实现的原理就是重写 getChildrenCount() 返回不同数量
  */
 class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, ChildEntity>() {
 
@@ -28,9 +30,6 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
         }
         return 0
     }
-
-
-
 
 
     override fun hasHeader(groupPosition: Int): Boolean {

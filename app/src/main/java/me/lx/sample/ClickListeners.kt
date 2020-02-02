@@ -10,6 +10,7 @@ package me.lx.sample
 interface ClickListeners {
     fun clickAddItem()
     fun clickRemoveItem()
+    fun clickBtn3(){}
 
     fun clickExpandAdapterAddItem(){}
     fun clickExpandAdapterRemoveItem(){}

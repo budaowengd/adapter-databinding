@@ -120,7 +120,6 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mRecyclerView = recyclerView
         setFullSpan(recyclerView)
         recyclerView.addOnScrollListener(mOnScrollListener)
-
         mRawAdapter.onAttachedToRecyclerView(recyclerView)
     }
 
@@ -159,8 +158,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (mLoadMoreFailClickListener != null) {
                         mLoadMoreFailClickListener!!.clickLoadMoreFailView(
                                 this@LoadMoreAdapter,
-                                loadMoreBinding.root
-                        )
+                                loadMoreBinding.root)
                     } else {
                         requestLoadingMore()
                     }
