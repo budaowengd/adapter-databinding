@@ -20,8 +20,8 @@ import java.util.*
  * 1、T泛型: 组对象
  * 2、C泛型: 组里的孩子
  */
-abstract class GroupedRecyclerViewAdapter<T, C> :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<T> {
+abstract class GroupedRecyclerViewAdapter<G, C> :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<G> {
     companion object {
         const val TAG = "GroupedAdapter"
         @JvmField
@@ -50,14 +50,14 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     private var inflater: LayoutInflater? = null
 
-    private var callback: WeakReferenceOnListChangedCallback<T>? = null
-    private var groupList: List<T>? = null
+    private var callback: WeakReferenceOnListChangedCallback<G>? = null
+    private var groupList: List<G>? = null
     private var recyclerView: RecyclerView? = null
 
     // 当孩子为空的时候,如果存在header,就自动移除header
     private var childEmptyIsRemoveHeader: Boolean? = null
 
-    //    constructor(dataList: List<T>) : super() {
+    //    constructor(dataList: List<G>) : super() {
 //        groupList = dataList
 //    }
     init {
@@ -70,13 +70,13 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        if (groupList is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(
+        if (groupList is ObservableList<G>) {
+            callback = WeakReferenceOnListChangedCallback<G>(
                 recyclerView,
                 this,
-                groupList!! as ObservableList<T>
+                groupList!! as ObservableList<G>
             )
-            (groupList as ObservableList<T>).addOnListChangedCallback(callback)
+            (groupList as ObservableList<G>).addOnListChangedCallback(callback)
         }
         this.recyclerView = recyclerView
         structureChanged()
@@ -126,12 +126,12 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
             }
             TYPE_CHILD -> {
                 val childPosition = getChildPositionForPosition(groupPosition, position)
-                val childItem = getChildrenList(groupItem)[childPosition]
-                binding.setVariable(BR.childItem, childItem)
+                val child = getChildrenList(groupItem)[childPosition]
+                binding.setVariable(BR.child, child)
                 if (mClickChildListener != null) {
                     binding.setVariable(BR.childClick, mClickChildListener)
                 }
-                onBindChildViewHolder(binding, groupItem, childItem, groupPosition, childPosition)
+                onBindChildViewHolder(binding, groupItem, child, groupPosition, childPosition)
             }
         }
         binding.executePendingBindings()
@@ -159,16 +159,16 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         return super.getItemViewType(position)
     }
 
-    open fun setGroupList(groupList: List<T>) {
+    open fun setGroupList(groupList: List<G>) {
         if (System.identityHashCode(groupList) == System.identityHashCode(this.groupList)) {
             return
         }
         if (recyclerView != null) {
-            if (this.groupList is ObservableList<T>) {
-                (this.groupList as ObservableList<T>).removeOnListChangedCallback(callback)
+            if (this.groupList is ObservableList<G>) {
+                (this.groupList as ObservableList<G>).removeOnListChangedCallback(callback)
                 callback = null
             }
-            if (groupList is ObservableList<T>) {
+            if (groupList is ObservableList<G>) {
                 callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, groupList)
                 groupList.addOnListChangedCallback(callback)
             }
@@ -181,22 +181,22 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     /**
      * 给每一组里的 childList的添加数据改变监听
      */
-    private fun registerChildListChangedCallback(groupList: List<T>) {
+    private fun registerChildListChangedCallback(groupList: List<G>) {
         // 为每组的childList添加监听
         for (group in groupList) {
             addChildListChangedCallbackByGroup(group)
         }
     }
 
-    open fun addChildListChangedCallbackByGroup(group: T) {
+    open fun addChildListChangedCallbackByGroup(group: G) {
         val childrenList = getChildrenList(group)
         if (childrenList is ObservableList) {
-            val childListCallback = ChildListChangedCallback<T, C>(this, childEmptyIsRemoveHeader)
+            val childListCallback = ChildListChangedCallback<G, C>(this, childEmptyIsRemoveHeader)
             childrenList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
         }
     }
 
-    fun getItems(): List<T> {
+    fun getItems(): List<G> {
         return this.groupList!!
     }
 
@@ -299,7 +299,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         return groupList!!.size
     }
 
-    fun getGroupPosition(groupItem: T): Int {
+    fun getGroupPosition(groupItem: G): Int {
         var groupPosition = -1
         run breaking@{
             groupList!!.forEachIndexed { index, group ->
@@ -319,12 +319,10 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
      */
     fun getGroupPositionByChildList(childList: List<C>): Int {
         var groupIndex = -1
+        val childListHashCode = System.identityHashCode(childList)
         run breaking@{
             groupList!!.forEachIndexed { index, group ->
-                if (System.identityHashCode(getChildrenList(group)) == System.identityHashCode(
-                        childList
-                    )
-                ) {
+                if (System.identityHashCode(getChildrenList(group)) == childListHashCode) {
                     groupIndex = index
                     return@breaking
                 }
@@ -941,19 +939,19 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         super.registerAdapterDataObserver(observer)
     }
 
-    override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
+    override fun setItemBinding(itemBinding: XmlItemBinding<G>) {
 
     }
 
-    override fun getItemXmlObj(): XmlItemBinding<T>? {
+    override fun getItemXmlObj(): XmlItemBinding<G>? {
         return null
     }
 
-    override fun setItems(items: List<T>) {
+    override fun setItems(items: List<G>) {
 
     }
 
-    override fun getAdapterItem(position: Int): T? {
+    override fun getAdapterItem(position: Int): G? {
         return null
     }
 
@@ -970,13 +968,13 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         variableId: Int,
         layoutRes: Int,
         position: Int,
-        item: T
+        item: G
     ) {
 
     }
 
 
-    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): GroupedRecyclerViewAdapter<T, C> {
+    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): GroupedRecyclerViewAdapter<G, C> {
         childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
         return this
     }
@@ -985,9 +983,9 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
     }
 
-    abstract fun getChildrenCount(groupPosition: Int, groupItem: T): Int
+    abstract fun getChildrenCount(groupPosition: Int, groupItem: G): Int
 
-    abstract fun getChildrenList(groupItem: T): List<C>
+    abstract fun getChildrenList(groupItem: G): List<C>
 
     abstract fun hasHeader(groupPosition: Int): Boolean
 
@@ -999,13 +997,13 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
     abstract fun getChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: G, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: G, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
         binding: ViewDataBinding,
-        groupItem: T, childItem: C,
+        groupItem: G, child: C,
         groupPosition: Int,
         childPosition: Int
     )
@@ -1033,15 +1031,15 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
     }
 
-    class WeakReferenceOnListChangedCallback<T> constructor(
+    class WeakReferenceOnListChangedCallback<G> constructor(
         var recyclerView: RecyclerView,
-        private var groupAdapter: GroupedRecyclerViewAdapter<T, *>,
-        groupList: ObservableList<T>
-    ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        // internal val adapterRef: WeakReference<GroupedRecyclerViewAdapter<T, *>> = AdapterReferenceCollector.createRef
+        private var groupAdapter: GroupedRecyclerViewAdapter<G, *>,
+        groupList: ObservableList<G>
+    ) : ObservableList.OnListChangedCallback<ObservableList<G>>() {
+        // internal val adapterRef: WeakReference<GroupedRecyclerViewAdapter<G, *>> = AdapterReferenceCollector.createRef
         // (groupAdapter, groupList, this)
 
-        override fun onChanged(sender: ObservableList<T>) {
+        override fun onChanged(sender: ObservableList<G>) {
             if (DEBUG) {
                 Ls.d("GroupedRecyclerViewAdapter()....onChanged()...1111..")
             }
@@ -1049,7 +1047,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         override fun onItemRangeChanged(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
@@ -1060,7 +1058,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         override fun onItemRangeInserted(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
@@ -1075,7 +1073,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
         }
 
         override fun onItemRangeMoved(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             fromPosition: Int,
             toPosition: Int,
             itemCount: Int
@@ -1088,7 +1086,7 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
 
         // clear() 会执行这
         override fun onItemRangeRemoved(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
@@ -1126,7 +1124,6 @@ abstract class GroupedRecyclerViewAdapter<T, C> :
     private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    interface ClickGroupListener {}
 
 
 }

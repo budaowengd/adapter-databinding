@@ -25,29 +25,29 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
 
     // 点击事件
     val clickChildEvent = object : BaseFun1ClickGroupListener<ChildEntity>() {
-        override fun clickGroupItem(item: ChildEntity) {
-            Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_LONG).show()
+        override fun clickGroup(group: ChildEntity) {
+            Toast.makeText(MyApp.sContext, group.child, Toast.LENGTH_LONG).show()
         }
     }
 
     val clickHeaderEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
-        override fun clickGroupItem(item: GroupEntity) {
-            Toast.makeText(MyApp.sContext, item.header, Toast.LENGTH_LONG).show()
+        override fun clickGroup(group: GroupEntity) {
+            Toast.makeText(MyApp.sContext, group.header, Toast.LENGTH_LONG).show()
         }
     }
     val clickFooterEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
-        override fun clickGroupItem(item: GroupEntity) {
-            Toast.makeText(MyApp.sContext, item.footer, Toast.LENGTH_LONG).show()
+        override fun clickGroup(group: GroupEntity) {
+            Toast.makeText(MyApp.sContext, group.footer, Toast.LENGTH_LONG).show()
         }
     }
 
     val clickExpandHeaderEvent = object : BaseFun1ClickGroupListener<ExpandableGroupEntity>() {
-        override fun clickGroupItem(item: ExpandableGroupEntity) {
-            println("点击前 .....isExpand=" + item.isExpand)
-            if (item.isExpand) {
-                expandableAdapter.collapseGroup(item)
+        override fun clickGroup(group: ExpandableGroupEntity) {
+            println("点击前 .....isExpand=" + group.isExpand)
+            if (group.isExpand) {
+                expandableAdapter.collapseGroup(group)
             } else {
-                expandableAdapter.expandGroup(item)
+                expandableAdapter.expandGroup(group)
             }
         }
     }

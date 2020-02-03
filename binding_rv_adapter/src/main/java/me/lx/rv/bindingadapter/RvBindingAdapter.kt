@@ -6,7 +6,9 @@ import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.R
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.collections.AsyncDiffObservableList
+import me.lx.rv.group.ClickGroupListener
 import me.lx.rv.group.GroupedRecyclerViewAdapter
+import me.lx.rv.group.TwoLevelGroupedRecyclerViewAdapter
 import me.lx.rv.itembindings.OnItemBindClass
 import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.rv.tools.Ls
@@ -140,9 +142,9 @@ fun <T, C> set_rv_GroupAdapter(
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    clickChildListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null,
-    clickHeaderListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null,
-    clickFooterListener: GroupedRecyclerViewAdapter.ClickGroupListener? = null
+    clickChildListener: ClickGroupListener? = null,
+    clickHeaderListener: ClickGroupListener? = null,
+    clickFooterListener: ClickGroupListener? = null
 ) {
 //    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
     if (rv.adapter != null) return
@@ -166,6 +168,47 @@ fun <T, C> set_rv_GroupAdapter(
     }
 
 }
+
+
+@BindingAdapter(
+    value = ["rv_two_level_group_adapter", "rv_two_level_group_items",
+        "rv_two_level_group_layout_span", "rv_two_level_group_SpanSizeLookup",
+        "rv_two_level_group_loadmore_listener", "rv_two_level_group_chick_child_listener",
+        "rv_two_level_group_chick_header_listener", "rv_two_level_group_chick_footer_listener"],
+    requireAll = false
+)
+fun <T, C,CC> set_rv_two_level_GroupAdapter(
+    rv: RecyclerView, adapter: TwoLevelGroupedRecyclerViewAdapter<T, C,CC>?,
+    items: List<T>?,
+    grid_span: Int = 1,
+    spanLookup: GridLayoutManager.SpanSizeLookup? = null,
+    loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
+    clickChildListener: ClickGroupListener? = null,
+    clickHeaderListener: ClickGroupListener? = null,
+    clickFooterListener: ClickGroupListener? = null
+) {
+//    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
+    if (rv.adapter != null) return
+    if (items == null) return
+    if (adapter == null) return
+    adapter.setGroupList(items)
+    set_rv_layoutmanager(rv, if(grid_span==0) 1 else grid_span, spanLookup)
+    if (clickChildListener != null) {
+        adapter.setClickChildListener(clickChildListener)
+    }
+    if (clickHeaderListener != null) {
+        adapter.setClickHeaderListener(clickHeaderListener)
+    }
+    if (clickFooterListener != null) {
+        adapter.setClickFooterListener(clickFooterListener)
+    }
+    if (loadMoreListener != null) {
+        rv.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
+    } else {
+        rv.adapter = adapter
+    }
+}
+
 
 fun getLoadMoreAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,

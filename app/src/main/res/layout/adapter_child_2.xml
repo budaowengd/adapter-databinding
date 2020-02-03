@@ -6,14 +6,14 @@
             type="me.lx.rv.group.BaseFun1ClickGroupListener" />
 
         <variable
-            name="childItem"
+            name="child"
             type="me.lx.sample.group.entity.ChildEntity" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="1px"
-    android:onClick="@{()->childClick.clickGroupItem(childItem)}"
+    android:onClick="@{()->childClick.clickGroup(child)}"
     android:background="@drawable/holo_blue_bright_ripple_bg"
     android:orientation="vertical">
 
@@ -24,7 +24,7 @@
         android:textColor="@android:color/black"
         android:gravity="center"
         android:padding="8dp"
-        android:text='@{childItem.child}'
+        android:text='@{child.child}'
         android:textSize="16sp" />
 
 </LinearLayout>

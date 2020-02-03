@@ -2,6 +2,7 @@ package me.lx.rv
 
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
+import me.lx.rv.group.ClickGroupListener
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.rv.loadmore.LoadMoreAdapter
 
@@ -64,15 +65,15 @@ interface RvGroupBindListener<T, C> {
         return null
     }
 
-    fun getClickChildListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
+    fun getClickChildListener(): ClickGroupListener? {
         return null
     }
 
-    fun getClickFootListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
+    fun getClickFootListener(): ClickGroupListener? {
         return null
     }
 
-    fun getClickHeaderListener(): GroupedRecyclerViewAdapter.ClickGroupListener? {
+    fun getClickHeaderListener(): ClickGroupListener? {
         return null
     }
 }

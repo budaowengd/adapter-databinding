@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.lx.rv.*
 import me.lx.rv.tools.Ls
-import java.util.*
 
 /**
  * 通用的分组列表Adapter。通过它可以很方便的实现列表的分组效果。
@@ -27,10 +26,11 @@ import java.util.*
  *  child2
  *      child2-1
  *      child2-2
+ *      child2-3
  *  group1-footer
  */
-abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<T> {
+abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<G> {
     companion object {
         const val TAG = "GroupedAdapter"
         @JvmField
@@ -41,7 +41,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         @JvmField
         val TYPE_FOOTER = R.integer.type_footer
         @JvmField
-        val TYPE_CHILD = R.integer.type_child
+        val TYPE_CHILD_GROUP = R.integer.type_child
 
         @JvmField
         val TYPE_CHILD_CHILD = R.integer.type_child_child
@@ -62,14 +62,14 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
 
     private var inflater: LayoutInflater? = null
 
-    private var callback: WeakReferenceOnListChangedCallback<T>? = null
-    private var groupList: List<T>? = null
+    private var callback: WeakReferenceOnListChangedCallback<G>? = null
+    private var groupList: List<G>? = null
     private var recyclerView: RecyclerView? = null
 
     // 当孩子为空的时候,如果存在header,就自动移除header
     private var childEmptyIsRemoveHeader: Boolean? = null
 
-    //    constructor(dataList: List<T>) : super() {
+    //    constructor(dataList: List<G>) : super() {
 //        groupList = dataList
 //    }
     init {
@@ -82,13 +82,13 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        if (groupList is ObservableList<T>) {
-            callback = WeakReferenceOnListChangedCallback<T>(
+        if (groupList is ObservableList<G>) {
+            callback = WeakReferenceOnListChangedCallback<G>(
                 recyclerView,
                 this,
-                groupList!! as ObservableList<T>
+                groupList!! as ObservableList<G>
             )
-            (groupList as ObservableList<T>).addOnListChangedCallback(callback)
+            (groupList as ObservableList<G>).addOnListChangedCallback(callback)
         }
         this.recyclerView = recyclerView
         structureChanged()
@@ -96,11 +96,34 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
-
         //处理StaggeredGridLayout，保证组头和组尾占满一行。
         if (isStaggeredGridLayout(holder)) {
             handleLayoutIfStaggeredGridLayout(holder, holder.layoutPosition)
         }
+    }
+
+    override fun getItemCount(): Int {
+        if (isDataChanged) {
+            structureChanged()
+        }
+        return count()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        mTempPosition = position
+        val groupPosition = getGroupPositionForPosition(position)
+        val type = judgeType(position)
+        if (type == TYPE_HEADER) {
+            return getHeaderViewType(groupPosition)
+        } else if (type == TYPE_FOOTER) {
+            return getFooterViewType(groupPosition)
+        } else if (type == TYPE_CHILD_GROUP) {
+            val childGroupPosition = getChildGroupPositionForChildPosition(groupPosition, position)
+            return getChildViewType(groupPosition, childGroupPosition)
+        } else if (type == TYPE_CHILD_CHILD) {
+            return TYPE_CHILD_CHILD
+        }
+        return super.getItemViewType(position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -120,67 +143,86 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         val type = judgeType(position)
         val groupPosition = getGroupPositionForPosition(position)
         val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)!!
-        val groupItem = groupList!![groupPosition]
+        val group = groupList!![groupPosition]
         when (type) {
             TYPE_HEADER -> {
-                binding.setVariable(BR.headerGroup, groupItem)
+                binding.setVariable(BR.headerGroup, group)
                 if (mClickHeaderListener != null) {
                     binding.setVariable(BR.headerClick, mClickHeaderListener)
                 }
-                onBindHeaderViewHolder(binding, groupItem, groupPosition)
+                onBindHeaderViewHolder(binding, group, groupPosition)
             }
             TYPE_FOOTER -> {
-                binding.setVariable(BR.footerGroup, groupItem)
+                binding.setVariable(BR.footerGroup, group)
                 if (mClickFooterListener != null) {
                     binding.setVariable(BR.footerClick, mClickFooterListener)
                 }
-                onBindFooterViewHolder(binding, groupItem, groupPosition)
+                onBindFooterViewHolder(binding, group, groupPosition)
             }
-            TYPE_CHILD -> {
-                val childPosition = getChildPositionForPosition(groupPosition, position)
-                val childItem = getChildrenList(groupItem)[childPosition]
-                binding.setVariable(BR.childItem, childItem)
+            TYPE_CHILD_GROUP -> {
+                val childGroupPosition = getChildGroupPositionForChildPosition(groupPosition, position)
+//                Ls.d("onBindViewHolder()..Child.111  position=$position  groupPosition=$groupPosition  childGroupPosition=$childGroupPosition ")
+                val child = getChildGroupList(group)[childGroupPosition]
+                binding.setVariable(BR.child, child)
                 if (mClickChildListener != null) {
                     binding.setVariable(BR.childClick, mClickChildListener)
                 }
-                onBindChildViewHolder(binding, groupItem, childItem, groupPosition, childPosition)
+                onBindChildViewHolder(binding, group, child, groupPosition, childGroupPosition)
+            }
+            TYPE_CHILD_CHILD -> {
+                //pos= 2,3, 5,6 10,11  13,14,都是childchild
+                val childPosition = getChildPositionForPosition(groupPosition, position)
+                val childChild = getChildChildByChild(getChildGroupList(group), childPosition, position)
+//                Ls.d(
+//                    "onBindViewHolder()..ChildChild position=$position  groupPosition=$groupPosition " +
+//                            "childPosition=$childPosition childGroupPosition=$childGroupPosition childChild=$childChild"
+//                )// childChild=${childChild}")
+                if (childChild != null) {
+                    binding.setVariable(BR.childChild, childChild)
+                    if (mClickChildListener != null) {
+                        binding.setVariable(BR.childChildClick, mClickChildListener)
+                    }
+                    onBindChildChildViewHolder(binding, group, childChild, groupPosition, childPosition)
+                }
             }
         }
         binding.executePendingBindings()
     }
 
-    override fun getItemCount(): Int {
-        if (isDataChanged) {
-            structureChanged()
+    private fun getChildChildByChild(childGroupList: List<CG>, childPosition: Int, position: Int): CC? {
+        var upSize = 0
+        var start = 0
+        run breaking@{
+            childGroupList.forEachIndexed { childGroupIndex, childGroup ->
+                start++
+                val childChildList = getChildChildList(childGroup)
+                upSize += childChildList.size + 1
+                if (upSize > childPosition) {
+                    childChildList.forEachIndexed { childChildIndex, childChild ->
+                        if (childPosition == start) {
+                            return childChild
+                        }
+                        start++
+                    }
+                } else {
+                    start += childChildList.size
+                }
+            }
         }
-        return count()
+        return null
     }
 
-    override fun getItemViewType(position: Int): Int {
-        mTempPosition = position
-        val groupPosition = getGroupPositionForPosition(position)
-        val type = judgeType(position)
-        if (type == TYPE_HEADER) {
-            return getHeaderViewType(groupPosition)
-        } else if (type == TYPE_FOOTER) {
-            return getFooterViewType(groupPosition)
-        } else if (type == TYPE_CHILD) {
-            val childPosition = getChildPositionForPosition(groupPosition, position)
-            return getChildViewType(groupPosition, childPosition)
-        }
-        return super.getItemViewType(position)
-    }
 
-    open fun setGroupList(groupList: List<T>) {
+    open fun setGroupList(groupList: List<G>) {
         if (System.identityHashCode(groupList) == System.identityHashCode(this.groupList)) {
             return
         }
         if (recyclerView != null) {
-            if (this.groupList is ObservableList<T>) {
-                (this.groupList as ObservableList<T>).removeOnListChangedCallback(callback)
+            if (this.groupList is ObservableList<G>) {
+                (this.groupList as ObservableList<G>).removeOnListChangedCallback(callback)
                 callback = null
             }
-            if (groupList is ObservableList<T>) {
+            if (groupList is ObservableList<G>) {
                 callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, groupList)
                 groupList.addOnListChangedCallback(callback)
             }
@@ -193,23 +235,45 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     /**
      * 给每一组里的 childList的添加数据改变监听
      */
-    private fun registerChildListChangedCallback(groupList: List<T>) {
+    fun registerChildListChangedCallback(groupList: List<G>) {
         // 为每组的childList添加监听
         for (group in groupList) {
-            addChildListChangedCallbackByGroup(group)
+            val childGroupList = getChildGroupList(group)
+            registerChildGroupListChangedCallback(childGroupList)
         }
     }
 
-    open fun addChildListChangedCallbackByGroup(group: T) {
-        val childrenList = getChildrenList(group)
-        if (childrenList is ObservableList) {
-            val childListCallback =
-                TwoLevelChildListChangedCallback<T, C>(this, childEmptyIsRemoveHeader)
-            childrenList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
+    fun registerChildGroupListChangedCallback2(cGGenerics: Any) {
+        val cg = cGGenerics as? CG
+        if (cg != null) {
+            val childChildList = getChildChildList(cg)
+            registerChildChildCallback(childChildList)
         }
     }
 
-    fun getItems(): List<T> {
+    open fun registerChildGroupListChangedCallback(childGroupList: List<CG>) {
+        if (childGroupList is ObservableList) {
+            val childListCallback = TwoLevelChildListChangedCallback(this, true)
+            childGroupList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
+            childGroupList.forEach { childGroup ->
+                val childChildList = getChildChildList(childGroup)
+                registerChildChildCallback(childChildList)
+            }
+        }
+    }
+
+    private fun registerChildChildCallback(childChildList: List<CC>) {
+        if (childChildList is ObservableList) {
+            childChildList.addOnListChangedCallback(
+                TwoLevelChildListChangedCallback(
+                    this,
+                    false
+                ) as ObservableList.OnListChangedCallback<Nothing>
+            )
+        }
+    }
+
+    fun getItems(): List<G> {
         return this.groupList!!
     }
 
@@ -236,7 +300,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     }
 
     open fun getChildViewType(groupPosition: Int, childPosition: Int): Int {
-        return TYPE_CHILD
+        return TYPE_CHILD_GROUP
     }
 
     private fun getLayoutId(position: Int, viewType: Int): Int {
@@ -245,7 +309,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             return getHeaderLayout(viewType)
         } else if (type == TYPE_FOOTER) {
             return getFooterLayout(viewType)
-        } else if (type == TYPE_CHILD) {
+        } else if (type == TYPE_CHILD_GROUP) {
             return getChildLayout(viewType)
         } else if (type == TYPE_CHILD_CHILD) {
             return getChildChildLayout(viewType)
@@ -254,7 +318,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     }
 
     private fun count(): Int {
-        return countGroupRangeItem(0, mStructures.size)
+        return countGroupRangeCount(0, mStructures.size)
     }
 
     /**
@@ -263,24 +327,26 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      * @param position
      * @return
      */
-    fun judgeType(position: Int): Int {
+    fun judgeType(position: Int): Int {  // 6
         var itemCount = 0
         val groupCount = mStructures.size
-
-        for (i in 0 until groupCount) {
-            val structure = mStructures[i]
+        for (groupPosition in 0 until groupCount) {
+            val structure = mStructures[groupPosition]
             if (structure.hasHeader()) {
                 itemCount += 1
                 if (position < itemCount) {
                     return TYPE_HEADER
                 }
             }
-
-            itemCount += structure.childrenCount
+            itemCount += structure.childrenCount // 8 = 7 + 1(header)
+            // 如果position == 2 ,实际是 child1-1 , groupPosition = 0
             if (position < itemCount) {
-                return TYPE_CHILD
+                val groupStartPos = itemCount - structure.childrenCount - structure.headerCount
+                if (isChildChild(groupStartPos, position, getChildGroupList(groupList!![groupPosition]!!))) {
+                    return TYPE_CHILD_CHILD
+                }
+                return TYPE_CHILD_GROUP
             }
-
             if (structure.hasFooter()) {
                 itemCount += 1
                 if (position < itemCount) {
@@ -293,6 +359,18 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             "can't determine the item type of the position." +
                     "position = " + position + ",item count = " + getItemCount()
         )
+    }
+
+    private fun isChildChild(groupStartPos: Int, position: Int, childList: List<CG>): Boolean {
+        var index = 0
+        childList.forEachIndexed { childIndex, child ->
+            index++
+            if (index + groupStartPos == position) {
+                return false
+            }
+            index += getChildChildList(child).size
+        }
+        return true
     }
 
     /**
@@ -314,11 +392,11 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         return groupList!!.size
     }
 
-    fun getGroupPosition(groupItem: T): Int {
+    fun getGroupPosition(group: G): Int {
         var groupPosition = -1
         run breaking@{
             groupList!!.forEachIndexed { index, group ->
-                if (groupItem == group) {
+                if (group == group) {
                     groupPosition = index
                     return@breaking
                 }
@@ -327,25 +405,41 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         return groupPosition
     }
 
-    /**
-     * 根据每组里面的 childList 计算所在的组（groupPosition）
-     *
-     * @return 组下标 groupPosition
-     */
-    fun getGroupPositionByChildList(childList: List<C>): Int {
-        var groupIndex = -1
-        run breaking@{
-            groupList!!.forEachIndexed { index, group ->
-                if (System.identityHashCode(getChildrenList(group)) == System.identityHashCode(
-                        childList
-                    )
-                ) {
-                    groupIndex = index
-                    return@breaking
+    fun getGroupPositionByChildGroupList(childGroupList: List<*>): Int {
+        val childGroups = childGroupList as? List<CG>
+        var mGroupIndex = -1
+        if (childGroups != null) {
+            val childGroupListHashCode = System.identityHashCode(childGroupList)
+            run breaking@{
+                groupList!!.forEachIndexed { groupIndex, group ->
+                    if (System.identityHashCode(getChildGroupList(group)) == childGroupListHashCode) {
+                        mGroupIndex = groupIndex
+                        return@breaking
+                    }
                 }
             }
         }
-        return groupIndex
+        return mGroupIndex
+    }
+
+    fun getGroupPositionByChildChildList(childChildList: List<*>): Pair<Int, Int> {
+        val childChilds = childChildList as? List<CC>
+        var mGroupIndex = -1
+        childChilds ?: return Pair(mGroupIndex, mGroupIndex)
+        var mChildGroupIndex = -1
+        val childListHashCode = System.identityHashCode(childChilds)
+        run breaking@{
+            groupList!!.forEachIndexed { groupIndex, group ->
+                getChildGroupList(group).forEachIndexed { childGroupIndex, childGroup ->
+                    if (System.identityHashCode(getChildChildList(childGroup)) == childListHashCode) {
+                        mGroupIndex = groupIndex
+                        mChildGroupIndex = childGroupIndex
+                        return@breaking
+                    }
+                }
+            }
+        }
+        return Pair<Int, Int>(mGroupIndex, mChildGroupIndex)
     }
 
     /**
@@ -358,7 +452,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         var count = 0
         val groupCount = mStructures.size
         for (i in 0 until groupCount) {
-            count += countGroupItem(i)
+            count += countGroupCount(i)
             if (position < count) {
                 return i
             }
@@ -367,23 +461,92 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     }
 
     /**
-     * 根据下标计算position在组中位置（childPosition）
-     *
+     * 返回1个组里,每个Child在组里的索引
+     * c1
+     *  c1-1
+     *  c1-2
+     * c2
+     *  c2-1
+     *  c2-2
+     * 比如: position=0、3, 返回 0 和 1
+     */
+    private fun getChildGroupPositionForChildPosition(groupPosition: Int, position: Int): Int {
+        val childPosition = getChildPositionForPosition(groupPosition, position)
+        val childGroupPosition = getChildGroupIndexByChildPosition(childPosition, getChildGroupList(groupList!![groupPosition]!!))
+        return childGroupPosition
+    }
+
+    private fun getChildGroupIndexByChildPosition(childPosition: Int, childGroupList: List<CG>): Int {
+        var upIndex = 0
+        run breaking@{
+            childGroupList.forEachIndexed { index, childGroup ->
+                upIndex += getChildChildList(childGroup).size + 1
+                if (upIndex > childPosition) {
+                    return index
+                }
+            }
+        }
+        return 0
+    }
+
+    /**
+     * 根据下标计算position在组中位置（childPosition）,
+     * 因为每个child里,有不同的childchild数量,所以得计算出归属于哪个child分组的,比如:
+     * c1
+     *  c1-1
+     *  c1-2
+     * c2
+     *  c2-1
+     *  c2-2
+     * 需要这样的结果: 如果pos=0,1,2, childPosition=0, pos=3,4,5 childPosition=1
      * @param groupPosition 所在的组
      * @param position      下标
      * @return 子项下标 childPosition
+     *
      */
     fun getChildPositionForPosition(groupPosition: Int, position: Int): Int {
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
-            val itemCount = countGroupRangeItem(0, groupPosition + 1)
+            val itemCount = countGroupRangeCount(0, groupPosition + 1)
             val structure = mStructures[groupPosition]
-            val p =
-                structure.childrenCount - (itemCount - position) + if (structure.hasFooter()) 1 else 0
-            if (p >= 0) {
-                return p
+            var childPosition =
+                structure.childrenCount - (itemCount - position) + structure.headerCount
+            //pos= 2,3, 5,6 10,11  13,14,都是childchild
+//            Ls.d(
+//                "getChildPositionForPosition()...333..position=$position childPosition=$childPosition  newChildPosition=${getChildGroupIndexByChildPosition(
+//                    childPosition,
+//                    getChildGroupList(groupList!![groupPosition]!!)
+//                )}"
+//            )
+//            childPosition = getChildGroupIndexByChildPosition(childPosition, getChildGroupList(groupList!![groupPosition]!!))
+            if (childPosition >= 0) {
+                return childPosition
             }
         }
         return -1
+    }
+
+    private fun getRealChildPositionByChildPos(groupPosition: Int, childPos: Int): Int {
+        var indexSize = 0
+        getChildGroupList(groupList!![groupPosition]).forEachIndexed { childIndex, child1 ->
+            indexSize++
+            // 第1个child1组里
+            if (childPos == indexSize - 1) {
+                return childIndex
+            }
+
+            indexSize += getChildChildList(child1).size
+        }
+//        run breaking@{
+//            group.childList.forEachIndexed { index, child ->
+//                if (childPosition > upIndex) {
+//                    childIndex = childPosition - upIndex
+//                } else {
+//                    return@breaking
+//                }
+//                upIndex += child.childChildList.size
+//            }
+//        }
+        return 0
     }
 
     /**
@@ -399,7 +562,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
                 //return if (!hasHeader(groupPosition)) {
                 return -1
             } else {
-                return countGroupRangeItem(0, groupPosition)
+                return countGroupRangeCount(0, groupPosition)
             }
         }
         return -1
@@ -416,7 +579,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             val structure = mStructures[groupPosition]
             return if (!structure.hasFooter()) {
                 -1
-            } else countGroupRangeItem(0, groupPosition + 1) - 1
+            } else countGroupRangeCount(0, groupPosition + 1) - 1
         }
         return -1
     }
@@ -432,7 +595,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
             val structure = mStructures[groupPosition]
             if (structure.childrenCount > childPosition) {
-                val itemCount = countGroupRangeItem(0, groupPosition)
+                val itemCount = countGroupRangeCount(0, groupPosition)
                 return itemCount + childPosition + if (structure.hasHeader()) 1 else 0
             }
         }
@@ -445,7 +608,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      * @param groupPosition
      * @return
      */
-    fun countGroupItem(groupPosition: Int): Int {
+    fun countGroupCount(groupPosition: Int): Int {
         var itemCount = 0
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
             val structure = mStructures[groupPosition]
@@ -465,12 +628,12 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      *
      * @return
      */
-    fun countGroupRangeItem(start: Int, count: Int): Int {
+    fun countGroupRangeCount(start: Int, count: Int): Int {
         var itemCount = 0
         val size = mStructures.size
         var i = start
         while (i < size && i < start + count) {
-            itemCount += countGroupItem(i)
+            itemCount += countGroupCount(i)
             i++
         }
         return itemCount
@@ -495,7 +658,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      */
     fun notifyGroupChanged(groupPosition: Int) {
         val index = getPositionForGroupHeader(groupPosition)
-        val itemCount = countGroupItem(groupPosition)
+        val itemCount = countGroupCount(groupPosition)
         if (index >= 0 && itemCount > 0) {
             notifyItemRangeChanged(index, itemCount)
         }
@@ -511,9 +674,9 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         val index = getPositionForGroupHeader(groupPosition)
         var itemCount = 0
         if (groupPosition + count <= mStructures.size) {
-            itemCount = countGroupRangeItem(groupPosition, groupPosition + count)
+            itemCount = countGroupRangeCount(groupPosition, groupPosition + count)
         } else {
-            itemCount = countGroupRangeItem(groupPosition, mStructures.size)
+            itemCount = countGroupRangeCount(groupPosition, mStructures.size)
         }
         if (index >= 0 && itemCount > 0) {
             notifyItemRangeChanged(index, itemCount)
@@ -617,7 +780,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      */
     fun notifyGroupRemoved(groupPosition: Int) {
         val index = getPositionForGroupHeader(groupPosition)
-        val itemCount = countGroupItem(groupPosition)
+        val itemCount = countGroupCount(groupPosition)
         if (index >= 0 && itemCount > 0) {
             notifyItemRangeRemoved(index, itemCount)
             notifyItemRangeChanged(index, getItemCount() - itemCount)
@@ -635,9 +798,9 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         val index = getPositionForGroupHeader(groupPosition)
         var itemCount = 0
         if (groupPosition + count <= mStructures.size) {
-            itemCount = countGroupRangeItem(groupPosition, groupPosition + count)
+            itemCount = countGroupRangeCount(groupPosition, groupPosition + count)
         } else {
-            itemCount = countGroupRangeItem(groupPosition, mStructures.size)
+            itemCount = countGroupRangeCount(groupPosition, mStructures.size)
         }
         if (index >= 0 && itemCount > 0) {
             notifyItemRangeRemoved(index, itemCount)
@@ -761,8 +924,8 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             groupPos = mStructures.size - 1
         }
 
-        val index = countGroupRangeItem(0, groupPos)
-        val itemCount = countGroupItem(groupPos)
+        val index = countGroupRangeCount(0, groupPos)
+        val itemCount = countGroupCount(groupPos)
         if (itemCount > 0) {
             notifyItemRangeInserted(index, itemCount)
             notifyItemRangeChanged(index + itemCount, getItemCount() - index)
@@ -794,8 +957,8 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             groupPosition = mStructures.size - list.size
         }
 
-        val index = countGroupRangeItem(0, groupPosition)
-        val itemCount = countGroupRangeItem(groupPosition, count)
+        val index = countGroupRangeCount(0, groupPosition)
+        val itemCount = countGroupRangeCount(groupPosition, count)
         if (itemCount > 0) {
             notifyItemRangeInserted(index, itemCount)
             notifyItemRangeChanged(index + itemCount, getItemCount() - index)
@@ -815,7 +978,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         ) {
             val structure = mStructures[groupPosition]
             structure.setHasHeader(true)
-            val index = countGroupRangeItem(0, groupPosition)
+            val index = countGroupRangeCount(0, groupPosition)
             notifyItemInserted(index)
             notifyItemRangeChanged(index + 1, itemCount - index)
         }
@@ -834,7 +997,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         ) {
             val structure = mStructures[groupPosition]
             structure.setHasFooter(true)
-            val index = countGroupRangeItem(0, groupPosition + 1)
+            val index = countGroupRangeCount(0, groupPosition + 1)
             notifyItemInserted(index)
             notifyItemRangeChanged(index + 1, itemCount - index)
         }
@@ -852,7 +1015,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             val structure = mStructures[groupPosition]
             var index = getPositionForChild(groupPosition, childPosition)
             if (index < 0) {
-                index = countGroupRangeItem(0, groupPosition)
+                index = countGroupRangeCount(0, groupPosition)
                 index += if (structure.hasHeader()) 1 else 0
                 index += structure.childrenCount
             }
@@ -872,7 +1035,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      */
     fun notifyChildRangeInserted(groupPosition: Int, childPosition: Int, count: Int) {
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
-            var index = countGroupRangeItem(0, groupPosition)
+            var index = countGroupRangeCount(0, groupPosition)
             val structure = mStructures[groupPosition]
             if (structure.hasHeader()) {
                 index++
@@ -898,7 +1061,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
      */
     fun notifyChildrenInserted(groupPosition: Int) {
         if (groupPosition >= 0 && groupPosition < mStructures.size) {
-            var index = countGroupRangeItem(0, groupPosition)
+            var index = countGroupRangeCount(0, groupPosition)
             val structure = mStructures[groupPosition]
             if (structure.hasHeader()) {
                 index++
@@ -956,19 +1119,19 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         super.registerAdapterDataObserver(observer)
     }
 
-    override fun setItemBinding(itemBinding: XmlItemBinding<T>) {
+    override fun setItemBinding(itemBinding: XmlItemBinding<G>) {
 
     }
 
-    override fun getItemXmlObj(): XmlItemBinding<T>? {
+    override fun getItemXmlObj(): XmlItemBinding<G>? {
         return null
     }
 
-    override fun setItems(items: List<T>) {
+    override fun setItems(items: List<G>) {
 
     }
 
-    override fun getAdapterItem(position: Int): T? {
+    override fun getAdapterItem(position: Int): G? {
         return null
     }
 
@@ -985,13 +1148,31 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         variableId: Int,
         layoutRes: Int,
         position: Int,
-        item: T
+        item: G
     ) {
 
     }
 
+    fun removeGroupPosition(groupPosition: Int) {
+        if (groupPosition >= 0 && groupPosition < groupList!!.size) {
+            if (groupList!! is ArrayList) {
+                (groupList!! as ArrayList).removeAt(groupPosition)
+            }
+        }
+    }
 
-    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<T, C> {
+    fun removeChildGroupPosition(groupPosition: Int, childGroupPosition: Int) {
+        if (groupPosition >= 0 && groupPosition < groupList!!.size) {
+            val g = groupList!![groupPosition]
+            val childGroupList = getChildGroupList(g)
+            if (childGroupPosition >= 0 && childGroupPosition < childGroupList.size)
+                if (childGroupList is ArrayList) {
+                    (childGroupList as ArrayList).removeAt(childGroupPosition)
+                }
+        }
+    }
+
+    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> {
         childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
         return this
     }
@@ -1000,9 +1181,19 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
     }
 
-    abstract fun getChildrenCount(groupPosition: Int, groupItem: T): Int
 
-    abstract fun getChildrenList(groupItem: T): List<C>
+    private fun getChildrenCount(groupPosition: Int, group: G): Int {
+        var totalSize = 0
+        getChildGroupList(group).forEach { childGroup ->
+            totalSize++  // child 也是1个
+            totalSize += getChildChildList(childGroup).size
+        }
+        return totalSize
+    }
+
+    abstract fun getChildChildList(childGroup: CG): List<CC>
+
+    abstract fun getChildGroupList(group: G): List<CG>
 
     abstract fun hasHeader(groupPosition: Int): Boolean
 
@@ -1015,16 +1206,25 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
     abstract fun getChildLayout(viewType: Int): Int
     abstract fun getChildChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: T, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
         binding: ViewDataBinding,
-        groupItem: T, childItem: C,
+        group: G, child: CG,
         groupPosition: Int,
         childPosition: Int
     )
+
+    open fun onBindChildChildViewHolder(
+        binding: ViewDataBinding,
+        group: G, child: CC,
+        groupPosition: Int,
+        childPosition: Int
+    ) {
+    }
+
 
     internal inner class GroupDataObserver : RecyclerView.AdapterDataObserver() {
 
@@ -1049,49 +1249,45 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
         }
     }
 
-    class WeakReferenceOnListChangedCallback<T> constructor(
+    class WeakReferenceOnListChangedCallback<G> constructor(
         var recyclerView: RecyclerView,
-        private var groupAdapter: TwoLevelGroupedRecyclerViewAdapter<T, *>,
-        groupList: ObservableList<T>
-    ) : ObservableList.OnListChangedCallback<ObservableList<T>>() {
-        // internal val adapterRef: WeakReference<TwoLevelGroupedRecyclerViewAdapter<T, *>> = AdapterReferenceCollector.createRef
+        private var groupAdapter: TwoLevelGroupedRecyclerViewAdapter<G, *, *>,
+        groupList: ObservableList<G>
+    ) : ObservableList.OnListChangedCallback<ObservableList<G>>() {
+        // internal val adapterRef: WeakReference<TwoLevelGroupedRecyclerViewAdapter<G, *>> = AdapterReferenceCollector.createRef
         // (groupAdapter, groupList, this)
 
-        override fun onChanged(sender: ObservableList<T>) {
+        override fun onChanged(sender: ObservableList<G>) {
             if (DEBUG) {
                 Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onChanged()...1111..")
             }
-            groupAdapter.notifyDataSetChanged()
+            groupAdapter.notifyDataChanged()
         }
 
         override fun onItemRangeChanged(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
             if (DEBUG) {
                 Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
             }
-            groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
+            groupAdapter.notifyDataChanged()
         }
 
         override fun onItemRangeInserted(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
             if (DEBUG) {
                 Ls.d("TwoLevelGroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
             }
-            groupAdapter.notifyGroupRangeInserted(positionStart, itemCount)
-            for (index in 0 until itemCount) {
-//                if(positionStart+index<sender.size){}
-                groupAdapter.addChildListChangedCallbackByGroup(sender[positionStart + index])
-            }
+            groupAdapter.notifyDataChanged()
         }
 
         override fun onItemRangeMoved(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             fromPosition: Int,
             toPosition: Int,
             itemCount: Int
@@ -1099,20 +1295,20 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
             if (DEBUG) {
                 Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
             }
-            groupAdapter.notifyGroupRangeRemoved(fromPosition, itemCount)
+            groupAdapter.notifyDataChanged()
         }
 
         // clear() 会执行这
         override fun onItemRangeRemoved(
-            sender: ObservableList<T>,
+            sender: ObservableList<G>,
             positionStart: Int,
             itemCount: Int
         ) {
             if (DEBUG) {
                 Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeRemoved()...555...positionStart=$positionStart itemCount=$itemCount")
             }
-            //groupAdapter.notifyGroupRangeChanged(positionStart, itemCount)
-            groupAdapter.notifyGroupRangeRemoved(positionStart, itemCount)
+
+            groupAdapter.notifyDataChanged()
         }
     }
 
@@ -1141,8 +1337,6 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<T, C> :
 //    }
     private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-    interface ClickGroupListener {}
 
 
 }

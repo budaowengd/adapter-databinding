@@ -7,6 +7,6 @@ package me.lx.rv.group
  *  version: 1.0
  *  desc:
  */
-abstract class BaseFun1ClickGroupListener<D> : GroupedRecyclerViewAdapter.ClickGroupListener {
-    abstract fun clickGroupItem(item: D)
+abstract class BaseFun1ClickGroupListener<G> : ClickGroupListener {
+    abstract fun clickGroup(group: G)
 }

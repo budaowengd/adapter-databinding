@@ -8,7 +8,7 @@
 
         <variable
             name="footerGroup"
-            type="me.lx.sample.group.entity.GroupEntity" />
+            type="me.lx.sample.group.entity.TwoLevelGroupEntity" />
 
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{footerGroup.footer}"
+            android:text="@{footerGroup.footerText}"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 

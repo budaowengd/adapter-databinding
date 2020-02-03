@@ -14,7 +14,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->footerClick.clickGroupItem(footerGroup)}"
+        android:onClick="@{()->footerClick.clickGroup(footerGroup)}"
         android:background="@drawable/holo_green_light_ripple_bg"
         android:orientation="vertical">
 

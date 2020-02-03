@@ -20,11 +20,18 @@
 
         <!--  分组列表需要用到的变量 -->
         <variable
-            name="childItem"
+            name="child"
             type="java.lang.String" />
 
         <variable
+            name="childChild"
+            type="java.lang.String" />
+
+              <variable
             name="childClick"
+            type="java.lang.String" />
+        <variable
+            name="childChildClick"
             type="java.lang.String" />
 
         <variable

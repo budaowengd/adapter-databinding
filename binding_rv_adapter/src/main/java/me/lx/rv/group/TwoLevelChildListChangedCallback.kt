@@ -12,79 +12,74 @@ import me.lx.rv.tools.Ls
  *  desc:
  */
 @SuppressLint("LongLogTag")
-class TwoLevelChildListChangedCallback<T, C>(
-        private var adapter: TwoLevelGroupedRecyclerViewAdapter<T, C>,
-        private var childEmptyIsRemoveHeader: Boolean? = null
-) :
-        ObservableList.OnListChangedCallback<ObservableList<C>>() {
-    override fun onChanged(sender: ObservableList<C>) {
+class TwoLevelChildListChangedCallback(
+    private var adapter: TwoLevelGroupedRecyclerViewAdapter<*, *, *>,
+    private var isChildGroup: Boolean
+) : ObservableList.OnListChangedCallback<ObservableList<*>>() {
+    override fun onChanged(sender: ObservableList<*>) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("ChildListChangedCallback......onChanged()..1111....")
+            Ls.d("TwoLevelChildListChangedCallback......onChanged()..1111....")
         }
 
-        val groupPosition = adapter.getGroupPositionByChildList(sender)
-        adapter.notifyChildRangeChanged(groupPosition, 0, sender.size)
+        adapter.notifyDataChanged()
     }
 
-    override fun onItemRangeRemoved(sender: ObservableList<C>, positionStart: Int, itemCount: Int) {
-        val groupPosition = adapter.getGroupPositionByChildList(sender)
+    override fun onItemRangeRemoved(sender: ObservableList<*>, positionStart: Int, itemCount: Int) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
             Ls.d(
-                    "ChildListChangedCallback......onItemRangeRemoved()..2222..positionStart=$positionStart  itemCount=$itemCount  " +
-                            "itemsSize=${sender.size}  groupPosition=$groupPosition childEmptyIsRemoveHeader=$childEmptyIsRemoveHeader"
+                "TwoLevelChildListChangedCallback...onItemRangeRemoved().22..positionStart=$positionStart  itemCount=$itemCount" +
+                        " senderSize=${sender.size} isChildGroup=$isChildGroup"
             )
         }
-        adapter.notifyChildRangeRemoved(groupPosition, positionStart, itemCount)
-        // 如果孩子列表为空了,会崩溃...记住,得先刷新头部数据
-        if (sender.size == 0) {
-            if (childEmptyIsRemoveHeader == true) {
-                (adapter.getItems() as ObservableList).removeAt(groupPosition)
-
+        if (sender.isEmpty()) {
+            // 如果是组里的child分组
+            if (isChildGroup) {
+                // 从第1层移除当前child分组
+                val groupPosition = adapter.getGroupPositionByChildGroupList(sender)
+                adapter.removeGroupPosition(groupPosition)
             } else {
-                adapter.notifyHeaderChanged(groupPosition)
+                // 如果最里层子项都没了,把当前child组也移除掉
+                val groupPosition = adapter.getGroupPositionByChildChildList(sender)
+                adapter.removeChildGroupPosition(groupPosition.first, groupPosition.second)
             }
         }
+        adapter.notifyDataChanged()
     }
 
     override fun onItemRangeMoved(
-            sender: ObservableList<C>,
-            fromPosition: Int,
-            toPosition: Int,
-            itemCount: Int
+        sender: ObservableList<*>,
+        fromPosition: Int,
+        toPosition: Int,
+        itemCount: Int
     ) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("ChildListChangedCallback......onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
+            Ls.d("TwoLevelChildListChangedCallback......onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
         }
-        val groupPosition = adapter.getGroupPositionByChildList(sender)
-        if (sender.size == 0) {
-            if (childEmptyIsRemoveHeader == true) {
-                (adapter.getItems() as ObservableList).removeAt(groupPosition)
-            } else {
-                adapter.notifyHeaderChanged(groupPosition)
-            }
-        }
-        adapter.notifyChildRangeRemoved(groupPosition, fromPosition, itemCount)
+        adapter.notifyDataChanged()
     }
 
     override fun onItemRangeInserted(
-            sender: ObservableList<C>,
-            positionStart: Int,
-            itemCount: Int
+        sender: ObservableList<*>,
+        positionStart: Int,
+        itemCount: Int
     ) {
-        if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("ChildListChangedCallback......onItemRangeInserted()..4444..positionStart=$positionStart  itemCount=$itemCount")
-        }
 
-        val groupPosition = adapter.getGroupPositionByChildList(sender)
-        adapter.notifyChildInserted(groupPosition, positionStart)
+        if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
+            Ls.d("TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount sender=${sender.size}")
+        }
+        if (isChildGroup) {
+//            val childChildList = adapter.getChildChildList(sender[positionStart])
+            adapter.registerChildGroupListChangedCallback2(sender[positionStart])
+        }
+//        adapter.registerAdapterDataObserver()
+        adapter.notifyDataChanged()
     }
 
 
-    override fun onItemRangeChanged(sender: ObservableList<C>, positionStart: Int, itemCount: Int) {
+    override fun onItemRangeChanged(sender: ObservableList<*>, positionStart: Int, itemCount: Int) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("ChildListChangedCallback......onItemRangeChanged()..5555..positionStart=$positionStart  itemCount=$itemCount")
+            Ls.d("TwoLevelChildListChangedCallback......onItemRangeChanged()..5555..positionStart=$positionStart  itemCount=$itemCount")
         }
-        val groupPosition = adapter.getGroupPositionByChildList(sender)
-        adapter.notifyChildRangeChanged(groupPosition, positionStart, itemCount)
+        adapter.notifyDataChanged()
     }
 }

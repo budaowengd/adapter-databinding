@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_red_dark_ripple_bg"
-        android:onClick="@{()->headerClick.clickGroupItem(headerGroup)}"
+        android:onClick="@{()->headerClick.clickGroup(headerGroup)}"
         android:orientation="vertical">
 
         <TextView

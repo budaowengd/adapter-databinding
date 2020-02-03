@@ -20,12 +20,12 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
     override fun setGroupList(groupList: List<GroupEntity>) {
         super.setGroupList(groupList)
         groupList.forEachIndexed { groupIndex, groupItem ->
-            groupItem.childList.forEachIndexed { childIndex, childItem ->
+            groupItem.childList.forEachIndexed { childIndex, child ->
                 val childViewType = getChildViewType(groupIndex, childIndex)
                 if (childViewType == TYPE_CHILD_1) {
-                    childItem.child = "第一种子项：" + childItem.child
+                    child.child = "第一种子项：" + child.child
                 } else if (childViewType == TYPE_CHILD_2) {
-                    childItem.child = "第二种子项：" + childItem.child
+                    child.child = "第二种子项：" + child.child
                 }
             }
             val headerViewType = getHeaderViewType(groupIndex)
@@ -93,7 +93,7 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
     override fun onBindChildViewHolder(
         binding: ViewDataBinding,
         groupItem: GroupEntity,
-        childItem: ChildEntity,
+        child: ChildEntity,
         groupPosition: Int,
         childPosition: Int
     ) {

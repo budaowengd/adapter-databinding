@@ -12,9 +12,10 @@
             name="model"
             type="me.lx.sample.model.TwoLevelGroupModel" />
 
-        <variable
+ <!--       <variable
             name="rvBindGroup"
-            type="me.lx.rv.RvGroupBindListener&lt;Object,Object&gt;" />
+            type="me.lx.rv.RvGroupBindListener&lt;Object,Object&gt;" />-->
+
     </data>
 
     <LinearLayout
@@ -35,9 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_layout_span="@{1}"
-            app:rv_group_items="@{model.groupList}"
-            app:rv_group_adapter="@{model.groupAdapter}" />
+            app:rv_two_level_group_adapter="@{model.groupAdapter}"
+            app:rv_two_level_group_items="@{model.groupList}"
+            app:rv_two_level_group_layout_span="@{1}" />
 
 
         <LinearLayout

@@ -2,9 +2,7 @@ package me.lx.sample.group.model
 
 
 import androidx.databinding.ObservableArrayList
-import me.lx.sample.group.entity.ChildEntity
-import me.lx.sample.group.entity.ExpandableGroupEntity
-import me.lx.sample.group.entity.GroupEntity
+import me.lx.sample.group.entity.*
 
 /**
  * Depiction:
@@ -13,6 +11,52 @@ import me.lx.sample.group.entity.GroupEntity
  */
 class GroupModel {
     companion object {
+        /**
+         * 获取组列表数据
+         *
+         * @param groupCount    组数量
+         * @param childrenCount 每个组里的子项数量
+         * @return
+         */
+        fun getTwoGroupGroupOb(groupCount: Int, childrenCount: Int = 2): ObservableArrayList<TwoLevelGroupEntity> {
+            var a1: TwoLevelChildEntity? = null
+            var a2: ChildChildEntity? = null
+            val groups = ObservableArrayList<TwoLevelGroupEntity>()
+            for (groupIndex in 0 until groupCount) {
+                val childList = ObservableArrayList<TwoLevelChildEntity>()
+                for (childIndex in 0 until childrenCount) {
+                    childList.add(getTwoLevelChildEntity(groupIndex,childIndex,  childrenCount))
+                }
+                groups.add(getTwoLevelGroupEntity(groupIndex, childList))
+            }
+            return groups
+        }
+
+        fun getTwoLevelGroupEntity(groupIndex: Int, childList: ObservableArrayList<TwoLevelChildEntity>): TwoLevelGroupEntity {
+            val group = TwoLevelGroupEntity()
+            group.headerText = "第" + (groupIndex + 1) + "组头部"
+            group.footerText = "第" + (groupIndex + 1) + "组尾部"
+            group.childGroupList.addAll(childList)
+            return group
+
+        }
+
+        fun getTwoLevelChildEntity( groupIndex: Int, childIndex: Int,childCount: Int): TwoLevelChildEntity {
+            var childrenCount = childCount
+            if (groupIndex % 2 != 0) {
+                childrenCount++
+            }
+            val twoLevelChild = TwoLevelChildEntity()
+            twoLevelChild.childText = "第" + (groupIndex + 1) + "组" + "第" + (childIndex + 1) + "个Child"
+            for (i in 0 until childrenCount) {
+                val childChild = ChildChildEntity()
+                childChild.childChildText = "第" + (groupIndex + 1) + "组" + "第" + (childIndex + 1) + "个Child" + "第" + (i + 1) + "项"
+                twoLevelChild.childChildList.add(childChild)
+
+            }
+            return twoLevelChild
+        }
+
         /**
          * 获取组列表数据
          *
@@ -48,7 +92,7 @@ class GroupModel {
                 for (j in 0 until childrenCount) {
                     childList.add(getChildEntity(i, j))
                 }
-                groups.add(getGroupEntity(i, childList) )
+                groups.add(getGroupEntity(i, childList))
 
 
             }
@@ -76,7 +120,8 @@ class GroupModel {
                 for (j in 0 until childrenCount) {
                     childList.add(getChildEntity(i, j))
                 }
-                groups.add(ExpandableGroupEntity(
+                groups.add(
+                    ExpandableGroupEntity(
                         "第" + (i + 1) + "组头部",
                         "第" + (i + 1) + "组尾部", true, childList
                     )
