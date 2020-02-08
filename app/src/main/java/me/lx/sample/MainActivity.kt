@@ -50,10 +50,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_single_recyclerview -> FragmentSingleRecyclerView()
                 R.id.action_headerfooter_recyclerview -> FragmentHeaderFooterRecyclerView()
                 R.id.action_multi_recyclerview -> FragmentMultiRecyclerView()
+
+                // 加载更多
                 R.id.action_loadmore_recyclerview -> FragmentLoadMoreRecyclerView()
                 R.id.action_switch_span_rv -> FragSwitchSpanRv()
 
-
+                // 分组
                 R.id.action_group_two_level -> TwoLevelGroupFrag()
                 R.id.action_group_rv -> FragmentGroupList.newInstance(bundle_default)
                 R.id.action_group_rv_no_header -> FragmentGroupList.newInstance(bundle_no_header)
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener(listener)
 
         if (savedInstanceState == null) {
-            listener.onNavigationItemSelected(binding.navView.menu.getItem(6))
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(4))
         } else {
             actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
         }

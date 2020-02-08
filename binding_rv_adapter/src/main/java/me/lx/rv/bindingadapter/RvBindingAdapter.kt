@@ -38,7 +38,7 @@ fun <T> set_rv_Adapter(
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    grid_span: Int = 1,
+    grid_span: Int? = null,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
     Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....Ap=${rvAdapter.hashCode()}...  rvAp=${rv.adapter?.hashCode()}")
@@ -106,9 +106,10 @@ fun <T> set_rv_Adapter(
 //@BindingAdapter(value = ["rv_layout_span", "rv_SpanSizeLookup"], requireAll = false)
 fun set_rv_layoutmanager(
     rv: RecyclerView,
-    grid_span: Int = 1,
+    span: Int? = null,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
+    val grid_span = span ?: 1
     Ls.d("set_rv_layoutmanager().....grid_span=$grid_span")
 
     var layout: RecyclerView.LayoutManager? = null
@@ -151,7 +152,7 @@ fun <T, C> set_rv_GroupAdapter(
     if (items == null) return
     if (adapter == null) return
     adapter.setGroupList(items)
-    set_rv_layoutmanager(rv, if(grid_span==0) 1 else grid_span, spanLookup)
+    set_rv_layoutmanager(rv, if (grid_span == 0) 1 else grid_span, spanLookup)
     if (clickChildListener != null) {
         adapter.setClickChildListener(clickChildListener)
     }
@@ -166,7 +167,6 @@ fun <T, C> set_rv_GroupAdapter(
     } else {
         rv.adapter = adapter
     }
-
 }
 
 
@@ -177,9 +177,9 @@ fun <T, C> set_rv_GroupAdapter(
         "rv_two_level_group_chick_header_listener", "rv_two_level_group_chick_footer_listener"],
     requireAll = false
 )
-fun <T, C,CC> set_rv_two_level_GroupAdapter(
-    rv: RecyclerView, adapter: TwoLevelGroupedRecyclerViewAdapter<T, C,CC>?,
-    items: List<T>?,
+fun <G, CG, CC> set_rv_two_level_GroupAdapter(
+    rv: RecyclerView, adapter: TwoLevelGroupedRecyclerViewAdapter<G, CG, CC>?,
+    items: List<G>?,
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
@@ -192,7 +192,7 @@ fun <T, C,CC> set_rv_two_level_GroupAdapter(
     if (items == null) return
     if (adapter == null) return
     adapter.setGroupList(items)
-    set_rv_layoutmanager(rv, if(grid_span==0) 1 else grid_span, spanLookup)
+    set_rv_layoutmanager(rv, if (grid_span == 0) 1 else grid_span, spanLookup)
     if (clickChildListener != null) {
         adapter.setClickChildListener(clickChildListener)
     }

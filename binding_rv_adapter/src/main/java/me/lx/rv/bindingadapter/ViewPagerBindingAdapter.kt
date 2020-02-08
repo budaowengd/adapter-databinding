@@ -13,13 +13,13 @@ import me.lx.rv.XmlItemBinding
  *  desc:
  */
 /**
-app:viewPager_item_binding="@{itemBinding}"
+app:viewPager_item_xml="@{itemBinding}"
 app:viewPager_items="@{items}"
 app:viewPager_titles="@{titles}"
 app:viewPager_limit="@{3}"
  * 设置ViewPager的 PagerAdapter
  */
-@BindingAdapter(value = ["viewPager_item_binding", "viewPager_items", "viewPager_titles", "viewPager_limit"], requireAll = false)
+@BindingAdapter(value = ["viewPager_item_xml", "viewPager_items", "viewPager_titles", "viewPager_limit"], requireAll = false)
 fun <T> set_viewpager_pagerAdapter(viewPager: ViewPager, itemBinding: XmlItemBinding<T>, items: List<T>,
                                    pageTitles: BindingViewPagerPagerAdapter.PageTitles<T>?,
                                    limit: Int? = null) {

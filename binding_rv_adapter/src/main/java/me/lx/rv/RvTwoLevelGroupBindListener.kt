@@ -3,7 +3,7 @@ package me.lx.rv
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.group.ClickGroupListener
-import me.lx.rv.group.GroupedRecyclerViewAdapter
+import me.lx.rv.group.TwoLevelGroupedRecyclerViewAdapter
 import me.lx.rv.loadmore.LoadMoreAdapter
 
 /**
@@ -13,16 +13,16 @@ import me.lx.rv.loadmore.LoadMoreAdapter
  *  version: 1.0
  *  desc:
  */
-interface RvGroupBindListener<T, C> {
+interface RvTwoLevelGroupBindListener<G, CG, CC> {
     /**
      * 获取列表数据源
      */
-    fun getGroups(): java.util.AbstractList<T>
+    fun getGroups(): java.util.AbstractList<G>
 
     /**
      * 获取列表适配器
      */
-    fun getAdapter(): GroupedRecyclerViewAdapter<T, C>
+    fun getAdapter(): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC>
 
     /**
      * 获取列表分割线

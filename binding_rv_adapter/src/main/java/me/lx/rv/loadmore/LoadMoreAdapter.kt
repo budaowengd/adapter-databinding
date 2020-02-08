@@ -48,36 +48,37 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private val mDataObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
-            //  println("加载更多..onChanged().....11111111....")
+            Ls.d("加载更多..onChanged().....11111111....")
             mIsLoading = false
         }
 
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-            //  println("加载更多..onItemRangeRemoved().....44444....${noCanScrollVertically()}")
+            Ls.d("加载更多..onItemRangeRemoved()..44444..noCanScroll=${noCanScrollVertically()} positionStart=$positionStart itemCount=$itemCount getCount=${mInnerAdapter.itemCount})")
             mIsLoading = false
             dataChangeNotifyLoadMoreVH()
         }
 
         override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-            // println("加载更多..onItemRangeMoved().....555555....")
+            Ls.d("加载更多..onItemRangeMoved()..55555..fromPosition=$fromPosition toPosition=$toPosition itemCount=$itemCount getCount=${mInnerAdapter.itemCount}")
             mIsLoading = false
             dataChangeNotifyLoadMoreVH()
         }
 
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            Ls.d("加载更多  onItemRangeInserted().......666666....")
             mIsLoading = false
             dataChangeNotifyLoadMoreVH()
         }
 
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            //println("加载更多  onItemRangeChanged().......222222....")
+            Ls.d("加载更多  onItemRangeChanged().......777777....")
             mIsLoading = false
         }
 
         // 会执行这
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
             mIsLoading = false
-            // println("加载更多 onItemRangeChanged().......3333....positionStart=${positionStart}..itemCount=${itemCount}")
+            Ls.d("加载更多 onItemRangeChanged().......3333....positionStart=${positionStart}..itemCount=${itemCount}")
         }
     }
 
@@ -95,7 +96,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var mIsScrollLoadMore = false
     private val mOnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            // println("onScrollStateChanged.....newState=$newState...mNoMoreData=$mNoMoreData")
+            Ls.d("onScrollStateChanged.....newState=$newState...mNoMoreData=$mNoMoreData")
             if (newState != RecyclerView.SCROLL_STATE_IDLE ||
                 mLoadMoreListener == null
                 || mNoMoreData
@@ -128,7 +129,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mInnerAdapter = rawAdapter
         mFooter = getLoadMoreFooter()
         mLoadMoreRedId = mFooter.getLayoutRes()
-        registerAdapterDataObserver(mDataObserver)
+        // registerAdapterDataObserver(mDataObserver)
     }
 
 
@@ -162,8 +163,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     override fun getItemViewType(position: Int): Int {
-        //  println("getItemViewType()....isLoadMore=${(position == itemCount - 1 && position != 0)}")
         if (position == itemCount - 1 && position != 0) {
+        Ls.d("getItemViewType()....isLoadMore  itemCount=${(itemCount)}")
             return VIEW_TYPE_LOAD_MORE;
         }
         return mInnerAdapter.getItemViewType(position);
@@ -171,7 +172,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == VIEW_TYPE_LOAD_MORE) {
-            // println("onCreateViewHolder()....创建Holder....不为空=${mLoadMoreHolder != null}")
+            Ls.d("onCreateViewHolder()....创建LoadMoreHolder前....loadmoreIsNull=${mLoadMoreHolder == null}")
             if (mLoadMoreHolder != null) return mLoadMoreHolder!!
 
             if (mInflater == null) {
@@ -194,7 +195,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                        )
 //                    } else {
 //                    }
-                     requestLoadingMore(2)
+                    requestLoadingMore(2)
                 }
             })
             Ls.d("创建加载更多Holder....onCreateViewHolder()...666....isNull=${mLoadMoreHolder == null} mLastState=$mLastState")
@@ -220,7 +221,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ) {
         if (holder is LoadMoreViewHolder) {
             //首次如果itemView没有填充满RecyclerView，继续加载更多
-            // println("onBindViewHolder()....loadMore()...能滑动=${mRecyclerView.canScrollVertically(-1)}")
+            Ls.d("onBindViewHolder()....loadMore()...能滑动=${mRecyclerView.canScrollVertically(-1)}")
 //            if (!mRecyclerView.canScrollVertically(-1) && mLoadMoreListener != null && canLoadMore(mRecyclerView.layoutManager)) {
 //                //fix bug Cannot call this method while RecyclerView is computing a layout or scrolling
 //                mRecyclerView.post {
@@ -239,6 +240,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             WrapperUtils.setFullSpan(holder);
         }
     }
+
     override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
         super.unregisterAdapterDataObserver(observer)
         mInnerAdapter.unregisterAdapterDataObserver(observer)
@@ -251,7 +253,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     override fun getItemId(position: Int): Long {
         return mInnerAdapter.getItemId(position)
     }
-//
+
+    //
     override fun setHasStableIds(hasStableIds: Boolean) {
         mInnerAdapter.setHasStableIds(hasStableIds)
     }
@@ -263,7 +266,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         mInnerAdapter.onDetachedFromRecyclerView(recyclerView)
     }
-//
+
+    //
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         mInnerAdapter.onViewRecycled(holder)
     }
@@ -273,7 +277,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
         super.registerAdapterDataObserver(observer)
-        mInnerAdapter.registerAdapterDataObserver(observer)
+        super.registerAdapterDataObserver(mDataObserver)
+//        Ls.d("registerAdapterDataObserver()...2222.....code=${hashCode()}")
     }
 
     private fun isShowLoadMore(position: Int): Boolean {
@@ -281,6 +286,9 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private fun dataChangeNotifyLoadMoreVH() {
+        if (itemCount == 0) {
+            notifyDataSetChanged()
+        }
 //        if (noCanScrollVertically()) {
 //            notifyLoadMoreVH()
 //        }

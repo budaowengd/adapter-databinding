@@ -53,7 +53,7 @@ class TwoLevelChildListChangedCallback(
         itemCount: Int
     ) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback......onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
+            Ls.d("TwoLevelChildListChangedCallback...onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
         }
         adapter.notifyDataChanged()
     }
@@ -63,15 +63,13 @@ class TwoLevelChildListChangedCallback(
         positionStart: Int,
         itemCount: Int
     ) {
-
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount sender=${sender.size}")
+            Ls.d("TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount " +
+                    "sender=${sender.size} isChildGroup=$isChildGroup")
         }
         if (isChildGroup) {
-//            val childChildList = adapter.getChildChildList(sender[positionStart])
-            adapter.registerChildGroupListChangedCallback2(sender[positionStart])
+            adapter.registerChildChildListChangedCallback2(sender[positionStart])
         }
-//        adapter.registerAdapterDataObserver()
         adapter.notifyDataChanged()
     }
 

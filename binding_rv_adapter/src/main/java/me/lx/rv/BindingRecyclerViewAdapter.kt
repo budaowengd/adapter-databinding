@@ -27,7 +27,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
     private var items: List<T>? = null
-    private var inflater: LayoutInflater? = null
+    private var mInflater: LayoutInflater? = null
     private var itemIds: ItemIds<in T>? = null
     private var viewHolderFactory: ViewHolderFactory? = null
     private var mRecyclerView: RecyclerView? = null
@@ -36,20 +36,19 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
     /**
      * Fragment的model里有个Adapter的时候,图片加载的默认会使用itemView的context,
-     * 当改变语言后,Act重建了,但是Adapter还是同1个,因为model不会重建,Adapter在model里,
+     * 当改变语言后,Act重建了,布局重建了,但是Adapter还是同1个,因为model不会重建,Adapter在model里,
      * 所以inflater的对象是通过之前Act创建的,之前Act因为已经被销毁了,所以通过itemView的上下文创建图片的时候
      * 会出现 You cannot start a load for a destroyed activity
      * 解决方案:
-     * 1、Adapter重新被附在Rv的时候,把 inflater 置为空
+     * 1、Adapter重新被附在Rv的时候,把 mInflater 置为空
      * 2、设置Adapter为空,会回调 onDetachedFromRecyclerView ,和 unRisterObserver()方法
      */
     fun init() {
-        inflater = null
+        mInflater = null
         lifecycleOwner = null
         // && mRecyclerView!!.adapter == this 不能添加这个判断,因为adapter有可能是loadmoreAdapter
         if (mRecyclerView != null ) {
             mRecyclerView!!.adapter = null // 会回调 onDetachedFromRecyclerView 方法
-//            onDetachedFromRecyclerView(mRecyclerView!!)
 //        this.unregisterAdapterDataObserver(observ)
         }
     }
@@ -64,10 +63,10 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, layoutId: Int): ViewHolder {
-        if (inflater == null) {
-            inflater = LayoutInflater.from(viewGroup.context)
+        if (mInflater == null) {
+            mInflater = LayoutInflater.from(viewGroup.context)
         }
-        val binding = onCreateBinding(inflater!!, layoutId, viewGroup)
+        val binding = onCreateBinding(mInflater!!, layoutId, viewGroup)
         val holder = onCreateViewHolder(binding)
         binding.addOnRebindCallback(object : OnRebindCallback<ViewDataBinding>() {
             override fun onPreBind(binding: ViewDataBinding?): Boolean {
@@ -91,8 +90,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         return holder
     }
 
-    override fun onCreateBinding(inflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
-        return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false)
+    override fun onCreateBinding(mInflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
+        return DataBindingUtil.inflate(mInflater, layoutRes, viewGroup, false)
     }
 
     override fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
