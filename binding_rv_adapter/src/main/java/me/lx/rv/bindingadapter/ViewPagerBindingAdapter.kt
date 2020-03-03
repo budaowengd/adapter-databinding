@@ -36,4 +36,23 @@ fun <T> set_viewpager_pagerAdapter(viewPager: ViewPager, itemBinding: XmlItemBin
         viewPager.offscreenPageLimit = limit
     }
     viewPager.adapter = adapter
+    // genericSuperclass
+
+    if (items.first() is ViewPager.OnPageChangeListener) {
+        items.forEach {
+            viewPager.addOnPageChangeListener(it as ViewPager.OnPageChangeListener)
+        }
+    }
+
+
+//    viewPager.addOnPageChangeListener(object:ViewPager.OnPageChangeListener{
+//        override fun onPageScrollStateChanged(state: Int) {
+//        }
+//
+//        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+//        }
+//
+//        override fun onPageSelected(position: Int) {
+//        }
+//    })
 }

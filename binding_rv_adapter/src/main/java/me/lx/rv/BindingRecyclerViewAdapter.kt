@@ -12,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import me.lx.rv.tools.Ls
 
 /**
  * 参考： https://github.com/evant/binding-collection-adapter
@@ -27,7 +26,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     private lateinit var xmlItemBinding: XmlItemBinding<T>
     private var callback: WeakReferenceOnListChangedCallback<T>? = null
     private var items: List<T>? = null
-    private var mInflater: LayoutInflater? = null
+    private var inflater: LayoutInflater? = null
     private var itemIds: ItemIds<in T>? = null
     private var viewHolderFactory: ViewHolderFactory? = null
     private var mRecyclerView: RecyclerView? = null
@@ -36,25 +35,28 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
     /**
      * Fragment的model里有个Adapter的时候,图片加载的默认会使用itemView的context,
-     * 当改变语言后,Act重建了,布局重建了,但是Adapter还是同1个,因为model不会重建,Adapter在model里,
+     * 当改变语言后,Act重建了,但是Adapter还是同1个,因为model不会重建,Adapter在model里,
      * 所以inflater的对象是通过之前Act创建的,之前Act因为已经被销毁了,所以通过itemView的上下文创建图片的时候
      * 会出现 You cannot start a load for a destroyed activity
      * 解决方案:
-     * 1、Adapter重新被附在Rv的时候,把 mInflater 置为空
+     * 1、Adapter重新被附在Rv的时候,把 inflater 置为空
      * 2、设置Adapter为空,会回调 onDetachedFromRecyclerView ,和 unRisterObserver()方法
      */
     fun init() {
-        mInflater = null
+        inflater = null
         lifecycleOwner = null
         // && mRecyclerView!!.adapter == this 不能添加这个判断,因为adapter有可能是loadmoreAdapter
-        if (mRecyclerView != null ) {
+        if (mRecyclerView != null) {
             mRecyclerView!!.adapter = null // 会回调 onDetachedFromRecyclerView 方法
+            callback=null
+            mRecyclerView = null
+//            onDetachedFromRecyclerView(mRecyclerView!!)
 //        this.unregisterAdapterDataObserver(observ)
         }
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        Ls.d("onAttachedToRecyclerView()....1111...rv=${recyclerView.hashCode()}  if=${mRecyclerView == null && items is ObservableList<T>}")
+        //  Ls.d("onAttachedToRecyclerView()....1111...rv=${recyclerView.hashCode()}  if=${mRecyclerView == null && items is ObservableList<T>}")
         if (mRecyclerView == null && items is ObservableList<T>) {
             callback = WeakReferenceOnListChangedCallback<T>(recyclerView, this, items as ObservableList<T>)
             (items as ObservableList<T>).addOnListChangedCallback(callback)
@@ -63,10 +65,10 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, layoutId: Int): ViewHolder {
-        if (mInflater == null) {
-            mInflater = LayoutInflater.from(viewGroup.context)
+        if (inflater == null) {
+            inflater = LayoutInflater.from(viewGroup.context)
         }
-        val binding = onCreateBinding(mInflater!!, layoutId, viewGroup)
+        val binding = onCreateBinding(inflater!!, layoutId, viewGroup)
         val holder = onCreateViewHolder(binding)
         binding.addOnRebindCallback(object : OnRebindCallback<ViewDataBinding>() {
             override fun onPreBind(binding: ViewDataBinding?): Boolean {
@@ -80,7 +82,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
                 val position = holder.adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     try {
-                        notifyItemChanged(position, DATA_INVALIDATION)
+                        getRvAdapter().notifyItemChanged(position, DATA_INVALIDATION)
                     } catch (e: IllegalStateException) {
                         // noop - this shouldn't be happening
                     }
@@ -90,8 +92,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         return holder
     }
 
-    override fun onCreateBinding(mInflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
-        return DataBindingUtil.inflate(mInflater, layoutRes, viewGroup, false)
+    override fun onCreateBinding(inflater: LayoutInflater, @LayoutRes layoutRes: Int, viewGroup: ViewGroup): ViewDataBinding {
+        return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false)
     }
 
     override fun onBindBinding(binding: ViewDataBinding, variableId: Int, @LayoutRes layoutRes: Int, position: Int, item: T) {
@@ -104,6 +106,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
             binding.lifecycleOwner = lifecycleOwner
         }
     }
+
 
     /**
      * 只有在Rv重复调用setAdapter()方法才会被调用,所以我们在init里调用,防止内存泄漏
@@ -204,7 +207,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
 
     override fun setItems(items: List<T>) {
-        Ls.d("setItems()...2222222..if=${items == this.items}")
+        //  Ls.d("setItems()...2222222..if=${items == this.items}")
         if (items == this.items) {
             return
         }
@@ -221,7 +224,12 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
             }
         }
         this.items = items
-        notifyDataSetChanged()
+        getRvAdapter().notifyDataSetChanged()
+    }
+
+    private fun getRvAdapter(): RecyclerView.Adapter<*> {
+
+        return mRecyclerView?.adapter ?: this
     }
 
     override fun getAdapterItem(position: Int): T {
@@ -293,18 +301,16 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 
         override fun onItemRangeChanged(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
             Utils.ensureChangeOnMainThread()
-            val adapter = recyclerView.adapter ?: return
-            adapter.notifyItemRangeChanged(positionStart, itemCount)
+            rvAdapter.getRvAdapter().notifyItemRangeChanged(positionStart, itemCount)
         }
 
         override fun onItemRangeInserted(sender: ObservableList<T>, positionStart: Int, itemCount: Int) {
-            val adapter = recyclerView.adapter ?: return
             Utils.ensureChangeOnMainThread()
 //            if (DEBUG) {
 //                Log.i(TAG, "onItemRangeInserted()..111..positionStart=$positionStart  itemCount=$itemCount")
 //            }
             rvAdapter.smoothSpecPosition(recyclerView, positionStart)
-            adapter.notifyItemRangeInserted(positionStart, itemCount)
+            rvAdapter.getRvAdapter().notifyItemRangeInserted(positionStart, itemCount)
         }
 
         override fun onItemRangeMoved(sender: ObservableList<T>, fromPosition: Int, toPosition: Int, itemCount: Int) {
@@ -312,9 +318,8 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 //            if (DEBUG) {
 //                Log.i(TAG, "onItemRangeMoved()...222...fromPosition=$fromPosition  toPosition=$toPosition" + "  itemCount=$itemCount")
 //            }
-            val adapter = recyclerView.adapter ?: return
             for (i in 0 until itemCount) {
-                adapter.notifyItemMoved(fromPosition + i, toPosition + i)
+                rvAdapter.getRvAdapter().notifyItemMoved(fromPosition + i, toPosition + i)
             }
         }
 
@@ -325,8 +330,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 //            }
             rvAdapter.smoothSpecPosition(recyclerView, positionStart)
             // val adapter = adapterRef.get() ?: return
-            val adapter = recyclerView.adapter ?: return
-            adapter.notifyItemRangeRemoved(positionStart, itemCount)
+            rvAdapter.getRvAdapter().notifyItemRangeRemoved(positionStart, itemCount)
         }
     }
 

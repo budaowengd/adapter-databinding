@@ -108,30 +108,30 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         val type = judgeType(position)
         val groupPosition = getGroupPositionForPosition(position)
         val binding = DataBindingUtil.getBinding<ViewDataBinding>(holder.itemView)!!
-        val groupItem = groupList!![groupPosition]
+        val group = groupList!![groupPosition]
         when (type) {
             TYPE_HEADER -> {
-                binding.setVariable(BR.headerGroup, groupItem)
+                binding.setVariable(BR.headerGroup, group)
                 if (mClickHeaderListener != null) {
                     binding.setVariable(BR.headerClick, mClickHeaderListener)
                 }
-                onBindHeaderViewHolder(binding, groupItem, groupPosition)
+                onBindHeaderViewHolder(binding, group, groupPosition)
             }
             TYPE_FOOTER -> {
-                binding.setVariable(BR.footerGroup, groupItem)
+                binding.setVariable(BR.footerGroup, group)
                 if (mClickFooterListener != null) {
                     binding.setVariable(BR.footerClick, mClickFooterListener)
                 }
-                onBindFooterViewHolder(binding, groupItem, groupPosition)
+                onBindFooterViewHolder(binding, group, groupPosition)
             }
             TYPE_CHILD -> {
                 val childPosition = getChildPositionForPosition(groupPosition, position)
-                val child = getChildrenList(groupItem)[childPosition]
+                val child = getChildrenList(group)[childPosition]
                 binding.setVariable(BR.child, child)
                 if (mClickChildListener != null) {
                     binding.setVariable(BR.childClick, mClickChildListener)
                 }
-                onBindChildViewHolder(binding, groupItem, child, groupPosition, childPosition)
+                onBindChildViewHolder(binding, group, child, groupPosition, childPosition)
             }
         }
         binding.executePendingBindings()
@@ -299,11 +299,11 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         return groupList!!.size
     }
 
-    fun getGroupPosition(groupItem: G): Int {
+    fun getGroupPosition(group: G): Int {
         var groupPosition = -1
         run breaking@{
             groupList!!.forEachIndexed { index, group ->
-                if (groupItem == group) {
+                if (group == group) {
                     groupPosition = index
                     return@breaking
                 }
@@ -983,9 +983,9 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
     }
 
-    abstract fun getChildrenCount(groupPosition: Int, groupItem: G): Int
+    abstract fun getChildrenCount(groupPosition: Int, group: G): Int
 
-    abstract fun getChildrenList(groupItem: G): List<C>
+    abstract fun getChildrenList(group: G): List<C>
 
     abstract fun hasHeader(groupPosition: Int): Boolean
 
@@ -997,13 +997,13 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 
     abstract fun getChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, groupItem: G, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: G, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
         binding: ViewDataBinding,
-        groupItem: G, child: C,
+        group: G, child: C,
         groupPosition: Int,
         childPosition: Int
     )

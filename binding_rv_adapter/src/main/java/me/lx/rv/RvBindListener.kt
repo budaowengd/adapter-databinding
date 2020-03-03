@@ -30,7 +30,9 @@ interface RvBindListener<T> {
     /**
      * 获取列表适配器
      */
-    fun getAdapter(): BindingRecyclerViewAdapter<T>
+    fun getAdapter(): BindingRecyclerViewAdapter<T>?{
+        return null
+    }
 
     fun getItemIds(): BindingRecyclerViewAdapter.ItemIds<T>? {
         return null

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.ext.itemBindingOf
 import me.lx.rv.loadmore.LoadMoreAdapter
-import me.lx.rv.tools.Ls
 import me.lx.sample.R
 import me.lx.sample.vo.SingleItemVo
 
@@ -37,7 +36,7 @@ class LoadMoreModel : ViewModel() {
     var isShowLoadMoreFailOb = ObservableBoolean() // 加载更多是否请求失败的标识
     val loadMoreListener = object : LoadMoreAdapter.LoadMoreListener {
         override fun onLoadingMore() {
-            Ls.d("onLoadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
+            //Ls.d("onLoadingMore()..请求网络..22222....当前size=${singleItems.size} isLoadMoreFail=$isLoadMoreFail")
             Handler().postDelayed({
                 isShowLoadMoreFailOb.set(isLoadMoreFail)
                 if (!isLoadMoreFail) {

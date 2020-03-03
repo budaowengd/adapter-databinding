@@ -33,15 +33,15 @@ fun <T> set_rv_Adapter(
     rv: RecyclerView,
     xmlAny: Any?,
     items: List<T>?,
-    rvAdapter: BindingRecyclerViewAdapter<T>?,
+    pAdapter: BindingRecyclerViewAdapter<T>?,
     itemIds: BindingRecyclerViewAdapter.ItemIds<in T>?,
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    grid_span: Int? = null,
+    grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
-    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....Ap=${rvAdapter.hashCode()}...  rvAp=${rv.adapter?.hashCode()}")
+    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....pAdapter=${pAdapter.hashCode()}  rvAp=${rv.adapter?.hashCode()}")
     if (rv.adapter != null) return
     if (items == null) return
     if (xmlAny == null) return
@@ -53,40 +53,38 @@ fun <T> set_rv_Adapter(
         xmlItem = XmlItemBinding.of(xmlItem)
     }
     if (xmlItem !is XmlItemBinding<*>) return
-    set_rv_layoutmanager(rv, grid_span, spanLookup)
 
-
-    var adapter = rvAdapter
+    var newAdapter = pAdapter
     val oldAdapter = rv.adapter
-    if (adapter == null) {
-        if (oldAdapter == null) {
-            adapter = BindingRecyclerViewAdapter()
+    if (newAdapter == null) {
+        if (oldAdapter is BindingRecyclerViewAdapter<*>) {
+            newAdapter = oldAdapter as BindingRecyclerViewAdapter<T>
         } else {
-            adapter = oldAdapter as BindingRecyclerViewAdapter<T>
+            newAdapter = BindingRecyclerViewAdapter()
         }
     }
-    adapter.init()
-    adapter.setItemBinding(xmlItem as XmlItemBinding<T>)
-
+    newAdapter.init()
+    newAdapter.setItemBinding(xmlItem as XmlItemBinding<T>)
+    set_rv_layoutmanager(rv, grid_span, spanLookup)
     if (diffConfig != null) {
         var list: AsyncDiffObservableList<T>? =
             rv.getTag(R.id.bindingcollectiondapter_list_id) as AsyncDiffObservableList<T>
         if (list == null) {
             list = AsyncDiffObservableList(diffConfig)
             rv.setTag(R.id.bindingcollectiondapter_list_id, list)
-            adapter.setItems(list)
+            newAdapter.setItems(list)
         }
         list.update(items)
     } else {
-        adapter.setItems(items)
+        newAdapter.setItems(items)
     }
-    adapter.setItemIds(itemIds)
-    adapter.setViewHolderFactory(viewHolderFactory)
-    if (oldAdapter != adapter) {
+    newAdapter.setItemIds(itemIds)
+    newAdapter.setViewHolderFactory(viewHolderFactory)
+    if (oldAdapter != newAdapter) {
         if (loadMoreListener != null) {
-            rv.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
+            rv.adapter = getLoadMoreAdapter(newAdapter, loadMoreListener)
         } else {
-            rv.adapter = adapter
+            rv.adapter = newAdapter
         }
     }
 }
@@ -106,11 +104,10 @@ fun <T> set_rv_Adapter(
 //@BindingAdapter(value = ["rv_layout_span", "rv_SpanSizeLookup"], requireAll = false)
 fun set_rv_layoutmanager(
     rv: RecyclerView,
-    span: Int? = null,
+    grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
-    val grid_span = span ?: 1
-    Ls.d("set_rv_layoutmanager().....grid_span=$grid_span")
+    //Ls.d("set_rv_layoutmanager().....grid_span=$grid_span")
 
     var layout: RecyclerView.LayoutManager? = null
     if (grid_span == 0 || grid_span == 1) {

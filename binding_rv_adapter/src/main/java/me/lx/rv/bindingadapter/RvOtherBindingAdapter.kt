@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.tools.EmptyViewUtils
-import me.lx.rv.tools.Ls
 
 /**
  *  author: luoXiong
@@ -26,7 +25,7 @@ fun set_rv_divider(
     rv: RecyclerView,
     divider: RecyclerView.ItemDecoration?
 ) {
-    Ls.d("set_rv_divider()...1111....divider=${divider?.hashCode()}")
+   // Ls.d("set_rv_divider()...1111....divider=${divider?.hashCode()}")
     if (divider != null) {
         if (rv.itemDecorationCount > 0) {
             val decoration = rv.getItemDecorationAt(rv.itemDecorationCount-1)

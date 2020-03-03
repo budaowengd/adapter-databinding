@@ -11,6 +11,7 @@ import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragmentLoadmoreRecyclerviewBinding
 import me.lx.sample.model.LoadMoreModel
+import me.lx.sample.vo.SingleItemVo
 
 class FragmentLoadMoreRecyclerView : Fragment(), ClickListeners {
     private lateinit var mModel: LoadMoreModel
@@ -59,12 +60,7 @@ class FragmentLoadMoreRecyclerView : Fragment(), ClickListeners {
 //        val recyclerView = view!!.findViewById<RecyclerView>(R.id.recyclerView)
 //        recyclerView.scrollBy(0,13)
 //        recyclerView.stopScroll()
-        if (mModel.singleItems.isNotEmpty()) {
-            mModel.singleItems.removeAt(0)
-            mModel.singleItems.removeAt(0)
-            mModel.singleItems.removeAt(0)
-            mModel.singleItems.removeAt(0)
-        }
+        mModel.singleItems.add(SingleItemVo(mModel.singleItems.size))
         mModel.isShowNoMoreData.set(true)
     }
 
