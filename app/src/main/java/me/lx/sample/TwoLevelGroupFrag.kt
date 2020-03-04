@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragGroupTwoLevelRvBinding
-import me.lx.sample.group.entity.TwoLevelChildEntity
+import me.lx.sample.group.entity.ChildGroupEntity
 import me.lx.sample.group.model.GroupModel
 import me.lx.sample.model.TwoLevelGroupModel
 
@@ -32,6 +33,21 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
             it.click = this@TwoLevelGroupFrag
             it.executePendingBindings()
         }
+
+        mModel.childGroupFooterClickCallback= Consumer {childGroup->
+            var findChildGroup:ChildGroupEntity?=null
+            mModel.groupList.forEach {group->
+                group.childGroupList.forEach {
+                    if(it==childGroup){
+                       // group.childGroupList.remove(childGroup)
+                        Ls.d("暗暗..11111111111")
+                        return@Consumer
+                    }
+                }
+            }
+            Ls.d("暗暗..22222222")
+        }
+
         return binding.root
     }
 
@@ -39,8 +55,8 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
         GroupModel
         val childSize = mModel.groupList[0].childGroupList.size
 
-        val cgList = TwoLevelChildEntity()
-        val cg = GroupModel.getTwoLevelChildEntity(0, childSize, 3)
+        val cgList = ChildGroupEntity()
+        val cg = GroupModel.getChildGroupEntity(0, childSize, 3)
         mModel.groupList[0].childGroupList.add(0,cg)
         // .childChildList.add(ChildChildEntity((size + 1).toString()))
     }

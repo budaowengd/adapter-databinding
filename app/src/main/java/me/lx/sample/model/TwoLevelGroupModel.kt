@@ -1,7 +1,10 @@
 package me.lx.sample.model
 
+import androidx.core.util.Consumer
 import androidx.lifecycle.ViewModel
+import me.lx.rv.group.BaseFun1ClickGroupListener
 import me.lx.sample.group.adapter.TwoLevelGroupAdapter
+import me.lx.sample.group.entity.ChildGroupEntity
 import me.lx.sample.group.model.GroupModel
 
 /**
@@ -14,9 +17,18 @@ import me.lx.sample.group.model.GroupModel
 class TwoLevelGroupModel : ViewModel() {
     // 数据 -> item
     // 数据
-    val groupList = GroupModel.getTwoGroupGroupOb(2, 2) // 普通列表数据
+    val groupList = GroupModel.getTwoGroupGroupOb(4, 2) // 普通列表数据
 
 //    val groupAdapter = GroupedListAdapter()
-    val groupAdapter = TwoLevelGroupAdapter()
 
+
+    var childGroupFooterClickCallback: Consumer<ChildGroupEntity>? = null
+
+    val groupAdapter = TwoLevelGroupAdapter().apply {
+        childGroupFooterClickEvent = object : BaseFun1ClickGroupListener<ChildGroupEntity>() {
+            override fun clickGroup(group: ChildGroupEntity) {
+                childGroupFooterClickCallback?.accept(group)
+            }
+        }
+    }
 }

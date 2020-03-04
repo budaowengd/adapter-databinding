@@ -1,10 +1,12 @@
 package me.lx.sample.group.adapter
 
 import androidx.databinding.ViewDataBinding
+import me.lx.rv.group.BaseFun1ClickGroupListener
 import me.lx.rv.group.TwoLevelGroupedRecyclerViewAdapter
+import me.lx.sample.BR
 import me.lx.sample.R
 import me.lx.sample.group.entity.ChildChildEntity
-import me.lx.sample.group.entity.TwoLevelChildEntity
+import me.lx.sample.group.entity.ChildGroupEntity
 import me.lx.sample.group.entity.TwoLevelGroupEntity
 
 /**
@@ -18,15 +20,16 @@ import me.lx.sample.group.entity.TwoLevelGroupEntity
  *      child2-2
  */
 open class TwoLevelGroupAdapter :
-    TwoLevelGroupedRecyclerViewAdapter<TwoLevelGroupEntity, TwoLevelChildEntity, ChildChildEntity>() {
+    TwoLevelGroupedRecyclerViewAdapter<TwoLevelGroupEntity, ChildGroupEntity, ChildChildEntity>() {
 
+    var childGroupFooterClickEvent: BaseFun1ClickGroupListener<ChildGroupEntity>? = null
     // childPosition 是3, 实际上要减去child1 的大小2 . =1
 
-    override fun getChildGroupList(group: TwoLevelGroupEntity): List<TwoLevelChildEntity> {
+    override fun getChildGroupList(group: TwoLevelGroupEntity): List<ChildGroupEntity> {
         return group.childGroupList
     }
 
-    override fun getChildChildList(childGroup: TwoLevelChildEntity): List<ChildChildEntity> {
+    override fun getChildChildList(childGroup: ChildGroupEntity): List<ChildChildEntity> {
         return childGroup.childChildList
     }
 
@@ -35,7 +38,14 @@ open class TwoLevelGroupAdapter :
     }
 
     override fun hasFooter(groupPosition: Int): Boolean {
+        //  Ls.d("hasFooter()..111111..groupPosition=$groupPosition")
+        if (groupPosition < 2) return false
         return getItems()[groupPosition].childGroupList.size > 0
+    }
+
+    override fun hasChildGroupFooter(groupPosition: Int): Boolean {
+      //  return 3 == 3
+        return groupPosition < 1
     }
 
     override fun getHeaderLayout(viewType: Int): Int {
@@ -46,12 +56,26 @@ open class TwoLevelGroupAdapter :
         return R.layout.adapter_footer_two_level
     }
 
-    override fun getChildLayout(viewType: Int): Int {
+    override fun getChildGroupHeaderLayout(viewType: Int): Int {
         return R.layout.adapter_child_two_level
+    }
+
+    override fun getChildGroupFooterLayout(viewType: Int): Int {
+        return R.layout.adapter_child_group_footer
     }
 
     override fun getChildChildLayout(viewType: Int): Int {
         return R.layout.adapter_child_child_two_level
+    }
+
+    override fun onBindChildGroupFooterViewHolder(
+        binding: ViewDataBinding,
+        group: TwoLevelGroupEntity,
+        childGroup: ChildGroupEntity?,
+        groupPosition: Int
+    ) {
+        binding.setVariable(BR.childGroupFooterClick, childGroupFooterClickEvent)
+        binding.setVariable(BR.childGroup, childGroup)
     }
 
     override fun onBindHeaderViewHolder(
@@ -72,7 +96,7 @@ open class TwoLevelGroupAdapter :
     override fun onBindChildViewHolder(
         binding: ViewDataBinding,
         group: TwoLevelGroupEntity,
-        child: TwoLevelChildEntity,
+        child: ChildGroupEntity,
         groupPosition: Int,
         childPosition: Int
     ) {

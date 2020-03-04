@@ -27,9 +27,14 @@
             name="childChild"
             type="java.lang.String" />
 
-              <variable
+        <variable
             name="childClick"
             type="java.lang.String" />
+
+        <variable
+            name="childGroupFooterClick"
+            type="java.lang.String" />
+
         <variable
             name="childChildClick"
             type="java.lang.String" />

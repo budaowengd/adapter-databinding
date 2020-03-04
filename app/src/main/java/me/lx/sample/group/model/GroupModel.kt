@@ -19,20 +19,20 @@ class GroupModel {
          * @return
          */
         fun getTwoGroupGroupOb(groupCount: Int, childrenCount: Int = 2): ObservableArrayList<TwoLevelGroupEntity> {
-            var a1: TwoLevelChildEntity? = null
+            var a1: ChildGroupEntity? = null
             var a2: ChildChildEntity? = null
             val groups = ObservableArrayList<TwoLevelGroupEntity>()
             for (groupIndex in 0 until groupCount) {
-                val childList = ObservableArrayList<TwoLevelChildEntity>()
+                val childList = ObservableArrayList<ChildGroupEntity>()
                 for (childIndex in 0 until childrenCount) {
-                    childList.add(getTwoLevelChildEntity(groupIndex,childIndex,  childrenCount))
+                    childList.add(getChildGroupEntity(groupIndex,childIndex,  childrenCount))
                 }
                 groups.add(getTwoLevelGroupEntity(groupIndex, childList))
             }
             return groups
         }
 
-        fun getTwoLevelGroupEntity(groupIndex: Int, childList: ObservableArrayList<TwoLevelChildEntity>): TwoLevelGroupEntity {
+        fun getTwoLevelGroupEntity(groupIndex: Int, childList: ObservableArrayList<ChildGroupEntity>): TwoLevelGroupEntity {
             val group = TwoLevelGroupEntity()
             group.headerText = "第" + (groupIndex + 1) + "组头部"
             group.footerText = "第" + (groupIndex + 1) + "组尾部"
@@ -41,12 +41,12 @@ class GroupModel {
 
         }
 
-        fun getTwoLevelChildEntity( groupIndex: Int, childIndex: Int,childCount: Int): TwoLevelChildEntity {
+        fun getChildGroupEntity( groupIndex: Int, childIndex: Int,childCount: Int): ChildGroupEntity {
             var childrenCount = childCount
             if (groupIndex % 2 != 0) {
                 childrenCount++
             }
-            val twoLevelChild = TwoLevelChildEntity()
+            val twoLevelChild = ChildGroupEntity()
             twoLevelChild.childText = "第" + (groupIndex + 1) + "组" + "第" + (childIndex + 1) + "个Child"
             for (i in 0 until childrenCount) {
                 val childChild = ChildChildEntity()

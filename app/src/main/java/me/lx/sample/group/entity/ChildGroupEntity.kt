@@ -8,7 +8,7 @@ import androidx.databinding.ObservableArrayList
 class TwoLevelGroupEntity {
     var headerText: String? = null
     var footerText: String? = null
-    var childGroupList: ObservableArrayList<TwoLevelChildEntity> = ObservableArrayList()
+    var childGroupList: ObservableArrayList<ChildGroupEntity> = ObservableArrayList()
 
     ///
     fun hasHeader(): Boolean {
@@ -20,9 +20,13 @@ class TwoLevelGroupEntity {
     }
 }
 
-class TwoLevelChildEntity {
+class ChildGroupEntity {
     var childText: String? = null
     var childChildList: ObservableArrayList<ChildChildEntity> = ObservableArrayList()
+    override fun toString(): String {
+        return "ChildGroupEntity(childText=$childText)"
+    }
+
 }
 
 class ChildChildEntity {

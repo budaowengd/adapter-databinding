@@ -4,21 +4,19 @@
     <data>
 
         <variable
-            name="childClick"
+            name="childGroupFooterClick"
             type="me.lx.rv.group.BaseFun1ClickGroupListener" />
-
         <variable
-            name="child"
+            name="childGroup"
             type="me.lx.sample.group.entity.ChildGroupEntity" />
-
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
+        android:onClick="@{()->childGroupFooterClick.clickGroup(childGroup)}"
         android:background="@drawable/white_ripple_bg"
-        android:onClick="@{()->childClick.clickGroup(child)}"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{child.childText}"
+            android:text="1111111111"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
