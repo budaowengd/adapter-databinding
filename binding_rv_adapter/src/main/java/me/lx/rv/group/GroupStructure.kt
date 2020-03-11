@@ -15,12 +15,13 @@ package me.lx.rv.group
  * childrenCount = 6
  */
 class GroupStructure {
-     var childrenCount: Int = 0 // 大组里,ChildGroupHeader + ChildGroupList.for size + ChildGroupFooter
+    var childrenCount: Int = 0 // 大组里,ChildGroupHeader + ChildGroupList.for size + ChildGroupFooter
     private var hasHeader: Boolean = false
     private var hasFooter: Boolean = false
     private var hasChildGroupFooter: Boolean = false
-     var headerCount = 0
-     var footerCount = 0
+    private var hasChildGroupHeader: Boolean = true
+    var headerCount = 0
+    var footerCount = 0
 
     constructor(hasHeader: Boolean, hasFooter: Boolean, childrenCount: Int) {
         this.hasHeader = hasHeader
@@ -64,7 +65,15 @@ class GroupStructure {
     fun setHasChildGroupFooter(hasFooter: Boolean) {
         this.hasChildGroupFooter = hasFooter
     }
+
+    fun setHasChildGroupHeader(hasHeader: Boolean) {
+        this.hasChildGroupHeader = hasHeader
+    }
+
     fun hasChildGroupFooter(): Boolean {
         return hasChildGroupFooter
+    }
+    fun hasChildGroupHeader(): Boolean {
+        return hasChildGroupHeader
     }
 }

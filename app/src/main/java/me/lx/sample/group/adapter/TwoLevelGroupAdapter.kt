@@ -45,9 +45,14 @@ open class TwoLevelGroupAdapter :
     }
 
     override fun hasChildGroupFooter(groupPosition: Int): Boolean {
-       return 3 == 3
+        return 3 == 3
         // return groupPosition < 1
     }
+
+    override fun hasChildGroupHeader(groupPosition: Int): Boolean {
+        return groupPosition % 2 != 0
+    }
+
 
     override fun getHeaderLayout(viewType: Int): Int {
         return R.layout.adapter_header_two_level
