@@ -59,7 +59,7 @@ interface RvTwoLevelGroupBindListener<G, CG, CC> {
         return null
     }
 
-    fun getClickChildListener(): ClickGroupListener? {
+    fun getClickChildChildListener(): ClickGroupListener? {
         return null
     }
 

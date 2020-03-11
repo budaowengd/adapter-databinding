@@ -170,7 +170,7 @@ fun <T, C> set_rv_GroupAdapter(
 @BindingAdapter(
     value = ["rv_two_level_group_adapter", "rv_two_level_group_items",
         "rv_two_level_group_layout_span", "rv_two_level_group_SpanSizeLookup",
-        "rv_two_level_group_loadmore_listener", "rv_two_level_group_chick_child_listener",
+        "rv_two_level_group_loadmore_listener", "rv_two_level_group_chick_child_child_listener",
         "rv_two_level_group_chick_header_listener", "rv_two_level_group_chick_footer_listener"],
     requireAll = false
 )
@@ -180,7 +180,7 @@ fun <G, CG, CC> set_rv_two_level_GroupAdapter(
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    clickChildListener: ClickGroupListener? = null,
+    clickChildChildListener: ClickGroupListener? = null,
     clickHeaderListener: ClickGroupListener? = null,
     clickFooterListener: ClickGroupListener? = null
 ) {
@@ -190,8 +190,8 @@ fun <G, CG, CC> set_rv_two_level_GroupAdapter(
     if (adapter == null) return
     adapter.setGroupList(items)
     set_rv_layoutmanager(rv, if (grid_span == 0) 1 else grid_span, spanLookup)
-    if (clickChildListener != null) {
-        adapter.setClickChildListener(clickChildListener)
+    if (clickChildChildListener != null) {
+        adapter.setClickChildChildListener(clickChildChildListener)
     }
     if (clickHeaderListener != null) {
         adapter.setClickHeaderListener(clickHeaderListener)

@@ -48,7 +48,7 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
     override fun onBindFooterViewHolder(binding:ViewDataBinding,  groupItem: GroupEntity,groupPosition: Int) {
     }
 
-    override fun onBindChildViewHolder(binding:ViewDataBinding, groupItem: GroupEntity, child: ChildEntity,groupPosition: Int,childPosition: Int) {
+    override fun onBindChildGroupHeader(binding:ViewDataBinding, groupItem: GroupEntity, child: ChildEntity,groupPosition: Int,childPosition: Int) {
         // 而外设置变量
     }
 

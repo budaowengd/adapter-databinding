@@ -7,6 +7,6 @@ package me.lx.rv.group
  *  version: 1.0
  *  desc:
  */
-abstract class BaseFun2ClickGroupListener<G> : ClickGroupListener {
+abstract class BaseFun2ClickGroupListener<G, T> : ClickGroupListener {
     abstract fun clickGroup(item: G, flag: Int)
 }

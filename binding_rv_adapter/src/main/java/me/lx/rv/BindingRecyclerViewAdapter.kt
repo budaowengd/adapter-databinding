@@ -276,9 +276,9 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         }
     }
 
-    fun smoothSpecPosition(recyclerView: RecyclerView, positionStart: Int) {
-        if (addOrRemoveSmoothSpecPosition == true) {
-            recyclerView.scrollToPosition(positionStart)
+    fun smoothSpecPosition(positionStart: Int,isMustSmooth:Boolean=true) {
+        if ((addOrRemoveSmoothSpecPosition == true && mRecyclerView!=null) || isMustSmooth) {
+            mRecyclerView!!.scrollToPosition(positionStart)
         }
     }
 
@@ -309,7 +309,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 //            if (DEBUG) {
 //                Log.i(TAG, "onItemRangeInserted()..111..positionStart=$positionStart  itemCount=$itemCount")
 //            }
-            rvAdapter.smoothSpecPosition(recyclerView, positionStart)
+            rvAdapter.smoothSpecPosition(positionStart,false)
             rvAdapter.getRvAdapter().notifyItemRangeInserted(positionStart, itemCount)
         }
 
@@ -328,7 +328,7 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
 //            if (DEBUG) {
 //                Log.i(TAG, "onItemRangeMoved()...333...positionStart=$positionStart    itemCount=$itemCount")
 //            }
-            rvAdapter.smoothSpecPosition(recyclerView, positionStart)
+            rvAdapter.smoothSpecPosition(positionStart,false)
             // val adapter = adapterRef.get() ?: return
             rvAdapter.getRvAdapter().notifyItemRangeRemoved(positionStart, itemCount)
         }

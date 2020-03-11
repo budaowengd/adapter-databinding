@@ -45,7 +45,7 @@ open class TwoLevelGroupAdapter :
     }
 
     override fun hasChildGroupFooter(groupPosition: Int): Boolean {
-        return 3 == 3
+        return 3 == 2
         // return groupPosition < 1
     }
 
@@ -99,7 +99,7 @@ open class TwoLevelGroupAdapter :
     ) {
     }
 
-    override fun onBindChildViewHolder(
+    override fun onBindChildGroupHeader(
         binding: ViewDataBinding,
         group: TwoLevelGroupEntity,
         child: ChildGroupEntity,
@@ -108,6 +108,8 @@ open class TwoLevelGroupAdapter :
     ) {
         // 而外设置变量
     }
+
+
 
 
 }

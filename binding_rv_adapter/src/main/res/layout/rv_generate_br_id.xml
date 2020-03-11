@@ -26,6 +26,9 @@
         <variable
             name="childChild"
             type="java.lang.String" />
+   <variable
+            name="childGroupHeader"
+            type="java.lang.String" />
 
         <variable
             name="childClick"

@@ -63,7 +63,7 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
 
     override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: ExpandableGroupEntity, groupPosition: Int) {}
 
-    override fun onBindChildViewHolder(
+    override fun onBindChildGroupHeader(
         binding: ViewDataBinding, groupItem: ExpandableGroupEntity, child: ChildEntity,
         groupPosition: Int,
         childPosition: Int

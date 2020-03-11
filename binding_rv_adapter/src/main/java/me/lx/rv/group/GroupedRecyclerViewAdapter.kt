@@ -131,7 +131,7 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
                 if (mClickChildListener != null) {
                     binding.setVariable(BR.childClick, mClickChildListener)
                 }
-                onBindChildViewHolder(binding, group, child, groupPosition, childPosition)
+                onBindChildGroupHeader(binding, group, child, groupPosition, childPosition)
             }
         }
         binding.executePendingBindings()
@@ -1001,7 +1001,7 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 
     abstract fun onBindFooterViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
 
-    abstract fun onBindChildViewHolder(
+    abstract fun onBindChildGroupHeader(
         binding: ViewDataBinding,
         group: G, child: C,
         groupPosition: Int,
