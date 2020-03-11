@@ -34,12 +34,12 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
             it.executePendingBindings()
         }
 
-        mModel.childGroupFooterClickCallback= Consumer {childGroup->
-            var findChildGroup:ChildGroupEntity?=null
-            mModel.groupList.forEach {group->
+        mModel.childGroupFooterClickCallback = Consumer { childGroup ->
+            var findChildGroup: ChildGroupEntity? = null
+            mModel.groupList.forEach { group ->
                 group.childGroupList.forEach {
-                    if(it==childGroup){
-                       // group.childGroupList.remove(childGroup)
+                    if (it == childGroup) {
+                        group.childGroupList.remove(childGroup)
                         Ls.d("暗暗..11111111111")
                         return@Consumer
                     }
@@ -57,7 +57,7 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
 
         val cgList = ChildGroupEntity()
         val cg = GroupModel.getChildGroupEntity(0, childSize, 3)
-        mModel.groupList[0].childGroupList.add(0,cg)
+        mModel.groupList[0].childGroupList.add(0, cg)
         // .childChildList.add(ChildChildEntity((size + 1).toString()))
     }
 
@@ -70,8 +70,8 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
 
 
         mModel.groupList[0].childGroupList[0].childChildList.removeAt(size - 1)
-        if(size==1){
-           // mModel.groupList[0].childGroupList.removeAt(0)
+        if (size == 1) {
+            // mModel.groupList[0].childGroupList.removeAt(0)
         }
     }
 

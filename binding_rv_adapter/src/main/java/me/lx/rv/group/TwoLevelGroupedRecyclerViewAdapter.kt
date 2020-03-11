@@ -68,7 +68,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
     private var recyclerView: RecyclerView? = null
 
     // 当孩子为空的时候,如果存在header,就自动移除header
-    private var childEmptyIsRemoveHeader: Boolean? = null
+     var childEmptyIsRemoveHeader: Boolean = true
 
     //    constructor(dataList: List<G>) : super() {
 //        groupList = dataList
@@ -120,7 +120,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             return getFooterViewType(groupPosition)
         } else if (type == TYPE_CHILD_GROUP_HEADER) {
             val childGroupPosition = getChildGroupPositionForChildPosition(groupPosition, position)
-            return getChildViewType(groupPosition, childGroupPosition)
+            return getChildGroupHeaderType(groupPosition, childGroupPosition)
         } else if (type == TYPE_CHILD_CHILD) {
             return type
         } else if (type == TYPE_CHILD_GROUP_FOOTER) {
@@ -231,8 +231,9 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
     }
 
 
-    open fun setGroupList(groupList: List<G>) {
-        if (System.identityHashCode(groupList) == System.identityHashCode(this.groupList)) {
+    open fun setGroupList(groups: List<G>) {
+        //if (System.identityHashCode(groupList) == System.identityHashCode(this.groupList)) {
+        if (groups === this.groupList) {
             return
         }
         if (recyclerView != null) {
@@ -240,13 +241,13 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
                 (this.groupList as ObservableList<G>).removeOnListChangedCallback(callback)
                 callback = null
             }
-            if (groupList is ObservableList<G>) {
-                callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, groupList)
-                groupList.addOnListChangedCallback(callback)
+            if (groups is ObservableList<G>) {
+                callback = WeakReferenceOnListChangedCallback(recyclerView!!, this, groups)
+                groups.addOnListChangedCallback(callback)
             }
         }
-        this.groupList = groupList
-        registerChildGroupChangedCallback(groupList)
+        this.groupList = groups
+        registerChildGroupChangedCallback(groups)
         notifyDataSetChanged()
     }
 
@@ -320,7 +321,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         return TYPE_GROUP_FOOTER
     }
 
-    open fun getChildViewType(groupPosition: Int, childPosition: Int): Int {
+    open fun getChildGroupHeaderType(groupPosition: Int, childPosition: Int): Int {
         return TYPE_CHILD_GROUP_HEADER
     }
 
@@ -496,10 +497,9 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         val childGroups = childGroupList as? List<CG>
         var mGroupIndex = -1
         if (childGroups != null) {
-            val childGroupListHashCode = System.identityHashCode(childGroupList)
             run breaking@{
                 groupList!!.forEachIndexed { groupIndex, group ->
-                    if (System.identityHashCode(getChildGroupList(group)) == childGroupListHashCode) {
+                    if (getChildGroupList(group) === childGroupList) {
                         mGroupIndex = groupIndex
                         return@breaking
                     }
@@ -508,17 +508,22 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         }
         return mGroupIndex
     }
+    fun getGroup(groupPosition: Int): G {
+        return groupList!![groupPosition]!!
+    }
 
+    /**
+     * 根据列表,获取属于哪个ChildGroup 和 Group
+     */
     fun getGroupPositionByChildChildList(childChildList: List<*>): Pair<Int, Int> {
         val childChilds = childChildList as? List<CC>
         var mGroupIndex = -1
         childChilds ?: return Pair(mGroupIndex, mGroupIndex)
         var mChildGroupIndex = -1
-        val childListHashCode = System.identityHashCode(childChilds)
         run breaking@{
             groupList!!.forEachIndexed { groupIndex, group ->
                 getChildGroupList(group).forEachIndexed { childGroupIndex, childGroup ->
-                    if (System.identityHashCode(getChildChildList(childGroup)) == childListHashCode) {
+                    if (getChildChildList(childGroup) === childChilds) {
                         mGroupIndex = groupIndex
                         mChildGroupIndex = childGroupIndex
                         return@breaking
@@ -1280,7 +1285,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         }
     }
 
-    fun setChildEmptyRemoveHeader(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> {
+    fun setChildGroupEmptyRemoveGroup(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> {
         childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
         return this
     }

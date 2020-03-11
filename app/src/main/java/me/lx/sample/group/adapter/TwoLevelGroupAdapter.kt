@@ -34,18 +34,19 @@ open class TwoLevelGroupAdapter :
     }
 
     override fun hasHeader(groupPosition: Int): Boolean {
-        return getItems()[groupPosition].childGroupList.size > 0
+        //return getItems()[groupPosition].childGroupList.size > 0
+        return true
     }
 
     override fun hasFooter(groupPosition: Int): Boolean {
         //  Ls.d("hasFooter()..111111..groupPosition=$groupPosition")
         if (groupPosition < 2) return false
-        return getItems()[groupPosition].childGroupList.size > 0
+        return getGroup(groupPosition).childGroupList.size > 0
     }
 
     override fun hasChildGroupFooter(groupPosition: Int): Boolean {
-      //  return 3 == 3
-        return groupPosition < 1
+       return 3 == 3
+        // return groupPosition < 1
     }
 
     override fun getHeaderLayout(viewType: Int): Int {

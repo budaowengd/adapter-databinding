@@ -36,7 +36,12 @@ class TwoLevelChildListChangedCallback(
             if (isChildGroup) {
                 // 从第1层移除当前child分组
                 val groupPosition = adapter.getGroupPositionByChildGroupList(sender)
-                adapter.removeGroupPosition(groupPosition)
+                if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
+                    Ls.d("从第1层移除当前child分组()..1111..groupPosition=$groupPosition")
+                }
+                if (adapter.childEmptyIsRemoveHeader) {
+                    adapter.removeGroupPosition(groupPosition)
+                }
             } else {
                 // 如果最里层子项都没了,把当前child组也移除掉
                 val groupPosition = adapter.getGroupPositionByChildChildList(sender)
@@ -64,8 +69,10 @@ class TwoLevelChildListChangedCallback(
         itemCount: Int
     ) {
         if (TwoLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount " +
-                    "sender=${sender.size} isChildGroup=$isChildGroup")
+            Ls.d(
+                "TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount " +
+                        "sender=${sender.size} isChildGroup=$isChildGroup"
+            )
         }
         if (isChildGroup) {
             adapter.registerChildChildListChangedCallback2(sender[positionStart])

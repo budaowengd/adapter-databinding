@@ -30,5 +30,6 @@ class TwoLevelGroupModel : ViewModel() {
                 childGroupFooterClickCallback?.accept(group)
             }
         }
+        setChildGroupEmptyRemoveGroup(true)
     }
 }
