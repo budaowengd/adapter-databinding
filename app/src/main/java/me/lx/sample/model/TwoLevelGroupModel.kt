@@ -3,7 +3,7 @@ package me.lx.sample.model
 import androidx.core.util.Consumer
 import androidx.lifecycle.ViewModel
 import me.lx.rv.group.BaseFun1ClickGroupListener
-import me.lx.sample.group.adapter.TwoLevelGroupAdapter
+import me.lx.sample.group.adapter.ThreeLevelGroupAdapter
 import me.lx.sample.group.entity.ChildGroupEntity
 import me.lx.sample.group.model.GroupModel
 
@@ -24,7 +24,7 @@ class TwoLevelGroupModel : ViewModel() {
 
     var childGroupFooterClickCallback: Consumer<ChildGroupEntity>? = null
 
-    val groupAdapter = TwoLevelGroupAdapter().apply {
+    val groupAdapter = ThreeLevelGroupAdapter().apply {
         childGroupFooterClickEvent = object : BaseFun1ClickGroupListener<ChildGroupEntity>() {
             override fun clickGroup(group: ChildGroupEntity) {
                 childGroupFooterClickCallback?.accept(group)

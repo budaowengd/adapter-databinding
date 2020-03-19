@@ -62,13 +62,21 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
     }
 
     override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: ExpandableGroupEntity, groupPosition: Int) {}
-
-    override fun onBindChildGroupHeader(
-        binding: ViewDataBinding, groupItem: ExpandableGroupEntity, child: ChildEntity,
+    override fun onBindChildViewHolder(
+        binding: ViewDataBinding,
+        group: ExpandableGroupEntity,
+        child: ChildEntity,
         groupPosition: Int,
         childPosition: Int
     ) {
+
     }
+//    override fun onBindChildViewHolder(
+//        binding: ViewDataBinding, groupItem: ExpandableGroupEntity, child: ChildEntity,
+//        groupPosition: Int,
+//        childPosition: Int
+//    ) {
+//    }
 
     /**
      * 判断当前组是否展开
@@ -119,6 +127,8 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
     override fun getChildrenList(groupItem: ExpandableGroupEntity): List<ChildEntity> {
         return groupItem.childList
     }
+
+
 
 
 }

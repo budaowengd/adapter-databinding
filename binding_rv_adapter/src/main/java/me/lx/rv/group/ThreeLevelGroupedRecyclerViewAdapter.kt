@@ -14,7 +14,7 @@ import me.lx.rv.tools.Ls
  * 通用的分组列表Adapter。通过它可以很方便的实现列表的分组效果。
  * 这个类提供了一系列的对列表的更新、删除和插入等操作的方法。
  * 使用者要使用这些方法的列表进行操作，而不要直接使用RecyclerView.Adapter的方法。
- * 因为当分组列表发生变化时，需要及时更新分组列表的组结构[TwoLevelGroupedRecyclerViewAdapter.mStructures]
+ * 因为当分组列表发生变化时，需要及时更新分组列表的组结构[ThreeLevelGroupedRecyclerViewAdapter.mStructures]
  *
  * 1、T泛型: 组对象
  * 2、C泛型: 组里的孩子
@@ -29,7 +29,7 @@ import me.lx.rv.tools.Ls
  *      child2-3
  *  group1-footer
  */
-abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
+abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<G> {
     companion object {
         const val TAG = "GroupedAdapter"
@@ -130,6 +130,13 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             val childGroupPosition = getChildGroupPositionForChildPosition(groupPosition, position)
             return getChildGroupHeaderType(groupPosition, childGroupPosition)
         } else if (type == TYPE_CHILD_CHILD) {
+            val childInGroupIndex = getChildIndexInGroup(groupPosition, position)
+            val childGroup = getChildGroupList(getGroup(groupPosition))
+            val childChild = getChildChildByChild(getChildGroupList(getGroup(groupPosition)), groupPosition, childInGroupIndex)
+//            Ls.d("getItemViewType()...pos=$position  childInGroupIndex=${childInGroupIndex} childChild=$childChild")
+            if (isSupportMultiTypeChildChild() && childChild != null) {
+                return getChildChildType(childGroup, childChild, childInGroupIndex)
+            }
             return type
         } else if (type == TYPE_CHILD_GROUP_FOOTER) {
             return type
@@ -181,7 +188,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
                 //pos= 2,3, 5,6 10,11  13,14,都是childchild
                 // 这个位置,指的是最外层组里每个布局的索引,包括childGroupHeader这1级
                 val childIndex = getChildIndexInGroup(groupPosition, position)
-                val childChild = getChildChildByChild(getChildGroupList(group), groupPosition, childIndex, position)
+                val childChild = getChildChildByChild(getChildGroupList(group), groupPosition, childIndex)
                 //Ls.d("onBindViewHolder()..11..ChildChild.groupPosition=$groupPosition position=$position childIndex=$childIndex  childChild=$childChild")
                 if (childChild != null) {
                     binding.setVariable(BR.childChild, childChild)
@@ -210,7 +217,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     }
 
-    private fun getChildChildByChild(childGroupList: List<CG>, groupPosition: Int, childIndex: Int, position: Int): CC? {
+    private fun getChildChildByChild(childGroupList: List<CG>, groupPosition: Int, childIndex: Int): CC? {
         var startIndex = 0
         childGroupList.forEachIndexed { childGroupIndex, childGroup ->
             startIndex += getChildGroupHeaderCount(groupPosition)
@@ -334,6 +341,14 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     open fun getChildGroupHeaderType(groupPosition: Int, childPosition: Int): Int {
         return TYPE_CHILD_GROUP_HEADER
+    }
+
+    open fun isSupportMultiTypeChildChild(): Boolean {
+        return false
+    }
+
+    open fun getChildChildType(groupPosition: List<CG>, childPosition: CC, childInGroupIndex: Int): Int {
+        return TYPE_CHILD_CHILD
     }
 
     private fun getLayoutId(position: Int, viewType: Int): Int {
@@ -1324,12 +1339,12 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         }
     }
 
-    fun setChildGroupEmptyRemoveGroup(isRemoveHeaderWhenChildEmpty: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> {
+    fun setChildGroupEmptyRemoveGroup(isRemoveHeaderWhenChildEmpty: Boolean = true): ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> {
         childEmptyIsRemoveHeader = isRemoveHeaderWhenChildEmpty
         return this
     }
 
-    fun setChildChildEmptyRemoveChildGroup(remove: Boolean = true): TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> {
+    fun setChildChildEmptyRemoveChildGroup(remove: Boolean = true): ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> {
         childChildEmptyRemoveChildGroup = remove
         return this
     }
@@ -1392,19 +1407,19 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     abstract fun getChildChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 
     abstract fun onBindChildGroupHeader(
-        binding: ViewDataBinding,
+        vBinding: ViewDataBinding,
         group: G, childGroup: CG,
         groupPosition: Int,
         childPosition: Int
     )
 
     open fun onBindChildChildViewHolder(
-        binding: ViewDataBinding,
+        vBinding: ViewDataBinding,
         group: G, childGroup: CC,
         groupPosition: Int,
         childPosition: Int
@@ -1436,15 +1451,15 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     class WeakReferenceOnListChangedCallback<G> constructor(
         var recyclerView: RecyclerView,
-        private var groupAdapter: TwoLevelGroupedRecyclerViewAdapter<G, *, *>,
+        private var groupAdapter: ThreeLevelGroupedRecyclerViewAdapter<G, *, *>,
         groupList: ObservableList<G>
     ) : ObservableList.OnListChangedCallback<ObservableList<G>>() {
-        // internal val adapterRef: WeakReference<TwoLevelGroupedRecyclerViewAdapter<G, *>> = AdapterReferenceCollector.createRef
+        // internal val adapterRef: WeakReference<ThreeLevelGroupedRecyclerViewAdapter<G, *>> = AdapterReferenceCollector.createRef
         // (groupAdapter, groupList, this)
 
         override fun onChanged(sender: ObservableList<G>) {
             if (DEBUG) {
-                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onChanged()...1111..")
+                Ls.d("ThreeLevelGroupedRecyclerViewAdapter()....onChanged()...1111..")
             }
             groupAdapter.notifyDataChanged()
         }
@@ -1455,7 +1470,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
+                Ls.d("ThreeLevelGroupedRecyclerViewAdapter()....onItemRangeChanged()...2222..positionStart=$positionStart  itemCount=$itemCount")
             }
             groupAdapter.notifyDataChanged()
         }
@@ -1466,7 +1481,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("TwoLevelGroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
+                Ls.d("ThreeLevelGroupedRecyclerViewAdapter()..onItemRangeInserted()...33333...sender=${sender.size}  itemCount=$itemCount")
             }
             groupAdapter.registerChildGroupListChangedCallback(groupAdapter.getChildGroupList(sender[positionStart]) as List<Nothing>)
             groupAdapter.notifyDataChanged()
@@ -1479,7 +1494,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
+                Ls.d("ThreeLevelGroupedRecyclerViewAdapter()....onItemRangeMoved()..444.. itemCount=$itemCount")
             }
             groupAdapter.notifyDataChanged()
         }
@@ -1491,7 +1506,7 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             itemCount: Int
         ) {
             if (DEBUG) {
-                Ls.d("TwoLevelGroupedRecyclerViewAdapter()....onItemRangeRemoved()...555...positionStart=$positionStart itemCount=$itemCount")
+                Ls.d("ThreeLevelGroupedRecyclerViewAdapter()....onItemRangeRemoved()...555...positionStart=$positionStart itemCount=$itemCount")
             }
 
             groupAdapter.notifyDataChanged()
@@ -1501,23 +1516,23 @@ abstract class TwoLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     //    interface OnHeaderClickListener {
 //        fun onHeaderClick(
-//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>,
-//            binding:ViewDataBinding,
+//            adapter: ThreeLevelGroupedRecyclerViewAdapter<*, *>,
+//            vBinding:ViewDataBinding,
 //            groupPosition: Int
 //        )
 //    }
 //
 //    interface OnFooterClickListener {
 //        fun onFooterClick(
-//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>,
-//            binding:ViewDataBinding,
+//            adapter: ThreeLevelGroupedRecyclerViewAdapter<*, *>,
+//            vBinding:ViewDataBinding,
 //            groupPosition: Int
 //        )
 //    }
 //
 //    interface OnChildClickListener {
 //        fun onChildClick(
-//            adapter: TwoLevelGroupedRecyclerViewAdapter<*, *>, binding:ViewDataBinding,
+//            adapter: ThreeLevelGroupedRecyclerViewAdapter<*, *>, vBinding:ViewDataBinding,
 //            groupPosition: Int, childPosition: Int
 //        )
 //    }

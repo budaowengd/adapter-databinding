@@ -90,7 +90,7 @@ open class VariousAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEntity>
     override fun onBindFooterViewHolder(binding: ViewDataBinding, groupItem: GroupEntity, groupPosition: Int) {
     }
 
-    override fun onBindChildGroupHeader(
+    override fun onBindChildViewHolder(
         binding: ViewDataBinding,
         groupItem: GroupEntity,
         child: ChildEntity,

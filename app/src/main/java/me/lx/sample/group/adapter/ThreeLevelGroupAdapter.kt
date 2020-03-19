@@ -2,7 +2,8 @@ package me.lx.sample.group.adapter
 
 import androidx.databinding.ViewDataBinding
 import me.lx.rv.group.BaseFun1ClickGroupListener
-import me.lx.rv.group.TwoLevelGroupedRecyclerViewAdapter
+import me.lx.rv.group.ThreeLevelGroupedRecyclerViewAdapter
+import me.lx.rv.tools.Ls
 import me.lx.sample.BR
 import me.lx.sample.R
 import me.lx.sample.group.entity.ChildChildEntity
@@ -19,8 +20,8 @@ import me.lx.sample.group.entity.TwoLevelGroupEntity
  *      child2-1
  *      child2-2
  */
-open class TwoLevelGroupAdapter :
-    TwoLevelGroupedRecyclerViewAdapter<TwoLevelGroupEntity, ChildGroupEntity, ChildChildEntity>() {
+open class ThreeLevelGroupAdapter :
+    ThreeLevelGroupedRecyclerViewAdapter<TwoLevelGroupEntity, ChildGroupEntity, ChildChildEntity>() {
 
     var childGroupFooterClickEvent: BaseFun1ClickGroupListener<ChildGroupEntity>? = null
     // childPosition 是3, 实际上要减去child1 的大小2 . =1
@@ -71,7 +72,20 @@ open class TwoLevelGroupAdapter :
     }
 
     override fun getChildChildLayout(viewType: Int): Int {
-        return R.layout.adapter_child_child_two_level
+        return viewType
+    }
+
+    override fun isSupportMultiTypeChildChild(): Boolean {
+        return true
+    }
+
+
+    override fun getChildChildType(groupPosition: List<ChildGroupEntity>, childPosition: ChildChildEntity, childInGroupIndex: Int): Int {
+        Ls.d("getChildChildType()...childInGroupIndex=$childInGroupIndex")
+        if (childInGroupIndex == 3 || childInGroupIndex == 7) {
+            return R.layout.adapter_child_child_two_level
+        }
+        return R.layout.adapter_cc2
     }
 
     override fun onBindChildGroupFooterViewHolder(
@@ -108,8 +122,6 @@ open class TwoLevelGroupAdapter :
     ) {
         // 而外设置变量
     }
-
-
 
 
 }

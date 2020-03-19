@@ -30,5 +30,7 @@ abstract class BaseOnListChangedCallback<T> : ObservableList.OnListChangedCallba
         itemChanged(sender)
     }
 
-    abstract fun itemChanged(sender: ObservableList<T>)
+    open fun itemChanged(sender: ObservableList<T>){
+
+     }
 }

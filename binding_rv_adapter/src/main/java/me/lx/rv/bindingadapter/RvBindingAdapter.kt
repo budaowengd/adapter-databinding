@@ -8,7 +8,7 @@ import me.lx.rv.XmlItemBinding
 import me.lx.rv.collections.AsyncDiffObservableList
 import me.lx.rv.group.ClickGroupListener
 import me.lx.rv.group.GroupedRecyclerViewAdapter
-import me.lx.rv.group.TwoLevelGroupedRecyclerViewAdapter
+import me.lx.rv.group.ThreeLevelGroupedRecyclerViewAdapter
 import me.lx.rv.itembindings.OnItemBindClass
 import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.rv.tools.Ls
@@ -175,7 +175,7 @@ fun <T, C> set_rv_GroupAdapter(
     requireAll = false
 )
 fun <G, CG, CC> set_rv_two_level_GroupAdapter(
-    rv: RecyclerView, adapter: TwoLevelGroupedRecyclerViewAdapter<G, CG, CC>?,
+    rv: RecyclerView, adapter: ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC>?,
     items: List<G>?,
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
