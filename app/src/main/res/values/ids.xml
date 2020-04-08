@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="bindingcollectiondapter_list_id" type="id" />
+    <item name="type_header" type="integer"/>
+    <item name="type_footer" type="integer"/>
+    <item name="type_child_group_header" type="integer"/>
+    <item name="type_child" type="integer"/>
+    <item name="type_child_child" type="integer"/>
+    <item name="type_child_group_footer" type="integer"/>
+
+</resources>

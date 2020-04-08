@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="print_width_type">
-        <!--默认值-->
-        <item>80</item>
-        <item>58</item>
-    </string-array>
-</resources>

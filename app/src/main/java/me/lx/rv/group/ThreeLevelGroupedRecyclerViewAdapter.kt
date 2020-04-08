@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.lx.rv.*
 import me.lx.rv.click.ClickListener
 import me.lx.rv.tools.Ls
+import java.lang.NullPointerException
 
 /**
  * 通用的分组列表Adapter。通过它可以很方便的实现列表的分组效果。
@@ -134,10 +135,13 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             val childInGroupIndex = getChildIndexInGroup(groupPosition, position)
             val childGroup = getChildGroupList(getGroup(groupPosition))
             val childChild = getChildChildByChild(getChildGroupList(getGroup(groupPosition)), groupPosition, childInGroupIndex)
-            if (isSupportMultiTypeChildChild() && childChild != null) {
-                return getChildChildType(childGroup, childChild,childInGroupIndex)
+            if(childChild == null){
+                throw NullPointerException("childChild为空  groupPosition=$groupPosition childInGroupIndex=$childInGroupIndex")
             }
-            return type
+//            if (isSupportMultiTypeChildChild() ) {
+//                return getChildChildType(childGroup, childChild,childInGroupIndex)
+//            }
+            return getChildChildType(childGroup, childChild,childInGroupIndex)
         } else if (type == TYPE_CHILD_GROUP_FOOTER) {
             return type
         }
@@ -148,7 +152,6 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.context)
         }
-        Ls.d("onCreateViewHolder()...1111..mTempPosition=$mTempPosition")
         val binding = DataBindingUtil.inflate<ViewDataBinding>(
             inflater!!,
             getLayoutId(mTempPosition, viewType),
