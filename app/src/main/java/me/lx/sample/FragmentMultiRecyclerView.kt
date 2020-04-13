@@ -16,11 +16,9 @@ class FragmentMultiRecyclerView : Fragment() ,ClickListeners{
             insertItem(SingleItemVo(size))
         }
     }
-
     override fun clickRemoveItem() {
         mModel.clickRemoveItem()
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mModel = ViewModelProviders.of(this).get()
