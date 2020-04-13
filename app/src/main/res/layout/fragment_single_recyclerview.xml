@@ -30,7 +30,6 @@
         <Spinner
             android:id="@+id/spinnerWidth"
             android:layout_width="120dp"
-
             android:layout_height="47dp"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +46,7 @@
             app:rv_adapter="@{model.adapter}"
             app:rv_itemBinding="@{model.simpleItemBinding}"
             app:rv_items="@{model.singleItems}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+             />
 
         <LinearLayout
             style="?buttonBarStyle"

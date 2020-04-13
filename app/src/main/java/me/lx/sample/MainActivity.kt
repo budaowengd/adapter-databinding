@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener(listener)
 
         if (savedInstanceState == null) {
-            listener.onNavigationItemSelected(binding.navView.menu.getItem(6))
+            listener.onNavigationItemSelected(binding.navView.menu.getItem(1))
         } else {
             actionBar.title = savedInstanceState.getCharSequence(STATE_TITLE)
         }

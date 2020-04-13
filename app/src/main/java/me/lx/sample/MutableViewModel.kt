@@ -125,8 +125,6 @@ class MutableViewModel : ViewModel(), ClickListeners {
                 FooterVo::class -> itemBinding.set(R.layout.item_footer, itemClickEvent)
             }
         }
-
-
     })
 
     val headerFooterItemBinding2 = OnItemBindClass<Any>().apply {
@@ -141,6 +139,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
     override fun clickAddItem() {
         singleItems.add(SingleItemVo(index = singleItems.size))
 
+        adapter.notifyDataSetChanged()
         val header = headerFooterItems.get(0) as? Header2Vo
         header?.name="我是${singleItems.size}"
         header?.nameOb?.set("我是${singleItems.size}")
