@@ -59,15 +59,15 @@ interface RvGroupBindListener<T, C> {
         return null
     }
 
-    fun getClickChildListener(): ClickGroupListener? {
+    fun getClickChildListener():me.lx.rv.click.ClickListener? {
         return null
     }
 
-    fun getClickFootListener(): ClickGroupListener? {
+    fun getClickFootListener():me.lx.rv.click.ClickListener? {
         return null
     }
 
-    fun getClickHeaderListener(): ClickGroupListener? {
+    fun getClickHeaderListener():me.lx.rv.click.ClickListener? {
         return null
     }
 }

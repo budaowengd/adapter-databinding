@@ -12,6 +12,8 @@ import me.lx.rv.click.ClickListener
 inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> =
         XmlItemBinding.of(layoutRes, clickListener)
 
+inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int, clickListener: ClickListener): XmlItemBinding<T> =
+        XmlItemBinding.of(layoutRes, variableId, clickListener)
 
 /**
  * Creates an `XmlItemBinding` with the given id and layout.

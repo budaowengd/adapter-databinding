@@ -8,7 +8,9 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.lx.rv.*
+import me.lx.rv.click.ClickListener
 import me.lx.rv.tools.Ls
+import java.lang.NullPointerException
 
 /**
  * 通用的分组列表Adapter。通过它可以很方便的实现列表的分组效果。
@@ -57,9 +59,9 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 //    private var mOnFooterClickListener: OnFooterClickListener? = null
 //    private var mOnChildClickListener: OnChildClickListener? = null
 
-    private var mClickChildChildListener: ClickGroupListener? = null
-    private var mClickHeaderListener: ClickGroupListener? = null
-    private var mClickFooterListener: ClickGroupListener? = null
+    private var mClickChildChildListener: ClickListener? = null
+    private var mClickHeaderListener: ClickListener? = null
+    private var mClickFooterListener: ClickListener? = null
 
     //保存分组列表的组结构
     protected var mStructures = ArrayList<GroupStructure>()
@@ -133,11 +135,13 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
             val childInGroupIndex = getChildIndexInGroup(groupPosition, position)
             val childGroup = getChildGroupList(getGroup(groupPosition))
             val childChild = getChildChildByChild(getChildGroupList(getGroup(groupPosition)), groupPosition, childInGroupIndex)
-//            Ls.d("getItemViewType()...pos=$position  childInGroupIndex=${childInGroupIndex} childChild=$childChild")
-            if (isSupportMultiTypeChildChild() && childChild != null) {
-                return getChildChildType(childGroup, childChild, childInGroupIndex)
+            if(childChild == null){
+                throw NullPointerException("childChild为空  groupPosition=$groupPosition childInGroupIndex=$childInGroupIndex")
             }
-            return type
+//            if (isSupportMultiTypeChildChild() ) {
+//                return getChildChildType(childGroup, childChild,childInGroupIndex)
+//            }
+            return getChildChildType(childGroup, childChild,childInGroupIndex)
         } else if (type == TYPE_CHILD_GROUP_FOOTER) {
             return type
         }
@@ -342,15 +346,13 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
     open fun getChildGroupHeaderType(groupPosition: Int, childPosition: Int): Int {
         return TYPE_CHILD_GROUP_HEADER
     }
-
     open fun isSupportMultiTypeChildChild(): Boolean {
         return false
     }
 
-    open fun getChildChildType(groupPosition: List<CG>, childPosition: CC, childInGroupIndex: Int): Int {
+    open fun getChildChildType(group: List<CG>, childChild: CC,childInChildGroupIndex:Int): Int {
         return TYPE_CHILD_CHILD
     }
-
     private fun getLayoutId(position: Int, viewType: Int): Int {
         val type = judgeType(position)
         if (type == TYPE_GROUP_HEADER) {
@@ -1258,7 +1260,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 //    fun setOnFooterClickListener(listener: OnFooterClickListener) {
 //        mOnFooterClickListener = listener
 //    }
-    fun setClickChildChildListener(listener: ClickGroupListener) {
+    fun setClickChildChildListener(listener: ClickListener) {
         mClickChildChildListener = listener
     }
 
@@ -1270,15 +1272,15 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 //    fun setOnChildClickListener(listener: OnChildClickListener) {
 //        mOnChildClickListener = listener
 //    }
-    fun setClickChildListener(listener: ClickGroupListener) {
+    fun setClickChildListener(listener: ClickListener) {
         mClickChildChildListener = listener
     }
 
-    fun setClickHeaderListener(listener: ClickGroupListener) {
+    fun setClickHeaderListener(listener: ClickListener) {
         mClickHeaderListener = listener
     }
 
-    fun setClickFooterListener(listener: ClickGroupListener) {
+    fun setClickFooterListener(listener: ClickListener) {
         mClickFooterListener = listener
     }
 
@@ -1420,7 +1422,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     open fun onBindChildChildViewHolder(
         vBinding: ViewDataBinding,
-        group: G, childGroup: CC,
+        group: G, childChild: CC,
         groupPosition: Int,
         childPosition: Int
     ) {

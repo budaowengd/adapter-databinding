@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.*
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.R
 import me.lx.rv.XmlItemBinding
+import me.lx.rv.click.ClickListener
 import me.lx.rv.collections.AsyncDiffObservableList
-import me.lx.rv.group.ClickGroupListener
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.rv.group.ThreeLevelGroupedRecyclerViewAdapter
 import me.lx.rv.itembindings.OnItemBindClass
@@ -140,9 +140,9 @@ fun <T, C> set_rv_GroupAdapter(
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    clickChildListener: ClickGroupListener? = null,
-    clickHeaderListener: ClickGroupListener? = null,
-    clickFooterListener: ClickGroupListener? = null
+    clickChildListener: ClickListener? = null,
+    clickHeaderListener: ClickListener? = null,
+    clickFooterListener: ClickListener? = null
 ) {
 //    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
     if (rv.adapter != null) return
@@ -180,9 +180,9 @@ fun <G, CG, CC> set_rv_two_level_GroupAdapter(
     grid_span: Int = 1,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    clickChildChildListener: ClickGroupListener? = null,
-    clickHeaderListener: ClickGroupListener? = null,
-    clickFooterListener: ClickGroupListener? = null
+    clickChildChildListener: ClickListener? = null,
+    clickHeaderListener: ClickListener? = null,
+    clickFooterListener: ClickListener? = null
 ) {
 //    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
     if (rv.adapter != null) return

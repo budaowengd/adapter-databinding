@@ -282,8 +282,9 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         }
     }
 
-    fun setAddOrRemoveSmoothSpecPosition(isSmoothSpecPosition: Boolean = true) {
+    fun setAddOrRemoveSmoothSpecPosition(isSmoothSpecPosition: Boolean = true): BindingRecyclerViewAdapter<T> {
         addOrRemoveSmoothSpecPosition = isSmoothSpecPosition
+        return this
     }
 
 

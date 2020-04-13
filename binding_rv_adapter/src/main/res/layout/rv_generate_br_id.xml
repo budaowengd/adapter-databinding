@@ -12,6 +12,10 @@
             name="item"
             type="java.lang.String" />
 
+        <variable
+            name="headerGroupClick"
+            type="java.lang.String" />
+
 
         <variable
             name="click"

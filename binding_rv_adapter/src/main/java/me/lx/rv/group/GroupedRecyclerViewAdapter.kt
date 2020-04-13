@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import me.lx.rv.*
+import me.lx.rv.click.ClickListener
 import me.lx.rv.tools.Ls
 import java.util.*
 
@@ -39,9 +40,9 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 //    private var mOnFooterClickListener: OnFooterClickListener? = null
 //    private var mOnChildClickListener: OnChildClickListener? = null
 
-    private var mClickChildListener: ClickGroupListener? = null
-    private var mClickHeaderListener: ClickGroupListener? = null
-    private var mClickFooterListener: ClickGroupListener? = null
+    private var mClickChildListener: ClickListener? = null
+    private var mClickHeaderListener: ClickListener? = null
+    private var mClickFooterListener: ClickListener? = null
     //保存分组列表的组结构
     protected var mStructures = ArrayList<GroupStructure>()
     //数据是否发生变化。如果数据发生变化，要及时更新组结构。
@@ -923,15 +924,15 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 //    fun setOnChildClickListener(listener: OnChildClickListener) {
 //        mOnChildClickListener = listener
 //    }
-    fun setClickChildListener(listener: ClickGroupListener) {
+    fun setClickChildListener(listener: ClickListener) {
         mClickChildListener = listener
     }
 
-    fun setClickHeaderListener(listener: ClickGroupListener) {
+    fun setClickHeaderListener(listener: ClickListener) {
         mClickHeaderListener = listener
     }
 
-    fun setClickFooterListener(listener: ClickGroupListener) {
+    fun setClickFooterListener(listener: ClickListener) {
         mClickFooterListener = listener
     }
 
@@ -997,9 +998,9 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 
     abstract fun getChildLayout(viewType: Int): Int
 
-    abstract fun onBindHeaderViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
+    abstract fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 
-    abstract fun onBindFooterViewHolder(binding: ViewDataBinding, group: G, groupPosition: Int)
+    abstract fun onBindFooterViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 
     abstract fun onBindChildViewHolder(
         binding: ViewDataBinding,

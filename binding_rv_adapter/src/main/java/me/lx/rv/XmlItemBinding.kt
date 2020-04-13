@@ -21,6 +21,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
     private var mDefaultClickVariableId: Int = BR.click
 
     private var mClickListener: ClickListener? = null
+
     @LayoutRes
     private var mLayoutRes: Int = 0 // 布局id
 
@@ -30,7 +31,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      * setVariableIdAndLayoutId
      * 设置变量id和布局id
      */
-    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, clickListener: ClickListener? = null, clickId: Int? = null): XmlItemBinding<T> {
+    fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, clickListener: ClickListener? = null): XmlItemBinding<T> {
         this.mLayoutRes = layoutRes
         this.mClickListener = clickListener
 //        this.mClickListener = clickId
@@ -167,6 +168,17 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
         }
     }
 
+    fun setClickVariableId(id: Int): XmlItemBinding<T> {
+        mDefaultClickVariableId = id
+        return this
+    }
+
+    fun setClickEvent(clickListener: ClickListener, clickId: Int): XmlItemBinding<T> {
+        mClickListener = clickListener
+        mDefaultClickVariableId = clickId
+        return this
+    }
+
     companion object {
 
         /**
@@ -189,6 +201,13 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
          */
         fun <T> of(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> {
             return XmlItemBinding<T>(null).set(layoutRes, clickListener = clickListener)
+        }
+
+        /**
+         *使用给定的变量id和layout构造一个实例。
+         */
+        fun <T> of(@LayoutRes layoutRes: Int, variableId: Int, clickListener: ClickListener): XmlItemBinding<T> {
+            return XmlItemBinding<T>(null).set(layoutRes, variableId, clickListener)
         }
 
 
