@@ -38,7 +38,7 @@ fun <T> set_rv_Adapter(
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    grid_span: Int = 1,
+    grid_span: Int = 0,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
     Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....pAdapter=${pAdapter.hashCode()}  rvAp=${rv.adapter?.hashCode()}")

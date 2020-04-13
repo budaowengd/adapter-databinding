@@ -17,6 +17,7 @@
 
     <!--
        android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
+       android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
     -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +25,7 @@
         android:background="?selectableItemBackground"
         android:onClick="@{() -> click.clickRvItem(item)}"
         android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
+
         android:orientation="horizontal">
 
         <TextView

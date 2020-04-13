@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragmentSingleRecyclerviewBinding
 
 class FragmentSingleRecyclerView : Fragment() {
@@ -21,6 +22,7 @@ class FragmentSingleRecyclerView : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return FragmentSingleRecyclerviewBinding.inflate(inflater, container, false).also {
             initView(it)
             it.setLifecycleOwner(this)
