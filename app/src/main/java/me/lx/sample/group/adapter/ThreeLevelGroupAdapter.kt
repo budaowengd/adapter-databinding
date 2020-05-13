@@ -54,7 +54,6 @@ open class ThreeLevelGroupAdapter :
         return groupPosition % 2 != 0
     }
 
-
     override fun getHeaderLayout(viewType: Int): Int {
         return R.layout.adapter_header_two_level
     }

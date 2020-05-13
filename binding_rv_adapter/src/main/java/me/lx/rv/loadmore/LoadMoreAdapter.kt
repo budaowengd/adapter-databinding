@@ -55,19 +55,19 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
             Ls.d("加载更多..onItemRangeRemoved()..44444..noCanScroll=${noCanScrollVertically()} positionStart=$positionStart itemCount=$itemCount getCount=${mInnerAdapter.itemCount})")
             mIsLoading = false
-            dataChangeNotifyLoadMoreVH()
+            dataChangeNotifyLoadMoreVH(1)
         }
 
         override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
             Ls.d("加载更多..onItemRangeMoved()..55555..fromPosition=$fromPosition toPosition=$toPosition itemCount=$itemCount getCount=${mInnerAdapter.itemCount}")
             mIsLoading = false
-            dataChangeNotifyLoadMoreVH()
+            dataChangeNotifyLoadMoreVH(2)
         }
 
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             Ls.d("加载更多  onItemRangeInserted().......666666....")
             mIsLoading = false
-            dataChangeNotifyLoadMoreVH()
+            dataChangeNotifyLoadMoreVH(3)
         }
 
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
@@ -306,7 +306,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return position >= mInnerAdapter.itemCount && mInnerAdapter.itemCount > 0
     }
 
-    private fun dataChangeNotifyLoadMoreVH() {
+    private fun dataChangeNotifyLoadMoreVH(flag: Int) {
+        Ls.d("dataChangeNotifyLoadMoreVH().....flag=$flag  itemCount=$itemCount")
         if (itemCount == 0) {
             notifyDataSetChanged()
         }

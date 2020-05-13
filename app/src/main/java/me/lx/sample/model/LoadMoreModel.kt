@@ -20,7 +20,7 @@ import me.lx.sample.vo.SingleItemVo
 class LoadMoreModel : ViewModel() {
     // 数据 -> item
     val singleItems = ObservableArrayList<SingleItemVo>().apply {
-        for (i in 0 until 3) {
+        for (i in 0 until 10) {
             add(SingleItemVo(i))
         }
     }

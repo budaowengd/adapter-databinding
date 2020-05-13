@@ -50,7 +50,6 @@ class FragmentLoadMoreRecyclerView : Fragment(), ClickListeners {
 
     override fun clickBtn3() {
         // mModel.isShowNoMoreData.set(!mModel.isShowNoMoreData.get())
-
         mModel.singleItems.clear()
         mModel.adapter.notifyDataSetChanged()
     }
