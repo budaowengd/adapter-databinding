@@ -183,7 +183,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
 
     override fun get(index: Int): T {
         if (index < 0) {
-            throw IndexOutOfBoundsException()
+            throw IndexOutOfBoundsException("index=$index  方法上面")
         }
         var size = 0
         var i = 0
@@ -196,7 +196,7 @@ class MergeObservableList<T> : AbstractList<T>(), ObservableList<T> {
             size += list.size
             i++
         }
-        throw IndexOutOfBoundsException()
+        throw IndexOutOfBoundsException("index=$index  方法下面抛出异常")
     }
 
     override val size: Int

@@ -38,10 +38,10 @@ fun <T> set_rv_Adapter(
     viewHolderFactory: BindingRecyclerViewAdapter.ViewHolderFactory?,
     diffConfig: AsyncDifferConfig<T>?,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
-    grid_span: Int?=null,
+    grid_span: Int? = null,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
-    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111...grid_span=$grid_span pAdapter=${pAdapter.hashCode()}  rvAp=${rv.adapter?.hashCode()}")
+    Ls.d("BindingAdapter()..rv_setAdapter()....1111111111111....pAdapter=${pAdapter.hashCode()}  rvAp=${rv.adapter?.hashCode()}")
     if (rv.adapter != null) return
     if (items == null) return
     if (xmlAny == null) return
@@ -104,12 +104,12 @@ fun <T> set_rv_Adapter(
 //@BindingAdapter(value = ["rv_layout_span", "rv_SpanSizeLookup"], requireAll = false)
 fun set_rv_layoutmanager(
     rv: RecyclerView,
-    gridSpan: Int?=null,
+    layoutSpan: Int? = null,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null
 ) {
     //Ls.d("set_rv_layoutmanager().....grid_span=$grid_span")
-    val grid_span=if(gridSpan==null) RecyclerView.VERTICAL else 0
     var layout: RecyclerView.LayoutManager? = null
+    val grid_span = layoutSpan ?: RecyclerView.VERTICAL
     if (grid_span == 0 || grid_span == 1) {
         layout = LinearLayoutManager(rv.context, if (grid_span == 0) RecyclerView.HORIZONTAL else RecyclerView.VERTICAL, false)
     } else if (grid_span in 2..11) {

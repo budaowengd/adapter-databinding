@@ -12,12 +12,12 @@ package me.lx.rv.group
  *  c2-1   childInex=4
  *  c2-2   childInex=5
  * 组尾
- * childrenCount = 6
+ * childNumInGroup = 6
  */
-class GroupStructure {
+class ThreeLevelGroupStructure {
 
     // 每个大组的数量: 包括( 头 + cg(头 + listSize) + 尾
-    var childrenCount: Int = 0 // 大组里,ChildGroupHeader + ChildGroupList.for size + ChildGroupFooter
+    var childNumInGroup: Int = 0 // 大组里,ChildGroupHeader + ChildGroupList.for size + ChildGroupFooter
     private var hasHeader: Boolean = false
     private var hasFooter: Boolean = false
     private var hasChildGroupFooter: Boolean = false
@@ -25,10 +25,10 @@ class GroupStructure {
     var headerCount = 0
     var footerCount = 0
 
-    constructor(hasHeader: Boolean, hasFooter: Boolean, childrenCount: Int) {
+    constructor(hasHeader: Boolean, hasFooter: Boolean, childNumInGroup: Int) {
         this.hasHeader = hasHeader
         this.hasFooter = hasFooter
-        this.childrenCount = childrenCount
+        this.childNumInGroup = childNumInGroup
         countHeaderFooterCount()
     }
 
@@ -75,6 +75,7 @@ class GroupStructure {
     fun hasChildGroupFooter(): Boolean {
         return hasChildGroupFooter
     }
+
     fun hasChildGroupHeader(): Boolean {
         return hasChildGroupHeader
     }

@@ -34,6 +34,7 @@ import me.lx.rv.tools.WrapperUtils
 @Suppress("UNCHECKED_CAST")
 open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var mInflater: LayoutInflater? = null
+
     @LayoutRes
     protected var mLoadMoreRedId = 0
 
@@ -75,10 +76,10 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mIsLoading = false
         }
 
-        // 会执行这
+        // 有个bug, 会不断的执行这
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
             mIsLoading = false
-            Ls.d("加载更多 onItemRangeChanged().......3333....positionStart=${positionStart}..itemCount=${itemCount}")
+            Ls.d("加载更多 onItemRangeChanged().....3333....positionStart=${positionStart}..itemCount=${itemCount}")
         }
     }
 
@@ -90,16 +91,17 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private var mLoadMoreHolder: LoadMoreViewHolder? = null
     private var mNoMoreData = false // 没有更多数据的标识
     private var mIfNoMoreDataHideLayout = false // 如果没有更多数据,是否隐藏底部布局
+
     /**
      * 是否为上拉
      */
     private var mIsScrollLoadMore = false
     private val mOnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            Ls.d("onScrollStateChanged.....newState=$newState...mNoMoreData=$mNoMoreData")
+            // Ls.d("onScrollStateChanged.....newState=$newState...mNoMoreData=$mNoMoreData")
             if (newState != RecyclerView.SCROLL_STATE_IDLE ||
-                    mLoadMoreListener == null
-                    || mNoMoreData
+                mLoadMoreListener == null
+                || mNoMoreData
             //  || !mIsScrollLoadMore  // 不能用这个变量判断,当loadmore显示的时候,稍微往上移动下dy变成复数,这里就会被拦截
             ) {
                 return
@@ -119,8 +121,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     constructor(
-            rawAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-            //,footer: AbstractLoadMoreFooter? = null
+        rawAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+        //,footer: AbstractLoadMoreFooter? = null
     ) : super() {
         onConstructor(rawAdapter)
     }
@@ -138,9 +140,9 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mRecyclerView = recyclerView
         WrapperUtils.onAttachedToRecyclerView(mInnerAdapter, recyclerView, object : WrapperUtils.SpanSizeCallback {
             override fun getWrapSpanSize(
-                    gridLayoutManager: GridLayoutManager,
-                    oldLookup: GridLayoutManager.SpanSizeLookup?,
-                    position: Int
+                gridLayoutManager: GridLayoutManager,
+                oldLookup: GridLayoutManager.SpanSizeLookup?,
+                position: Int
             ): Int {
                 if (position < 0) return gridLayoutManager.spanCount
                 val viewType = getItemViewType(position)
@@ -165,7 +167,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun getItemViewType(position: Int): Int {
         if (position == itemCount - 1 && position != 0) {
-            Ls.d("getItemViewType()....isLoadMore  itemCount=${(itemCount)}")
+            //  Ls.d("getItemViewType()....isLoadMore  itemCount=${(itemCount)}")
             return VIEW_TYPE_LOAD_MORE;
         }
         return mInnerAdapter.getItemViewType(position);
@@ -180,10 +182,10 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mInflater = LayoutInflater.from(parent.context)
             }
             val loadMoreBinding = DataBindingUtil.inflate(
-                    mInflater!!,
-                    mLoadMoreRedId,
-                    parent,
-                    false
+                mInflater!!,
+                mLoadMoreRedId,
+                parent,
+                false
             ) as ViewDataBinding
             //加载失败点击事件
             loadMoreBinding.root.setOnClickListener(View.OnClickListener {
@@ -225,13 +227,16 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @CallSuper
     override fun onBindViewHolder(
-            holder: RecyclerView.ViewHolder,
-            position: Int,
-            payloads: List<Any>
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
     ) {
         if (holder is LoadMoreViewHolder) {
             if (index == 0) {
                 index = 1
+                // 当列表适配器有个header,Items=0, 默认请求列表,会执行loadmore(),因为header算1个数量
+                // 参考:boboji的便宜好货列表
+                // 目前解决方案: 在onLoadingMore()里,判断pageIndex==1 或者 判断 itemCount 是否大于0
                 if (!mRecyclerView.canScrollVertically(-1)) {
                     // 如果不能滑动,强制请求加载更多
                     requestLoadingMore(3)
@@ -308,12 +313,10 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private fun dataChangeNotifyLoadMoreVH(flag: Int) {
         Ls.d("dataChangeNotifyLoadMoreVH().....flag=$flag  itemCount=$itemCount")
-        if (itemCount == 0) {
+        if (itemCount < 2) {
             notifyDataSetChanged()
         }
-//        if (noCanScrollVertically()) {
-//            notifyLoadMoreVH()
-//        }
+
     }
 
     private fun noCanScrollVertically(): Boolean {
@@ -322,7 +325,10 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private fun requestLoadingMore(flag: Int) {
         val enabledOfLoadMore = isEnabledOfLoadMore()
-        Ls.d("requestLoadingMore()...触发了66....flag=$flag  itemCount=$itemCount enabled=$enabledOfLoadMore mNoMoreData=$mNoMoreData")
+        Ls.d(
+            "requestLoadingMore()...触发了66....flag=$flag  itemCount=$itemCount enabled=$enabledOfLoadMore mNoMoreData=$mNoMoreData" +
+                    " pageIndex=${mLoadMoreListener!!}"
+        )
         if (enabledOfLoadMore) {
             mLoadMoreListener!!.isShowLoadMoreFailOb()?.set(false)
             mLoadMoreListener!!.onLoadingMore()
@@ -350,14 +356,13 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private fun setState(state: Int, flag: Int, isForceSet: Boolean = false) {
-
         if (DEBUG) {
             val isShowViewOb = mLoadMoreListener!!.isShowLoadMoreViewLayout()
             val isShowView = isShowViewOb == null || isShowViewOb.get()
             Ls.d(
-                    "设置加载更多状态...setState()..222...newState=${getStateText(state)} " +
-                            " mLastState=${getStateText(mLastState)}  " +
-                            "flag=$flag isForceSet=$isForceSet  showView=${isShowView} mNoMoreData=$mNoMoreData"
+                "设置加载更多状态...setState()..222...newState=${getStateText(state)} " +
+                        " mLastState=${getStateText(mLastState)}  " +
+                        "flag=$flag isForceSet=$isForceSet  showView=${isShowView} mNoMoreData=$mNoMoreData"
             )
         }
         if (mLastState == state && !isForceSet) return
@@ -412,7 +417,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             noMoreDataOb.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable, propertyId: Int) {
                     mNoMoreData = (sender as ObservableBoolean).get()
-                    Ls.d("加载更多..没有更多数据..666..onPropertyChanged..value=${mNoMoreData}")
+                    Ls.d("onPropertyChanged() 加载更多..没有更多数据..666....value=${mNoMoreData}")
                     if (mNoMoreData) {
                         setState(STATE_NO_MORE_DATA, 5)
                     } else {
@@ -425,29 +430,29 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mLastState = STATE_NO_MORE_DATA
         }
         listener.isShowLoadMoreFailOb()
-                ?.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
-                    override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-                        val isShowFail = (sender as ObservableBoolean).get()
-                        if (isShowFail) {
-                            setState(STATE_LOAD_FAILED, 7)
-                        } else {
-                            setState(STATE_LOADING, 8)
-                        }
+            ?.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+                override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+                    val isShowFail = (sender as ObservableBoolean).get()
+                    if (isShowFail) {
+                        setState(STATE_LOAD_FAILED, 7)
+                    } else {
+                        setState(STATE_LOADING, 8)
                     }
-                })
+                }
+            })
         val showLoadMore = listener.isShowLoadMoreViewLayout()
         if (showLoadMore != null) {
             showLoadMore
-                    .addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
-                        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-                            val isShowView = (sender as ObservableBoolean).get()
-                            if (isShowView) {
-                                setState(mLastState, 10)
-                            } else {
-                                setState(STATE_HIDE_LAYOUT, 11)
-                            }
+                .addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+                    override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+                        val isShowView = (sender as ObservableBoolean).get()
+                        if (isShowView) {
+                            setState(mLastState, 10)
+                        } else {
+                            setState(STATE_HIDE_LAYOUT, 11)
                         }
-                    })
+                    }
+                })
             showLoadMore.notifyChange()
         }
 
@@ -455,15 +460,12 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private fun notifyLoadMoreVH() {
-        if (isEnabledOfLoadMore()) {
-            Ls.d("noti@fyLoadMoreVH()...66666....")
-            notifyItemChanged(itemCount - 1)
-        }
-    }
-
     private fun isEnabledOfLoadMore(): Boolean {
-        return mLoadMoreHolder != null && itemCount > 0 && !mNoMoreData
+        // 当列表适配器有个header,Items=0, 默认请求列表,会执行loadmore(),因为header算1个数量
+        // 参考:boboji的便宜好货列表
+        // 目前解决方案: 在onLoadingMore()里,判断pageIndex==1 或者 判断 itemCount 是否大于2,
+        // itemCount: loadMore是1个,header算1个, 所以mLoadMoreListener 的实现类最好重写getPageIndex()方法
+        return mLoadMoreHolder != null && itemCount > 1 && !mNoMoreData && mLoadMoreListener!!.getPageIndex() > 1
     }
 
     private fun setFullSpan(recyclerView: RecyclerView) {
@@ -520,6 +522,10 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return null
         }
 
+        fun getPageIndex(): Int {
+            return 2
+        }
+
         /**
          * 显示加载更多失败的标识
          */
@@ -540,6 +546,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @JvmField
         var DEFAULT_FOOTER_PATH: String? = null
+
         /**
          * footer的状态
          */

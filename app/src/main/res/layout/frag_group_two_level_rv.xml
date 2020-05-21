@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="me.lx.sample.model.TwoLevelGroupModel" />
+            type="me.lx.sample.model.ThreeLevelGroupModel" />
 
  <!--       <variable
             name="rvBindGroup"

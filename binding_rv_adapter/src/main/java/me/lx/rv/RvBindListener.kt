@@ -44,7 +44,6 @@ interface RvBindListener<T> {
         return null
     }
 
-
     /**
      * 获取列表分割线
      */
@@ -81,6 +80,8 @@ interface RvBindListener<T> {
     }
 
     /**
+     * 如果是:2 , 说明是 grid_span in 2..11
+     * 如果是:grid_span >= 12 , 说明是 StaggeredGridLayoutManager,  grid_span % 10
      * 获取布局管理器
      */
     fun getLayoutFlag(): Int {

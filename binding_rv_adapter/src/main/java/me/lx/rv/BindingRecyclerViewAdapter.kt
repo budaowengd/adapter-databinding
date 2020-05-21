@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import me.lx.rv.tools.Ls
 
 /**
  * 参考： https://github.com/evant/binding-collection-adapter
@@ -72,14 +73,18 @@ class BindingRecyclerViewAdapter<T> : RecyclerView.Adapter<ViewHolder>(), Bindin
         val holder = onCreateViewHolder(binding)
         binding.addOnRebindCallback(object : OnRebindCallback<ViewDataBinding>() {
             override fun onPreBind(binding: ViewDataBinding?): Boolean {
+//                Ls.d("onPreBind()..111...return=${mRecyclerView != null && mRecyclerView!!.isComputingLayout}" +
+//                        "  binding=$binding")
                 return mRecyclerView != null && mRecyclerView!!.isComputingLayout
             }
 
             override fun onCanceled(binding: ViewDataBinding?) {
+                val position = holder.adapterPosition
+//                Ls.d("onCanceled()..222...if=${mRecyclerView != null && mRecyclerView!!.isComputingLayout} " +
+//                        "position=$position  binding=$binding")
                 if (mRecyclerView == null || mRecyclerView!!.isComputingLayout) {
                     return
                 }
-                val position = holder.adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     try {
                         getRvAdapter().notifyItemChanged(position, DATA_INVALIDATION)

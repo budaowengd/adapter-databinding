@@ -14,7 +14,7 @@ import me.lx.sample.group.model.GroupModel
  *  version: 1.0
  *  desc: 2级分组,child -> 包含child
  */
-class TwoLevelGroupModel : ViewModel() {
+class ThreeLevelGroupModel : ViewModel() {
     // 数据 -> item
     // 数据
     val groupList = GroupModel.getTwoGroupGroupOb(4, 2) // 普通列表数据

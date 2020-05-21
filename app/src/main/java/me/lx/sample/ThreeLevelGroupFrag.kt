@@ -11,10 +11,10 @@ import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragGroupTwoLevelRvBinding
 import me.lx.sample.group.entity.ChildGroupEntity
 import me.lx.sample.group.model.GroupModel
-import me.lx.sample.model.TwoLevelGroupModel
+import me.lx.sample.model.ThreeLevelGroupModel
 
-class TwoLevelGroupFrag : Fragment(), ClickListeners {
-    private lateinit var mModel: TwoLevelGroupModel
+class ThreeLevelGroupFrag : Fragment(), ClickListeners {
+    private lateinit var mModel: ThreeLevelGroupModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mModel = ViewModelProviders.of(this).get()
@@ -30,7 +30,7 @@ class TwoLevelGroupFrag : Fragment(), ClickListeners {
             it.setLifecycleOwner(this)
             /// it.rvBindGroup = mModel as RvGroupBindListener<*, *>
             it.model = mModel
-            it.click = this@TwoLevelGroupFrag
+            it.click = this@ThreeLevelGroupFrag
             it.executePendingBindings()
         }
 

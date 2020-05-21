@@ -23,6 +23,12 @@ import me.lx.sample.group.entity.TwoLevelGroupEntity
 open class ThreeLevelGroupAdapter :
     ThreeLevelGroupedRecyclerViewAdapter<TwoLevelGroupEntity, ChildGroupEntity, ChildChildEntity>() {
 
+    companion object {
+        const val cc_type1 = 2
+        const val cc_type2 = 3
+
+    }
+
     var childGroupFooterClickEvent: BaseFun1ClickGroupListener<ChildGroupEntity>? = null
     // childPosition 是3, 实际上要减去child1 的大小2 . =1
 
@@ -34,24 +40,24 @@ open class ThreeLevelGroupAdapter :
         return childGroup.childChildList
     }
 
-    override fun hasHeader(groupPosition: Int): Boolean {
-        //return getItems()[groupPosition].childGroupList.size > 0
-        return true
-    }
-
     override fun hasFooter(groupPosition: Int): Boolean {
         //  Ls.d("hasFooter()..111111..groupPosition=$groupPosition")
-        if (groupPosition < 2) return false
-        return getGroup(groupPosition).childGroupList.size > 0
+        // if (groupPosition < 2) return false
+        return getGroup(groupPosition).childGroupList.size > 0 && groupPosition > 0
     }
 
     override fun hasChildGroupFooter(groupPosition: Int): Boolean {
         return 3 == 2
         // return groupPosition < 1
     }
-
+    override fun hasHeader(groupPosition: Int): Boolean {
+        //return getItems()[groupPosition].childGroupList.size > 0
+        // return groupPosition > 0
+        return true
+    }
     override fun hasChildGroupHeader(groupPosition: Int): Boolean {
-        return groupPosition % 2 != 0
+        // return groupPosition % 2 != 0
+        return true
     }
 
     override fun getHeaderLayout(viewType: Int): Int {
@@ -66,12 +72,17 @@ open class ThreeLevelGroupAdapter :
         return R.layout.adapter_child_two_level
     }
 
+
+
     override fun getChildGroupFooterLayout(viewType: Int): Int {
         return R.layout.adapter_child_group_footer
     }
 
     override fun getChildChildLayout(viewType: Int): Int {
-        return viewType
+//        if (viewType == cc_type1) {
+//            return R.layout.adapter_child_child_two_level
+//        }
+        return R.layout.adapter_cc2
     }
 
     override fun isSupportMultiTypeChildChild(): Boolean {
@@ -82,9 +93,9 @@ open class ThreeLevelGroupAdapter :
     override fun getChildChildType(groupPosition: List<ChildGroupEntity>, childPosition: ChildChildEntity, childInGroupIndex: Int): Int {
         Ls.d("getChildChildType()...childInGroupIndex=$childInGroupIndex")
         if (childInGroupIndex == 3 || childInGroupIndex == 7) {
-            return R.layout.adapter_child_child_two_level
+            return cc_type1
         }
-        return R.layout.adapter_cc2
+        return cc_type2
     }
 
     override fun onBindChildGroupFooterViewHolder(
