@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,9 +13,10 @@
             name="model"
             type="me.lx.sample.model.ThreeLevelGroupModel" />
 
- <!--       <variable
+        <variable
             name="rvBindGroup"
-            type="me.lx.rv.RvGroupBindListener&lt;Object,Object&gt;" />-->
+            type="me.lx.rv.RvThreeLevelGroupBindListener&lt;Object,Object,Object&gt;" />
+
 
     </data>
 
@@ -23,22 +25,24 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--
-           app:rv_group_adapter="@{rvBindGroup.getAdapter()}"
-            app:rv_group_chick_child_listener="@{rvBindGroup.getClickChildListener()}"
-            app:rv_group_chick_footer_listener="@{rvBindGroup.getClickFootListener()}"
-            app:rv_group_chick_header_listener="@{rvBindGroup.getClickHeaderListener()}"
-            app:rv_group_items="@{rvBindGroup.getGroups()}"
-            app:rv_layout_span="@{rvBindGroup.getLayoutFlag()}"
-        -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:rv_two_level_group_adapter="@{model.groupAdapter}"
-            app:rv_two_level_group_items="@{model.groupList}"
-            app:rv_two_level_group_layout_span="@{1}" />
+            android:clipToPadding="false"
+            app:rv_two_level_group_adapter="@{rvBindGroup.getAdapter()}"
+            app:rv_two_level_group_chick_child_child_listener="@{rvBindGroup.getClickChildChildListener()}"
+            app:rv_two_level_group_chick_footer_listener="@{rvBindGroup.getClickFootListener()}"
+            app:rv_two_level_group_chick_cg_header_footer="@{rvBindGroup.getClickCgHeaderFooterListener()}"
+            app:rv_two_level_group_chick_header_listener="@{rvBindGroup.getClickHeaderListener()}"
+            app:rv_two_level_group_items="@{rvBindGroup.getGroups()}"
+            app:rv_two_level_group_layout_span="@{rvBindGroup.getLayoutFlag()}"
+            app:rv_two_level_group_loadmore_listener="@{rvBindGroup.getLoadMoreListener()}"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
 
 
         <LinearLayout

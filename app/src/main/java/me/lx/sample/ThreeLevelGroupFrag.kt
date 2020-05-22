@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import me.lx.rv.RvGroupBindListener
+import me.lx.rv.RvThreeLevelGroupBindListener
 import me.lx.rv.tools.Ls
 import me.lx.sample.databinding.FragGroupTwoLevelRvBinding
-import me.lx.sample.group.entity.ChildGroupEntity
+import me.lx.sample.group.entity.TwoLevelGroupEntity
+import me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity
+import me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity.CcEntity
 import me.lx.sample.group.model.GroupModel
 import me.lx.sample.model.ThreeLevelGroupModel
 
@@ -28,50 +32,34 @@ class ThreeLevelGroupFrag : Fragment(), ClickListeners {
     ): View? {
         binding = FragGroupTwoLevelRvBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
-            /// it.rvBindGroup = mModel as RvGroupBindListener<*, *>
+            it.rvBindGroup = mModel as RvThreeLevelGroupBindListener<Any, Any, Any>
             it.model = mModel
             it.click = this@ThreeLevelGroupFrag
             it.executePendingBindings()
         }
 
-        mModel.childGroupFooterClickCallback = Consumer { childGroup ->
-            var findChildGroup: ChildGroupEntity? = null
-            mModel.groupList.forEach { group ->
-                group.childGroupList.forEach {
-                    if (it == childGroup) {
-                        group.childGroupList.remove(childGroup)
-                        Ls.d("暗暗..11111111111")
-                        return@Consumer
-                    }
-                }
-            }
-            Ls.d("暗暗..22222222")
-        }
+
 
         return binding.root
     }
 
     override fun clickAddItem() {
-        GroupModel
-        val childSize = mModel.groupList[0].childGroupList.size
-
-        val cgList = ChildGroupEntity()
-        val cg = GroupModel.getChildGroupEntity(0, childSize, 3)
-        mModel.groupList[0].childGroupList.add(0, cg)
-        // .childChildList.add(ChildChildEntity((size + 1).toString()))
+        if (mModel.groupList.isNotEmpty() && mModel.groupList.first().childGroupList.isNotEmpty()) {
+            if (mModel.groupList.first().childGroupList.isNotEmpty()) {
+                val ccList = mModel.groupList.first().childGroupList.first().childChildList
+                val cc = GroupModel.createCc(0, 0, ccList.size)
+                ccList.add(cc)
+            }
+        }
     }
 
     override fun clickRemoveItem() {
-        val groupList = mModel.groupList
-        Ls.d("groupList=${groupList.size}")
-        val childGroup0 = groupList[0]
-        Ls.d("childGroupList=${childGroup0.childGroupList.size}")
-        val size = childGroup0.childGroupList[0].childChildList.size
-
-
-        mModel.groupList[0].childGroupList[0].childChildList.removeAt(size - 1)
-        if (size == 1) {
-            // mModel.groupList[0].childGroupList.removeAt(0)
+        if (mModel.groupList.isNotEmpty()) {
+            if (mModel.groupList.first().childGroupList.isNotEmpty()
+                && mModel.groupList.first().childGroupList.first().childChildList.isNotEmpty()) {
+                val size=mModel.groupList.first().childGroupList.first().childChildList.size
+                mModel.groupList[0].childGroupList[0].childChildList.removeAt(size - 1)
+            }
         }
     }
 

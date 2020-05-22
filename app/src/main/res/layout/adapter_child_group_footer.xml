@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="android.view.View" />
+        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+
         <variable
-            name="childGroupFooterClick"
-            type="me.lx.rv.group.BaseFun1ClickGroupListener" />
+            name="cgFooterClick"
+            type="me.lx.rv.group.BaseFun2ClickGroupListener" />
+
         <variable
-            name="childGroup"
-            type="me.lx.sample.group.entity.ChildGroupEntity" />
+            name="cgFooter"
+            type="me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
-        android:onClick="@{()->childGroupFooterClick.clickGroup(childGroup)}"
-        android:background="@drawable/white_ripple_bg"
+        android:background="#3f00"
+        android:onClick="@{()->cgFooterClick.clickGroup(cgFooter,ThreeLevelGroupModel.click_cg_footer)}"
         android:orientation="vertical">
 
+        <!--
+        android:visibility="@{childGroup.cgIndexInGroup==1?View.VISIBLE:View.GONE}"
+        -->
         <TextView
-            android:id="@+id/tv_child"
+            android:id="@+id/tvChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="1111111111"
+            android:text="@{cgFooter.cgFooterText}"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="1111111111" />
 
     </LinearLayout>
 </layout>

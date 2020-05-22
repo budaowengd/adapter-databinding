@@ -3,6 +3,9 @@ package me.lx.sample.group.model
 
 import androidx.databinding.ObservableArrayList
 import me.lx.sample.group.entity.*
+import me.lx.sample.group.entity.TwoLevelGroupEntity
+import me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity
+import me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity.CcEntity
 
 /**
  * Depiction:
@@ -19,42 +22,47 @@ class GroupModel {
          * @return
          */
         fun getTwoGroupGroupOb(groupCount: Int, childrenCount: Int = 2): ObservableArrayList<TwoLevelGroupEntity> {
-            var a1: ChildGroupEntity? = null
-            var a2: ChildChildEntity? = null
+            var a1: CgEntity? = null
+            var a2: CcEntity? = null
             val groups = ObservableArrayList<TwoLevelGroupEntity>()
-            for (groupIndex in 0 until groupCount) {
-                val childList = ObservableArrayList<ChildGroupEntity>()
+            for (groupPosition in 0 until groupCount) {
+                val childList = ObservableArrayList<CgEntity>()
                 for (childIndex in 0 until childrenCount) {
-                    childList.add(getChildGroupEntity(groupIndex,childIndex,  childrenCount))
+                    childList.add(getChildGroupEntity(groupPosition, childIndex, childrenCount))
                 }
-                groups.add(getTwoLevelGroupEntity(groupIndex, childList))
+                groups.add(getTwoLevelGroupEntity(groupPosition, childList))
             }
             return groups
         }
 
-        fun getTwoLevelGroupEntity(groupIndex: Int, childList: ObservableArrayList<ChildGroupEntity>): TwoLevelGroupEntity {
+        fun getTwoLevelGroupEntity(groupPosition: Int, childList: ObservableArrayList<CgEntity>): TwoLevelGroupEntity {
             val group = TwoLevelGroupEntity()
-            group.headerText = "第" + (groupIndex + 1) + "组头部"
-            group.footerText = "第" + (groupIndex + 1) + "组尾部"
+            group.headerText = "第" + (groupPosition + 1) + "组头部"
+            group.footerText = "第" + (groupPosition + 1) + "组尾部"
             group.childGroupList.addAll(childList)
             return group
 
         }
 
-        fun getChildGroupEntity( groupIndex: Int, childIndex: Int,childCount: Int): ChildGroupEntity {
+        fun getChildGroupEntity(groupPosition: Int, childIndex: Int, childCount: Int): CgEntity {
             var childrenCount = childCount
-            if (groupIndex % 2 != 0) {
+            if (groupPosition % 2 != 0) {
                 childrenCount++
             }
-            val twoLevelChild = ChildGroupEntity()
-            twoLevelChild.childText = "第" + (groupIndex + 1) + "组" + "第" + (childIndex + 1) + "个Child"
+            val cg = CgEntity()
+            cg.cgIndexInGroup = childIndex
+            cg.cgHeaderText = "第" + (groupPosition + 1) + "组" + "第" + (childIndex + 1) + "个Header"
+            cg.cgFooterText = "第" + (groupPosition + 1) + "组" + "第" + (childIndex + 1) + "个Footer"
             for (i in 0 until childrenCount) {
-                val childChild = ChildChildEntity()
-                childChild.childChildText = "第" + (groupIndex + 1) + "组" + "第" + (childIndex + 1) + "个Child" + "第" + (i + 1) + "项"
-                twoLevelChild.childChildList.add(childChild)
-
+                cg.childChildList.add(createCc(groupPosition, childIndex, i))
             }
-            return twoLevelChild
+            return cg
+        }
+
+        fun createCc(groupPosition: Int, cgIndexInGroup: Int, ccIndexInCg: Int): CcEntity {
+            val cc = CcEntity()
+            cc.childChildText = "第" + (groupPosition + 1) + "组" + "第" + (cgIndexInGroup + 1) + "个Header" + "第" + (ccIndexInCg + 1) + "项"
+            return cc
         }
 
         /**
@@ -99,10 +107,10 @@ class GroupModel {
             return groups
         }
 
-        fun getGroupEntity(groupIndex: Int, childList: ObservableArrayList<ChildEntity>): GroupEntity {
+        fun getGroupEntity(groupPosition: Int, childList: ObservableArrayList<ChildEntity>): GroupEntity {
             return GroupEntity(
-                "第" + (groupIndex + 1) + "组头部",
-                "第" + (groupIndex + 1) + "组尾部", childList
+                "第" + (groupPosition + 1) + "组头部",
+                "第" + (groupPosition + 1) + "组尾部", childList
             )
         }
 
@@ -130,8 +138,8 @@ class GroupModel {
             return groups
         }
 
-        fun getChildEntity(groupIndex: Int, groupChildIndex: Int) =
-            ChildEntity("第" + (groupIndex + 1) + "组第" + (groupChildIndex + 1) + "项")
+        fun getChildEntity(groupPosition: Int, groupChildIndex: Int) =
+            ChildEntity("第" + (groupPosition + 1) + "组第" + (groupChildIndex + 1) + "项")
     }
 
 }

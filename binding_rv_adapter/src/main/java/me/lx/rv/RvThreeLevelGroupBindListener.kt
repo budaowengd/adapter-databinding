@@ -70,4 +70,10 @@ interface RvThreeLevelGroupBindListener<G, CG, CC> {
     fun getClickHeaderListener():me.lx.rv.click.ClickListener? {
         return null
     }
+
+    fun getClickCgHeaderFooterListener():me.lx.rv.click.ClickListener? {
+        return null
+    }
+
+
 }

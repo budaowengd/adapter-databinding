@@ -285,7 +285,7 @@ val groupList = ObservableArrayList<YourBean>()
 
 val clickChildEvent = object : BaseFun1ClickGroupListener<ChildEntity>() {
         override fun clickGroup(item: ChildEntity) {
-            Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_LONG).show()
+            Toast.makeText(MyApp.sContext, item.child, Toast.LENGTH_SHORT).show()
         }
 }
 ```

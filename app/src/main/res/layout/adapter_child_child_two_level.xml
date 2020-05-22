@@ -9,7 +9,7 @@
 
         <variable
             name="childChild"
-            type="me.lx.sample.group.entity.ChildChildEntity" />
+            type="me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity.CcEntity" />
 
     </data>
 
@@ -27,7 +27,7 @@
          android:text="@{childChild.childChildText}"
         -->
         <TextView
-            android:id="@+id/tv_child"
+            android:id="@+id/tvChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"

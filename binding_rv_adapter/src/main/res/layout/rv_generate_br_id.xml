@@ -28,7 +28,7 @@
             type="java.lang.String" />
 
         <variable
-            name="childChild"
+            name="headerGroup"
             type="java.lang.String" />
 
         <variable
@@ -36,7 +36,27 @@
             type="java.lang.String" />
 
         <variable
+            name="cgFooter"
+            type="java.lang.String" />
+
+        <variable
+            name="cgFooterClick"
+            type="java.lang.String" />
+
+        <variable
+            name="childChild"
+            type="java.lang.String" />
+
+        <variable
+            name="footerGroup"
+            type="java.lang.String" />
+
+        <variable
             name="childClick"
+            type="java.lang.String" />
+
+        <variable
+            name="childGroupHeaderClick"
             type="java.lang.String" />
 
         <variable
@@ -47,17 +67,11 @@
             name="childChildClick"
             type="java.lang.String" />
 
-        <variable
-            name="headerGroup"
-            type="java.lang.String" />
 
         <variable
             name="headerClick"
             type="java.lang.String" />
 
-        <variable
-            name="footerGroup"
-            type="java.lang.String" />
 
         <variable
             name="footerClick"

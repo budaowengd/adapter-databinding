@@ -8,40 +8,38 @@ import androidx.databinding.ObservableArrayList
 class TwoLevelGroupEntity {
     var headerText: String? = null
     var footerText: String? = null
-    var childGroupList: ObservableArrayList<ChildGroupEntity> = ObservableArrayList()
+    var childGroupList: ObservableArrayList<CgEntity> = ObservableArrayList()
 
-    ///
-    fun hasHeader(): Boolean {
-        return false
-    }
+    class CgEntity {
+        var cgHeaderText: String? = null
+        var cgFooterText: String? = null
 
-    fun hasFooter(): Boolean {
-        return false
+        var cgIndexInGroup: Int = 0
+
+        var childChildList: ObservableArrayList<CcEntity> = ObservableArrayList()
+        override fun toString(): String {
+            return "CgEntity(childText=$cgHeaderText)"
+        }
+
+        class CcEntity {
+            var childChildText: String? = null
+
+            constructor() {
+
+            }
+            constructor(childChildText: String?) {
+                this.childChildText = childChildText
+            }
+
+
+            override fun toString(): String {
+                return childChildText?:""
+            }
+        }
+
     }
 }
 
-class ChildGroupEntity {
-    var childText: String? = null
-    var childChildList: ObservableArrayList<ChildChildEntity> = ObservableArrayList()
-    override fun toString(): String {
-        return "ChildGroupEntity(childText=$childText)"
-    }
-
-}
-
-class ChildChildEntity {
-    var childChildText: String? = null
-
-    constructor() {
-
-    }
-    constructor(childChildText: String?) {
-        this.childChildText = childChildText
-    }
 
 
-    override fun toString(): String {
-        return childChildText?:""
-    }
 
-}

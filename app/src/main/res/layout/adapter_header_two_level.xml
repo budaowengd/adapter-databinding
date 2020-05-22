@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
+        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
 
         <variable
             name="headerClick"
-            type="me.lx.rv.group.BaseFun1ClickGroupListener" />
+            type="me.lx.rv.group.BaseFun2ClickGroupListener" />
 
         <variable
             name="headerGroup"
             type="me.lx.sample.group.entity.TwoLevelGroupEntity" />
 
     </data>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->headerClick.clickGroup(headerGroup)}"
         android:background="@drawable/holo_red_dark_ripple_bg"
+        android:onClick="@{()->headerClick.clickGroup(headerGroup,ThreeLevelGroupModel.click_g_header)}"
         android:orientation="vertical">
 
         <TextView

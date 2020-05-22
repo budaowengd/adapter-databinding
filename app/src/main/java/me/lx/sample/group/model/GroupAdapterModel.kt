@@ -26,18 +26,18 @@ class GroupAdapterModel : ViewModel(), ClickListeners {
     // 点击事件
     val clickChildEvent = object : BaseFun1ClickGroupListener<ChildEntity>() {
         override fun clickGroup(group: ChildEntity) {
-            Toast.makeText(MyApp.sContext, group.child, Toast.LENGTH_LONG).show()
+            Toast.makeText(MyApp.sContext, group.child, Toast.LENGTH_SHORT).show()
         }
     }
 
     val clickHeaderEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
         override fun clickGroup(group: GroupEntity) {
-            Toast.makeText(MyApp.sContext, group.header, Toast.LENGTH_LONG).show()
+            Toast.makeText(MyApp.sContext, group.header, Toast.LENGTH_SHORT).show()
         }
     }
     val clickFooterEvent = object : BaseFun1ClickGroupListener<GroupEntity>() {
         override fun clickGroup(group: GroupEntity) {
-            Toast.makeText(MyApp.sContext, group.footer, Toast.LENGTH_LONG).show()
+            Toast.makeText(MyApp.sContext, group.footer, Toast.LENGTH_SHORT).show()
         }
     }
 

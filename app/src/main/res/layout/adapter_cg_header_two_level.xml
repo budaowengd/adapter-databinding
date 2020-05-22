@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="MissingDefaultResource">
 
     <data>
 
+        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+
         <variable
-            name="childClick"
-            type="me.lx.rv.group.BaseFun1ClickGroupListener" />
+            name="childGroupHeaderClick"
+            type="me.lx.rv.group.BaseFun2ClickGroupListener" />
 
         <variable
             name="childGroupHeader"
-            type="me.lx.sample.group.entity.ChildGroupEntity" />
+            type="me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity" />
 
     </data>
 
@@ -18,15 +22,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="@drawable/white_ripple_bg"
-        android:onClick="@{()->childClick.clickGroup(childGroupHeader)}"
+        android:onClick="@{()->childGroupHeaderClick.clickGroup(childGroupHeader,ThreeLevelGroupModel.click_cg_header)}"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_child"
+            android:id="@+id/tvChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{childGroupHeader.childText}"
+            android:text="@{childGroupHeader.cgHeaderText}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

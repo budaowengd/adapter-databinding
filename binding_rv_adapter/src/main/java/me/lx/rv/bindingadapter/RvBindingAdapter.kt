@@ -171,25 +171,28 @@ fun <T, C> set_rv_GroupAdapter(
     value = ["rv_two_level_group_adapter", "rv_two_level_group_items",
         "rv_two_level_group_layout_span", "rv_two_level_group_SpanSizeLookup",
         "rv_two_level_group_loadmore_listener", "rv_two_level_group_chick_child_child_listener",
-        "rv_two_level_group_chick_header_listener", "rv_two_level_group_chick_footer_listener"],
+        "rv_two_level_group_chick_header_listener", "rv_two_level_group_chick_footer_listener",
+        "rv_two_level_group_chick_cg_header_footer"
+    ],
     requireAll = false
 )
 fun <G, CG, CC> set_rv_two_level_GroupAdapter(
     rv: RecyclerView, adapter: ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC>?,
     items: List<G>?,
-    grid_span: Int = 1,
+    grid_span: Int? = null,
     spanLookup: GridLayoutManager.SpanSizeLookup? = null,
     loadMoreListener: LoadMoreAdapter.LoadMoreListener? = null,
     clickChildChildListener: ClickListener? = null,
     clickHeaderListener: ClickListener? = null,
-    clickFooterListener: ClickListener? = null
+    clickFooterListener: ClickListener? = null,
+    cgHeaderFooterClick: ClickListener? = null
 ) {
 //    Ls.d("set_rv_GroupAdapter().1111..adapter=$adapter")
     if (rv.adapter != null) return
     if (items == null) return
     if (adapter == null) return
     adapter.setGroupList(items)
-    set_rv_layoutmanager(rv, if (grid_span == 0) 1 else grid_span, spanLookup)
+    set_rv_layoutmanager(rv, grid_span, spanLookup)
     if (clickChildChildListener != null) {
         adapter.setClickChildChildListener(clickChildChildListener)
     }
@@ -199,6 +202,10 @@ fun <G, CG, CC> set_rv_two_level_GroupAdapter(
     if (clickFooterListener != null) {
         adapter.setClickFooterListener(clickFooterListener)
     }
+    if (cgHeaderFooterClick != null) {
+        adapter.setClickCgHeaderFooterListener(cgHeaderFooterClick)
+    }
+
     if (loadMoreListener != null) {
         rv.adapter = getLoadMoreAdapter(adapter, loadMoreListener)
     } else {
