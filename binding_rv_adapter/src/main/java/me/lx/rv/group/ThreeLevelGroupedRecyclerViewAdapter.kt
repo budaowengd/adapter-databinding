@@ -125,7 +125,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         mTempPosition = position
         val groupPosition = getGroupIndexByPos(position)
         val type = judgeType(position)
-       // Ls.d("getItemViewType()..22.position=${position} type=${getTestTypeStr(type)}")
+        // Ls.d("getItemViewType()..22.position=${position} type=${getTestTypeStr(type)}")
         if (type == TYPE_GROUP_HEADER) {
             return getHeaderViewType(groupPosition)
         } else if (type == TYPE_GROUP_FOOTER) {
@@ -211,6 +211,14 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
                 }
                 onBindChildGroupHeader(binding, group, cg!!, groupPosition, 11)
             }
+            TYPE_CHILD_GROUP_FOOTER -> {
+                val childGroup = getCg(position, groupPosition, 3)
+                binding.setVariable(BR.cgFooter, childGroup)
+                if (mClickCgHeaderFooterListener != null) {
+                    binding.setVariable(BR.cgFooterClick, mClickCgHeaderFooterListener)
+                }
+                onBindChildGroupFooterViewHolder(binding, group, childGroup, groupPosition)
+            }
             TYPE_CHILD_CHILD -> {
 //                val ccIndex = getCcIndexInGroup(position, groupPosition, 2)
 //                val childChild = getChildChildByChild(getChildGroupList(group), groupPosition, ccIndex)
@@ -225,14 +233,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
                     onBindChildChildViewHolder(binding, group, cc, groupPosition, 12)
                 }
             }
-            TYPE_CHILD_GROUP_FOOTER -> {
-                val childGroup = getCg(position, groupPosition, 3)
-                binding.setVariable(BR.cgFooter, childGroup)
-                if (mClickCgHeaderFooterListener != null) {
-                    binding.setVariable(BR.cgFooterClick, mClickCgHeaderFooterListener)
-                }
-                onBindChildGroupFooterViewHolder(binding, group, childGroup, groupPosition)
-            }
+
         }
         binding.executePendingBindings()
     }
@@ -349,7 +350,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
 
     open fun registerChildGroupListChangedCallback(childGroupList: List<CG>) {
         if (childGroupList is ObservableList) {
-            val childListCallback = TwoLevelChildListChangedCallback(this, true)
+            val childListCallback = ThreeLevelChildListChangedCallback(this, true)
             childGroupList.addOnListChangedCallback(childListCallback as ObservableList.OnListChangedCallback<Nothing>)
             childGroupList.forEach { childGroup ->
                 val childChildList = getChildChildList(childGroup)
@@ -361,7 +362,7 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
     private fun registerChildChildCallback(childChildList: List<CC>) {
         if (childChildList is ObservableList) {
             childChildList.addOnListChangedCallback(
-                TwoLevelChildListChangedCallback(
+                ThreeLevelChildListChangedCallback(
                     this,
                     false
                 ) as ObservableList.OnListChangedCallback<Nothing>
@@ -1543,21 +1544,27 @@ abstract class ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC> :
         return getChildGroupList(getGroup(groupPosition))
     }
 
-    abstract fun getChildChildList(childGroup: CG): List<CC>
 
-    abstract fun getChildGroupList(group: G): List<CG>
+    open fun getFooterLayout(viewType: Int): Int {
+        return 1
+    }
 
-    abstract fun hasHeader(groupPosition: Int): Boolean
-
-    abstract fun hasFooter(groupPosition: Int): Boolean
+   open fun hasFooter(groupPosition: Int): Boolean {
+        return false
+    }
 
     abstract fun getHeaderLayout(viewType: Int): Int
-
-    abstract fun getFooterLayout(viewType: Int): Int
 
     abstract fun getChildGroupHeaderLayout(viewType: Int): Int
 
     abstract fun getChildChildLayout(viewType: Int): Int
+
+    abstract fun hasHeader(groupPosition: Int): Boolean
+
+
+    abstract fun getChildChildList(childGroup: CG): List<CC>
+
+    abstract fun getChildGroupList(group: G): List<CG>
 
     abstract fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 

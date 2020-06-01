@@ -25,13 +25,16 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), BindingCollectionAdapter<G> {
     companion object {
         const val TAG = "GroupedAdapter"
+
         @JvmField
         val DEBUG = BuildConfig.DEBUG
 
         @JvmField
         var TYPE_HEADER = R.integer.type_header
+
         @JvmField
         val TYPE_FOOTER = R.integer.type_footer
+
         @JvmField
         val TYPE_CHILD = R.integer.type_child
     }
@@ -43,8 +46,10 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
     private var mClickChildListener: ClickListener? = null
     private var mClickHeaderListener: ClickListener? = null
     private var mClickFooterListener: ClickListener? = null
+
     //保存分组列表的组结构
     protected var mStructures = ArrayList<GroupStructure>()
+
     //数据是否发生变化。如果数据发生变化，要及时更新组结构。
     public var isDataChanged: Boolean = false
     private var mTempPosition: Int = 0
@@ -984,19 +989,19 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
     }
 
-    abstract fun getChildrenCount(groupPosition: Int, group: G): Int
-
-    abstract fun getChildrenList(group: G): List<C>
-
-    abstract fun hasHeader(groupPosition: Int): Boolean
-
-    abstract fun hasFooter(groupPosition: Int): Boolean
-
     abstract fun getHeaderLayout(viewType: Int): Int
 
     abstract fun getFooterLayout(viewType: Int): Int
 
     abstract fun getChildLayout(viewType: Int): Int
+
+    abstract fun hasHeader(groupPosition: Int): Boolean
+
+    abstract fun hasFooter(groupPosition: Int): Boolean
+
+    abstract fun getChildrenCount(groupPosition: Int, group: G): Int
+
+    abstract fun getChildrenList(group: G): List<C>
 
     abstract fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
 
@@ -1124,7 +1129,6 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
 //    }
     private class BindingViewHolder internal constructor(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root)
-
 
 
 }

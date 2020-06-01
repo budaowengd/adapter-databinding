@@ -12,13 +12,13 @@ import me.lx.rv.tools.Ls
  *  desc:
  */
 @SuppressLint("LongLogTag")
-class TwoLevelChildListChangedCallback(
+class ThreeLevelChildListChangedCallback(
         private var adapter: ThreeLevelGroupedRecyclerViewAdapter<*, *, *>,
         private var isChildGroup: Boolean
 ) : ObservableList.OnListChangedCallback<ObservableList<*>>() {
     override fun onChanged(sender: ObservableList<*>) {
         if (ThreeLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback......onChanged()..1111....")
+            Ls.d("ThreeLevelChildListChangedCallback......onChanged()..1111....")
         }
 
         adapter.notifyDataChanged()
@@ -27,7 +27,7 @@ class TwoLevelChildListChangedCallback(
     override fun onItemRangeRemoved(sender: ObservableList<*>, positionStart: Int, itemCount: Int) {
         if (ThreeLevelGroupedRecyclerViewAdapter.DEBUG) {
             Ls.d(
-                    "TwoLevelChildListChangedCallback...onItemRangeRemoved().22..positionStart=$positionStart  itemCount=$itemCount" +
+                    "ThreeLevelChildListChangedCallback...onItemRangeRemoved().22..positionStart=$positionStart  itemCount=$itemCount" +
                             " senderSize=${sender.size} isChildGroup=$isChildGroup"
             )
         }
@@ -57,7 +57,7 @@ class TwoLevelChildListChangedCallback(
             itemCount: Int
     ) {
         if (ThreeLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback...onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
+            Ls.d("ThreeLevelChildListChangedCallback...onItemRangeMoved()..3333...fromPosition=$fromPosition  itemCount=$itemCount")
         }
         adapter.notifyDataChanged()
     }
@@ -68,7 +68,7 @@ class TwoLevelChildListChangedCallback(
             itemCount: Int
     ) {
         if (ThreeLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount " +
+            Ls.d("ThreeLevelChildListChangedCallback. onItemRangeInserted()..44..positionStart=$positionStart  itemCount=$itemCount " +
                     "sender=${sender.size} isChildGroup=$isChildGroup")
         }
         if (isChildGroup) {
@@ -80,7 +80,7 @@ class TwoLevelChildListChangedCallback(
 
     override fun onItemRangeChanged(sender: ObservableList<*>, positionStart: Int, itemCount: Int) {
         if (ThreeLevelGroupedRecyclerViewAdapter.DEBUG) {
-            Ls.d("TwoLevelChildListChangedCallback......onItemRangeChanged()..5555..positionStart=$positionStart  itemCount=$itemCount")
+            Ls.d("ThreeLevelChildListChangedCallback......onItemRangeChanged()..5555..positionStart=$positionStart  itemCount=$itemCount")
         }
         adapter.notifyDataChanged()
     }
