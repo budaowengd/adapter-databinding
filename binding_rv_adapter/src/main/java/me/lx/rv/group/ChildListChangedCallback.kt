@@ -38,7 +38,7 @@ class ChildListChangedCallback<T, C>(
         // 如果孩子列表为空了,会崩溃...记住,得先刷新头部数据
         if (sender.size == 0) {
             if (childEmptyIsRemoveHeader == true) {
-                (adapter.getItems() as ObservableList).removeAt(groupPosition)
+                (adapter.getGroupList() as ObservableList).removeAt(groupPosition)
 
             } else {
                 adapter.notifyHeaderChanged(groupPosition)
@@ -58,7 +58,7 @@ class ChildListChangedCallback<T, C>(
         val groupPosition = adapter.getGroupPositionByChildList(sender)
         if (sender.size == 0) {
             if (childEmptyIsRemoveHeader == true) {
-                (adapter.getItems() as ObservableList).removeAt(groupPosition)
+                (adapter.getGroupList() as ObservableList).removeAt(groupPosition)
             } else {
                 adapter.notifyHeaderChanged(groupPosition)
             }

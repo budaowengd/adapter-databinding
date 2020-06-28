@@ -3,7 +3,7 @@ package me.lx.rv.divider
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import me.lx.rv.tools.RvDpUtils
+import me.lx.rv.tools.RvUtils
 
 /**
  *  author: luoXiong
@@ -21,22 +21,22 @@ class LinearHasGapDivider : RecyclerView.ItemDecoration() {
     private var marginBottom = 0
 
     fun setMarginTop(space: Int): LinearHasGapDivider {
-        marginTop = RvDpUtils.dp2px(space)
+        marginTop = RvUtils.dp2px(space)
         return this
     }
 
     fun setMarginLeft(space: Int): LinearHasGapDivider {
-        marginLeft = RvDpUtils.dp2px(space)
+        marginLeft = RvUtils.dp2px(space)
         return this
     }
 
     fun setMarginRight(space: Int): LinearHasGapDivider {
-        marginRight = RvDpUtils.dp2px(space)
+        marginRight = RvUtils.dp2px(space)
         return this
     }
 
     fun setMarginBottom(space: Int): LinearHasGapDivider {
-        marginBottom = RvDpUtils.dp2px(space)
+        marginBottom = RvUtils.dp2px(space)
         return this
     }
 

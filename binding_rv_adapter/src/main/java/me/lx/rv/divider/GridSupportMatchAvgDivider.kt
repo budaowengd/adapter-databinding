@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.tools.Ls
-import me.lx.rv.tools.RvDpUtils
+import me.lx.rv.tools.RvUtils
 
 /**
  *  author: luoXiong
@@ -31,7 +31,7 @@ open class GridSupportMatchAvgDivider() :
 
     private var hasHeader = false
     fun setAvgGap(gap: Int): GridSupportMatchAvgDivider {
-        mAvgGap = RvDpUtils.dp2px(gap)
+        mAvgGap = RvUtils.dp2px(gap)
         return this
     }
 
@@ -41,7 +41,7 @@ open class GridSupportMatchAvgDivider() :
     }
 
     fun setMarginTop(top: Int): GridSupportMatchAvgDivider {
-        marginTop = RvDpUtils.dp2px(top)
+        marginTop = RvUtils.dp2px(top)
         return this
     }
 

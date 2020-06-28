@@ -147,10 +147,13 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         if (isDataChanged) {
             structureChanged()
         }
-        return count()
+        val count= count()
+      //  Ls.d("getItemCount()...count=$count")
+        return count
     }
 
     override fun getItemViewType(position: Int): Int {
+       // Ls.d("getItemViewType().111111..position=$position")
         mTempPosition = position
         val groupPosition = getGroupPositionForPosition(position)
         val type = judgeType(position)
@@ -202,7 +205,7 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         }
     }
 
-    fun getItems(): List<G> {
+    fun getGroupList(): List<G> {
         return this.groupList!!
     }
 
@@ -296,9 +299,9 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
             mStructures.add(GroupStructure(hasHeader(i), hasFooter(i), getSelfChildrenCount(i)))
         }
         isDataChanged = false
-        if (DEBUG) {
-            Ls.d("重置组结构列表...666666...size=${mStructures.size}")
-        }
+       // if (DEBUG) {
+      //      Ls.d("重置组结构列表...666666...size=${mStructures.size}")
+       // }
     }
 
     fun getGroupCount(): Int {
@@ -989,30 +992,41 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         return getChildrenCount(groupPosition, groupList!![groupPosition]!!)
     }
 
-    abstract fun getHeaderLayout(viewType: Int): Int
+    open fun getFooterLayout(viewType: Int): Int {
+        return -1
+    }
 
-    abstract fun getFooterLayout(viewType: Int): Int
+    open fun hasFooter(groupPosition: Int): Boolean {
+        return false
+    }
+
+    open fun getChildrenCount(groupPosition: Int, group: G): Int {
+        return getChildrenList(group).size
+    }
+
+    abstract fun getHeaderLayout(viewType: Int): Int
 
     abstract fun getChildLayout(viewType: Int): Int
 
     abstract fun hasHeader(groupPosition: Int): Boolean
 
-    abstract fun hasFooter(groupPosition: Int): Boolean
-
-    abstract fun getChildrenCount(groupPosition: Int, group: G): Int
 
     abstract fun getChildrenList(group: G): List<C>
 
-    abstract fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
+    open fun onBindHeaderViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int){
 
-    abstract fun onBindFooterViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int)
+    }
 
-    abstract fun onBindChildViewHolder(
+    open fun onBindFooterViewHolder(vBinding: ViewDataBinding, group: G, groupPosition: Int) {}
+
+    open fun onBindChildViewHolder(
         binding: ViewDataBinding,
         group: G, child: C,
         groupPosition: Int,
         childPosition: Int
-    )
+    ){
+
+    }
 
     internal inner class GroupDataObserver : RecyclerView.AdapterDataObserver() {
 

@@ -16,7 +16,7 @@ interface ViewPagerBindListener<T> {
     /**
      * 获取列表数据源
      */
-    fun getItems(): java.util.AbstractList<T>
+    fun getItemList(): java.util.AbstractList<T>
 
     fun getViewPagerLimit():Int?{
         return null

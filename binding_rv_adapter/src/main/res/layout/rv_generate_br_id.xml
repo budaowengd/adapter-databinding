@@ -72,9 +72,48 @@
             name="headerClick"
             type="java.lang.String" />
 
+        <variable
+            name="rvBindGroup3"
+            type="java.lang.String" />
+
+        <variable
+            name="rvBindGroup"
+            type="java.lang.String" />
 
         <variable
             name="footerClick"
+            type="java.lang.String" />
+
+        <variable
+            name="cc"
+            type="java.lang.String" />
+
+        <variable
+            name="ccClick"
+            type="java.lang.String" />
+
+        <variable
+            name="cgHeader"
+            type="java.lang.String" />
+
+        <variable
+            name="cgHeaderClick"
+            type="java.lang.String" />
+
+        <variable
+            name="gHeader"
+            type="java.lang.String" />
+
+        <variable
+            name="gHeaderClick"
+            type="java.lang.String" />
+
+        <variable
+            name="gFooter"
+            type="java.lang.String" />
+
+        <variable
+            name="gFooterClick"
             type="java.lang.String" />
     </data>
 

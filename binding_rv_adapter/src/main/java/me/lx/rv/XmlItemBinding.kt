@@ -33,8 +33,10 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
      */
     fun set(@LayoutRes layoutRes: Int, variableId: Int = 0, clickListener: ClickListener? = null): XmlItemBinding<T> {
         this.mLayoutRes = layoutRes
-        this.mClickListener = clickListener
-//        this.mClickListener = clickId
+        if (clickListener != null) {
+            this.mClickListener = clickListener
+        }
+
         if (variableId == 0) {
             this.mDefaultItemVariableId = BR.item
         } else {
@@ -173,7 +175,7 @@ class XmlItemBinding<T> constructor(private val mOnItemBind: OnItemBind<T>?) {
         return this
     }
 
-    fun setClickEvent(clickListener: ClickListener, clickId: Int): XmlItemBinding<T> {
+    fun setClickEvent(clickListener: ClickListener, clickId: Int = mDefaultClickVariableId): XmlItemBinding<T> {
         mClickListener = clickListener
         mDefaultClickVariableId = clickId
         return this

@@ -1,9 +1,10 @@
 package me.lx.rv
 
 import androidx.databinding.ObservableBoolean
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.group.ClickGroupListener
-import me.lx.rv.group.ThreeLevelGroupedRecyclerViewAdapter
+import me.lx.rv.group.Group3RecyclerViewAdapter
 import me.lx.rv.loadmore.LoadMoreAdapter
 
 /**
@@ -13,16 +14,18 @@ import me.lx.rv.loadmore.LoadMoreAdapter
  *  version: 1.0
  *  desc:
  */
-interface RvThreeLevelGroupBindListener<G, CG, CC> {
+interface RvBindGroup3Listener<G, CG, CC> {
     /**
      * 获取列表数据源
      */
-    fun getGroups(): java.util.AbstractList<G>
-
+    fun getGroupList(): java.util.AbstractList<G>
+    fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup? {
+        return null
+    }
     /**
      * 获取列表适配器
      */
-    fun getAdapter(): ThreeLevelGroupedRecyclerViewAdapter<G, CG, CC>
+    fun getGroupAdapter(): Group3RecyclerViewAdapter<G, CG, CC>
 
     /**
      * 获取列表分割线
@@ -59,7 +62,7 @@ interface RvThreeLevelGroupBindListener<G, CG, CC> {
         return null
     }
 
-    fun getClickChildChildListener(): ClickGroupListener? {
+    fun getClickCcListener(): ClickGroupListener? {
         return null
     }
 

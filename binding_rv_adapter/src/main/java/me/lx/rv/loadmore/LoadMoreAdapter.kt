@@ -37,15 +37,12 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @LayoutRes
     protected var mLoadMoreRedId = 0
-
-
     private var mIsLoading: Boolean = false
-
     private var mLoadMoreListener: LoadMoreListener? = null
     private var mLoadMoreFailClickListener: LoadMoreFailClickListener? = null
 
     // 布局 ->单一的
-    // val simpleItemBinding = itemBindingOf<Int>(me.lx.rv.R.layout.rv_load_more_layout)
+    // val simpleItemBinding = itemXmlOf<Int>(me.lx.rv.R.layout.rv_load_more_layout)
 
     private val mDataObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
@@ -85,9 +82,8 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private lateinit var mInnerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
     private lateinit var mFooter: AbstractLoadMoreFooter
-
     private var mLastState = STATE_LOADING
-    private lateinit var mRecyclerView: RecyclerView
+    private var mRecyclerView: RecyclerView? = null
     private var mLoadMoreHolder: LoadMoreViewHolder? = null
     private var mNoMoreData = false // 没有更多数据的标识
     private var mIfNoMoreDataHideLayout = false // 如果没有更多数据,是否隐藏底部布局
@@ -134,7 +130,9 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         // registerAdapterDataObserver(mDataObserver)
     }
 
-
+    /**
+     * 切记: 当
+     */
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         Ls.d("loadMore...onAttachedToRecyclerView()..111...rv=${recyclerView.hashCode()} this=${hashCode()}")
         mRecyclerView = recyclerView
@@ -158,7 +156,6 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         recyclerView.addOnScrollListener(mOnScrollListener)
     }
 
-
     override fun getItemCount(): Int {
         val count = mInnerAdapter.itemCount
         return if (count > 0) count + 1 else 0
@@ -177,7 +174,6 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == VIEW_TYPE_LOAD_MORE) {
             Ls.d("onCreateViewHolder()....创建LoadMoreHolder前....loadmoreIsNull=${mLoadMoreHolder == null}")
             if (mLoadMoreHolder != null) return mLoadMoreHolder!!
-
             if (mInflater == null) {
                 mInflater = LayoutInflater.from(parent.context)
             }
@@ -237,16 +233,16 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 // 当列表适配器有个header,Items=0, 默认请求列表,会执行loadmore(),因为header算1个数量
                 // 参考:boboji的便宜好货列表
                 // 目前解决方案: 在onLoadingMore()里,判断pageIndex==1 或者 判断 itemCount 是否大于0
-                if (!mRecyclerView.canScrollVertically(-1)) {
+                if (!mRecyclerView!!.canScrollVertically(-1)) {
                     // 如果不能滑动,强制请求加载更多
                     requestLoadingMore(3)
                 }
             }
             //首次如果itemView没有填充满RecyclerView，继续加载更多
-            Ls.d("onBindViewHolder()....loadMore()...能滑动=${mRecyclerView.canScrollVertically(-1)}")
-//            if (!mRecyclerView.canScrollVertically(-1) && mLoadMoreListener != null && canLoadMore(mRecyclerView.layoutManager)) {
+            Ls.d("onBindViewHolder()....loadMore()...能滑动=${mRecyclerView!!.canScrollVertically(-1)}")
+//            if (!mRecyclerView!!.canScrollVertically(-1) && mLoadMoreListener != null && canLoadMore(mRecyclerView!!.layoutManager)) {
 //                //fix bug Cannot call this method while RecyclerView is computing a layout or scrolling
-//                mRecyclerView.post {
+//                mRecyclerView!!.post {
 //                    setState(STATE_LOADING, 4)
 //                    requestLoadingMore(3)
 //                }
@@ -264,12 +260,6 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-
-    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
-        super.unregisterAdapterDataObserver(observer)
-        //当使用ViewPager绑定View的时候会报错: IllegalStateException("Observer " + observer + " was not registered
-        //  mInnerAdapter.unregisterAdapterDataObserver(observer)
-    }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         mInnerAdapter.onViewDetachedFromWindow(holder)
@@ -290,6 +280,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         mInnerAdapter.onDetachedFromRecyclerView(recyclerView)
+        mRecyclerView = null
     }
 
     //
@@ -300,12 +291,25 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * 一定要重写该方法
      */
+    private var isFirstRegisterDataOb = true
     override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+       // Ls.d("registerAdapterDataObserver()...2222.....this=${hashCode()}  observer=${observer?.hashCode()}")
         super.registerAdapterDataObserver(observer)
         super.registerAdapterDataObserver(mDataObserver)
+//        if (isFirstRegisterDataOb) {
+//            isFirstRegisterDataOb = false
+//        }
         // mInnerAdapter.registerAdapterDataObserver(observer)
-//        Ls.d("registerAdapterDataObserver()...2222.....code=${hashCode()}")
     }
+
+    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+       // Ls.d("unregisterAdapterDataObserver()...3333.....this=${hashCode()}  observer=${observer?.hashCode()}")
+        super.unregisterAdapterDataObserver(observer)
+        super.unregisterAdapterDataObserver(mDataObserver)
+        //当使用ViewPager绑定View的时候会报错: IllegalStateException("Observer " + observer + " was not registered
+        //  mInnerAdapter.unregisterAdapterDataObserver(observer)
+    }
+
 
     private fun isShowLoadMore(position: Int): Boolean {
         return position >= mInnerAdapter.itemCount && mInnerAdapter.itemCount > 0
@@ -320,7 +324,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private fun noCanScrollVertically(): Boolean {
-        return !mRecyclerView.canScrollVertically(-1)
+        return !mRecyclerView!!.canScrollVertically(-1)
     }
 
     private fun requestLoadingMore(flag: Int) {
@@ -372,7 +376,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (mLoadMoreHolder != null) {
             // 延迟更新UI的原因是, 当加载后,添加item,刷新列表时,会看到无更多数据的脚布局,体验不好
             mLoadMoreHolder!!.setState(state)
-//            mRecyclerView.postDelayed({
+//            mRecyclerView!!.postDelayed({
 //                notifyLoadMoreVH()
 //            }, 500)
         }
@@ -471,6 +475,7 @@ open class LoadMoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private fun setFullSpan(recyclerView: RecyclerView) {
 
     }
+
 
     private fun canLoadMore(layoutManager: RecyclerView.LayoutManager?): Boolean {
         if (mLoadMoreListener?.isShowNoMoreDataOb()?.get() == true) {

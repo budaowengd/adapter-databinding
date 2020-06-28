@@ -14,14 +14,14 @@ package me.lx.rv.group
  * 组尾
  * childNumInGroup = 6
  */
-class ThreeLevelGroupStructure {
+class Group3Structure {
 
     // 每个大组的数量: 包括( 头 + cg(头 + listSize) + 尾
-    var childNumInGroup: Int = 0 // 大组里,ChildGroupHeader + ChildGroupList.for size + ChildGroupFooter
+    var childNumInGroup: Int = 0 // 大组里,CgHeader + CgList.for size + CgFooter
     private var hasHeader: Boolean = false
     private var hasFooter: Boolean = false
-    private var hasChildGroupFooter: Boolean = false
-    private var hasChildGroupHeader: Boolean = true
+    private var hasCgFooter: Boolean = false
+    private var hasCgHeader: Boolean = true
     var headerCount = 0
     var footerCount = 0
 
@@ -64,19 +64,19 @@ class ThreeLevelGroupStructure {
         countHeaderFooterCount()
     }
 
-    fun setHasChildGroupFooter(hasFooter: Boolean) {
-        this.hasChildGroupFooter = hasFooter
+    fun setHasCgFooter(hasFooter: Boolean) {
+        this.hasCgFooter = hasFooter
     }
 
-    fun setHasChildGroupHeader(hasHeader: Boolean) {
-        this.hasChildGroupHeader = hasHeader
+    fun setHasCgHeader(hasHeader: Boolean) {
+        this.hasCgHeader = hasHeader
     }
 
-    fun hasChildGroupFooter(): Boolean {
-        return hasChildGroupFooter
+    fun hasCgFooter(): Boolean {
+        return hasCgFooter
     }
 
-    fun hasChildGroupHeader(): Boolean {
-        return hasChildGroupHeader
+    fun hasCgHeader(): Boolean {
+        return hasCgHeader
     }
 }

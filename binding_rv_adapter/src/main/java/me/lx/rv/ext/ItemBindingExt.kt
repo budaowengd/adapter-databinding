@@ -9,10 +9,10 @@ import me.lx.rv.OnItemBind
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.click.ClickListener
 
-inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> =
+inline fun <T> itemXmlOf(@LayoutRes layoutRes: Int, clickListener: ClickListener): XmlItemBinding<T> =
         XmlItemBinding.of(layoutRes, clickListener)
 
-inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int, clickListener: ClickListener): XmlItemBinding<T> =
+inline fun <T> itemXmlOf(@LayoutRes layoutRes: Int,variableId: Int, clickListener: ClickListener): XmlItemBinding<T> =
         XmlItemBinding.of(layoutRes, variableId, clickListener)
 
 /**
@@ -20,7 +20,7 @@ inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int,variableId: Int, clickLis
  *
  * @see XmlItemBinding.of
  */
-inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, variableId: Int = BR.item): XmlItemBinding<T> =
+inline fun <T> itemXmlOf(@LayoutRes layoutRes: Int, variableId: Int = BR.item): XmlItemBinding<T> =
         XmlItemBinding.of(layoutRes, variableId)
 
 /**
@@ -28,7 +28,7 @@ inline fun <T> itemBindingOf(@LayoutRes layoutRes: Int, variableId: Int = BR.ite
  *
  * @see XmlItemBinding.of
  */
-inline fun <T> itemBindingOf(onGetItemViewType: OnItemBind<T>): XmlItemBinding<T> = XmlItemBinding.of(onGetItemViewType)
+inline fun <T> itemXmlOf(onGetItemViewType: OnItemBind<T>): XmlItemBinding<T> = XmlItemBinding.of(onGetItemViewType)
 
 
 /**

@@ -1,8 +1,8 @@
 package me.lx.rv
 
 import androidx.databinding.ObservableBoolean
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import me.lx.rv.group.ClickGroupListener
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.rv.loadmore.LoadMoreAdapter
 
@@ -13,16 +13,16 @@ import me.lx.rv.loadmore.LoadMoreAdapter
  *  version: 1.0
  *  desc:
  */
-interface RvGroupBindListener<T, C> {
+interface RvBindGroupListener<CG, C> {
     /**
      * 获取列表数据源
      */
-    fun getGroups(): java.util.AbstractList<T>
+    fun getGroupList(): java.util.AbstractList<CG>
 
     /**
      * 获取列表适配器
      */
-    fun getAdapter(): GroupedRecyclerViewAdapter<T, C>
+    fun getGroupAdapter(): GroupedRecyclerViewAdapter<CG, C>
 
     /**
      * 获取列表分割线
@@ -44,7 +44,9 @@ interface RvGroupBindListener<T, C> {
     fun getLayoutFlag(): Int {
         return RecyclerView.VERTICAL
     }
-
+    fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup? {
+        return null
+    }
     /**
      * 获取加载更多的监听
      */
@@ -59,15 +61,15 @@ interface RvGroupBindListener<T, C> {
         return null
     }
 
-    fun getClickChildListener():me.lx.rv.click.ClickListener? {
+    fun getClickChildListener(): me.lx.rv.click.ClickListener? {
         return null
     }
 
-    fun getClickFootListener():me.lx.rv.click.ClickListener? {
+    fun getClickFootListener(): me.lx.rv.click.ClickListener? {
         return null
     }
 
-    fun getClickHeaderListener():me.lx.rv.click.ClickListener? {
+    fun getClickHeaderListener(): me.lx.rv.click.ClickListener? {
         return null
     }
 }

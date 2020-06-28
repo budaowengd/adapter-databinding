@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.tools.Ls
-import me.lx.rv.tools.RvDpUtils
+import me.lx.rv.tools.RvUtils
 
 /**
  *  author: luoXiong
@@ -32,10 +32,10 @@ open class GridSpaceDivider(var mGm: GridLayoutManager) : RecyclerView.ItemDecor
     private fun initAvgGap() {
         if (avgGap != 0) return
         mSpanCount = mGm.spanCount
-        var left = RvDpUtils.dp2px(getLeftGap())
-        var right = RvDpUtils.dp2px(getRightGap())
-        var middle = RvDpUtils.dp2px(getMiddleGap())
-        var top = RvDpUtils.dp2px(getTopGap())
+        var left = RvUtils.dp2px(getLeftGap())
+        var right = RvUtils.dp2px(getRightGap())
+        var middle = RvUtils.dp2px(getMiddleGap())
+        var top = RvUtils.dp2px(getTopGap())
 
         avgGap = (left + right + middle * 2) / (mGm.spanCount )
         marginTop = top
