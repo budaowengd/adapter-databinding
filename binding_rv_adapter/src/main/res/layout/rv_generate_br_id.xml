@@ -24,11 +24,11 @@
 
         <!--  分组列表需要用到的变量 -->
         <variable
-            name="child"
+            name="c"
             type="java.lang.String" />
 
         <variable
-            name="headerGroup"
+            name="gHeader"
             type="java.lang.String" />
 
         <variable
@@ -48,11 +48,11 @@
             type="java.lang.String" />
 
         <variable
-            name="footerGroup"
+            name="gFooter"
             type="java.lang.String" />
 
         <variable
-            name="childClick"
+            name="cClick"
             type="java.lang.String" />
 
         <variable
@@ -69,7 +69,7 @@
 
 
         <variable
-            name="headerClick"
+            name="gHeaderClick"
             type="java.lang.String" />
 
         <variable
@@ -81,7 +81,7 @@
             type="java.lang.String" />
 
         <variable
-            name="footerClick"
+            name="gFooterClick"
             type="java.lang.String" />
 
         <variable

@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
+import me.lx.rv.tools.RvUtils
 
 
 /**
@@ -23,7 +24,7 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
     private val mBounds = Rect()
     private var isSupportTopHaveDivider = false // 最顶部是否支持分割线
     private var isSupportBottomHaveDivider = true // 最底部是否支持分割线
-
+    private var marginLAndR=0
     companion object {
         public val ATTRS = intArrayOf(android.R.attr.listDivider)
     }
@@ -37,7 +38,10 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
     constructor(context: Context, @ColorInt itemDividerColor: Int, pxHeight: Int? = null) {
         setDividerColor(context, itemDividerColor, pxHeight)
     }
-
+    fun setMarginLAndR(space: Int): SupportTopAndBottomItemDecoration {
+        marginLAndR = RvUtils.dp2px(space)
+        return this
+    }
 
     fun setSupportTopHaveDivider(haveDivider: Boolean = true): SupportTopAndBottomItemDecoration {
         isSupportTopHaveDivider = haveDivider
@@ -67,16 +71,16 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
 
     private fun drawVertical(canvas: Canvas, parent: RecyclerView) {
         canvas.save()
-        val left: Int
-        val right: Int
+        var left: Int=marginLAndR
+        var right: Int=0
 
         if (parent.clipToPadding) {
-            left = parent.paddingLeft
-            right = parent.width - parent.paddingRight
+            left += parent.paddingLeft
+            right = parent.width - parent.paddingRight-marginLAndR
             canvas.clipRect(left, parent.paddingTop, right, parent.height - parent.paddingBottom)
         } else {
-            left = 0
-            right = parent.width
+            left += 0
+            right = parent.width - marginLAndR
         }
 
         val childCount = parent.childCount

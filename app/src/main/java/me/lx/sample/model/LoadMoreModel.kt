@@ -5,7 +5,7 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import me.lx.rv.BindingRecyclerViewAdapter
-import me.lx.rv.ext.itemBindingOf
+import me.lx.rv.ext.itemXmlOf
 import me.lx.rv.loadmore.LoadMoreAdapter
 import me.lx.sample.R
 import me.lx.sample.vo.SingleItemVo
@@ -28,7 +28,7 @@ class LoadMoreModel : ViewModel() {
     val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
 
     // 布局 ->单一的
-    val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
+    val simpleItemBinding = itemXmlOf<SingleItemVo>(R.layout.item_single)
 
     // 加载更多相关
     var isLoadMoreFail=false

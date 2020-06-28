@@ -93,7 +93,7 @@ class GroupModel {
          * @param childrenCount 每个组里的子项数量
          * @return
          */
-        fun getGroups(groupCount: Int, childrenCount: Int): ObservableArrayList<GroupEntity> {
+        fun getGroupList(groupCount: Int, childrenCount: Int): ObservableArrayList<GroupEntity> {
             val groups = ObservableArrayList<GroupEntity>()
             for (i in 0 until groupCount) {
                 val childList = ObservableArrayList<ChildEntity>()

@@ -3,14 +3,14 @@
 
     <data>
 
-        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+        <import type="me.lx.sample.Group3Frag" />
 
         <variable
-            name="headerClick"
+            name="gHeaderClick"
             type="me.lx.rv.group.BaseFun2ClickGroupListener" />
 
         <variable
-            name="headerGroup"
+            name="gHeader"
             type="me.lx.sample.group.entity.TwoLevelGroupEntity" />
 
     </data>
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_red_dark_ripple_bg"
-        android:onClick="@{()->headerClick.clickGroup(headerGroup,ThreeLevelGroupModel.click_g_header)}"
+        android:onClick="@{()->headerClick.clickGroup(headerGroup,Group3Frag.click_g_header)}"
         android:orientation="vertical">
 
         <TextView

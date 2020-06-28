@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
 import me.lx.rv.click.BaseRvFun1ItemClickEvent
-import me.lx.rv.ext.itemBindingOf
+import me.lx.rv.ext.itemXmlOf
 import me.lx.sample.R
 import me.lx.sample.divider.GridSupportMatchAvgDivider
 import me.lx.sample.vo.SingleItemVo
@@ -40,7 +40,7 @@ class GridDividerModel : ViewModel() {
             add(SingleItemVo(i))
         }
     }
-    val grid3Xml = itemBindingOf<SingleItemVo>(
+    val grid3Xml = itemXmlOf<SingleItemVo>(
         R.layout.item_grid3,
         object : BaseRvFun1ItemClickEvent<SingleItemVo>() {
             override fun clickRvItem(item: SingleItemVo) {

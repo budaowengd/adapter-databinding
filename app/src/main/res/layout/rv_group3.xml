@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+
+        <variable
+            name="rvBindGroup3"
+            type="me.lx.rv.RvBindGroup3Listener&lt;Object,Object,Object&gt;" />
+
+    </data>
+
+
+    <!--
+    support_show_empty_view_list_size
+    rv_support_is_show_empty_view
+    -->
+    <!-- <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:rv_support_is_show_empty_view="@{rvBindGroup3.isShowEmptyLayoutCondition()}">
+
+ -->
+    <me.lx.rv.AppRecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:rv_group3_SpanSizeLookup="@{rvBindGroup3.getSpanSizeLookup()}"
+        app:rv_group3_adapter="@{rvBindGroup3.getGroupAdapter()}"
+        app:rv_group3_chick_cc_listener="@{rvBindGroup3.getClickCcListener()}"
+        app:rv_group3_chick_cg_header_footer="@{rvBindGroup3.getClickCgHeaderFooterListener()}"
+        app:rv_group3_chick_footer_listener="@{rvBindGroup3.getClickFootListener()}"
+        app:rv_group3_chick_header_listener="@{rvBindGroup3.getClickHeaderListener()}"
+        app:rv_group3_items="@{rvBindGroup3.getGroupList()}"
+        app:rv_group3_layout_span="@{rvBindGroup3.getLayoutFlag()}"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+</layout>
+
+
+

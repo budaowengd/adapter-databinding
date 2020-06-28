@@ -23,11 +23,11 @@ open class GroupedListAdapter : GroupedRecyclerViewAdapter<GroupEntity, ChildEnt
         return groupItem.childList.size
     }
     override fun hasHeader(groupPosition: Int): Boolean {
-        return getItems()[groupPosition].childList.size > 0
+        return getGroupList()[groupPosition].childList.size > 0
     }
 
     override fun hasFooter(groupPosition: Int): Boolean {
-        return getItems()[groupPosition].childList.size > 0
+        return getGroupList()[groupPosition].childList.size > 0
     }
 
     override fun getHeaderLayout(viewType: Int): Int {

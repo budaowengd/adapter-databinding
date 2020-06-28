@@ -5,14 +5,14 @@
 
     <data>
 
-        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+        <import type="me.lx.sample.Group3Frag" />
 
         <variable
-            name="childGroupHeaderClick"
+            name="cgHeaderClick"
             type="me.lx.rv.group.BaseFun2ClickGroupListener" />
 
         <variable
-            name="childGroupHeader"
+            name="cgHeader"
             type="me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity" />
 
     </data>
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="@drawable/white_ripple_bg"
-        android:onClick="@{()->childGroupHeaderClick.clickGroup(childGroupHeader,ThreeLevelGroupModel.click_cg_header)}"
+        android:onClick="@{()->cgHeaderClick.clickGroup(cgHeader,Group3Frag.click_cg_header)}"
         android:orientation="vertical">
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{childGroupHeader.cgHeaderText}"
+            android:text="@{cgHeader.cgHeaderText}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

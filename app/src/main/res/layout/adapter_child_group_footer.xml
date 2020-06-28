@@ -5,7 +5,7 @@
     <data>
 
         <import type="android.view.View" />
-        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+        <import type="me.lx.sample.Group3Frag" />
 
         <variable
             name="cgFooterClick"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="#3f00"
-        android:onClick="@{()->cgFooterClick.clickGroup(cgFooter,ThreeLevelGroupModel.click_cg_footer)}"
+        android:onClick="@{()->cgFooterClick.clickGroup(cgFooter,Group3Frag.click_cg_footer)}"
         android:orientation="vertical">
 
         <!--

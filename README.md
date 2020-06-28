@@ -50,7 +50,7 @@
 ```java
 val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
 
-val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
+val simpleItemBinding = itemXmlOf<SingleItemVo>(R.layout.item_single)
 
 val singleItems = ObservableArrayList<SingleItemVo>().apply {
         for (i in 0 until 3) {
@@ -82,7 +82,7 @@ class FragmentSingleRecyclerView : Fragment() {
 val multiAdapter = BindingRecyclerViewAdapter<Any>()
 
 // 定义布局的方式1
-val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
+val headerFooterItemBinding = itemXmlOf<Any>(object : OnItemBind<Any> {
         override fun onItemBind(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
                 HeaderVo::class -> itemBinding.set(R.layout.item_header)
@@ -197,7 +197,7 @@ val multiItemBinding = OnItemBindClass<Any>().apply {
 ```java
 val adapter = BindingRecyclerViewAdapter<SingleItemVo>()
 
-val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single)
+val simpleItemBinding = itemXmlOf<SingleItemVo>(R.layout.item_single)
 
 val singleItems = ObservableArrayList<SingleItemVo>().apply {
         for (i in 0 until 3) {

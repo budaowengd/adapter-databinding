@@ -4,8 +4,10 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.lx.rv.BindingRecyclerViewAdapter
+import me.lx.rv.R
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.click.ClickListener
+import me.lx.rv.ext.itemXmlOf
 import me.lx.rv.group.GroupedRecyclerViewAdapter
 import me.lx.rv.group.Group3RecyclerViewAdapter
 import me.lx.rv.itembindings.OnItemBindClass
@@ -52,8 +54,10 @@ fun <T> set_rv_Adapter(
 //    rv.setRecycledViewPool()
 //    rvAdapter.setLifecycleOwner()
     var xmlItem = xmlAny
-    if (xmlItem is OnItemBindClass<*>) {
-        xmlItem = XmlItemBinding.of(xmlItem)
+    if (xmlAny is OnItemBindClass<*>) {
+        xmlItem = XmlItemBinding.of(xmlAny)
+    } else if (xmlAny is Int) {
+        xmlItem = itemXmlOf<Any>(xmlAny)
     }
     if (xmlItem !is XmlItemBinding<*>) return
     if (itemClick != null) {
@@ -167,7 +171,7 @@ fun <G, CG, CC> set_rv_three_level_GroupAdapter(
         adapter.setClickCgHeaderFooterListener(cgHeaderFooterClick)
     }
 
-        rv.adapter = adapter
+    rv.adapter = adapter
 }
 
 

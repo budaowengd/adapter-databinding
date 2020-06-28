@@ -8,7 +8,7 @@ import me.lx.rv.OnItemBind
 import me.lx.rv.XmlItemBinding
 import me.lx.rv.click.BaseRvFun1ItemClickEvent
 import me.lx.rv.collections.MergeObservableList
-import me.lx.rv.ext.itemBindingOf
+import me.lx.rv.ext.itemXmlOf
 import me.lx.rv.ext.map
 import me.lx.rv.itembindings.OnItemBindClass
 import me.lx.rv.tools.Ls
@@ -41,7 +41,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
             add(SingleItemVo(i))
         }
     }
-    val grid3Xml = itemBindingOf<SingleItemVo>(R.layout.item_grid3,
+    val grid3Xml = itemXmlOf<SingleItemVo>(R.layout.item_grid3,
         object : BaseRvFun1ItemClickEvent<SingleItemVo>() {
             override fun clickRvItem(item: SingleItemVo) {
                 item.isCheckedOb.set(!item.isCheckedOb.get())
@@ -103,10 +103,10 @@ class MutableViewModel : ViewModel(), ClickListeners {
         .insertItem(Type2Vo("type2-1"))
 
     // 布局 ->单一的
-    val simpleItemBinding = itemBindingOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
+    val simpleItemBinding = itemXmlOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
 
     // 布局 ->单一的
-    val simpleItemBinding2 = itemBindingOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
+    val simpleItemBinding2 = itemXmlOf<SingleItemVo>(R.layout.item_single, itemClickEvent)
 
     // 布局 -> 多类型
     val multiItemBinding = OnItemBindClass<Any>().apply {
@@ -116,7 +116,7 @@ class MutableViewModel : ViewModel(), ClickListeners {
     }
 
     // 布局 -> 带头和脚
-    val headerFooterItemBinding = itemBindingOf<Any>(object : OnItemBind<Any> {
+    val headerFooterItemBinding = itemXmlOf<Any>(object : OnItemBind<Any> {
         override fun onGetItemViewType(itemBinding: XmlItemBinding<*>, position: Int, item: Any) {
             when (item::class) {
                 HeaderVo::class -> itemBinding.set(R.layout.item_header, BR.item, itemClickEvent)

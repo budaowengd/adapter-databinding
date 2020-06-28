@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_switch_span_rv -> FragSwitchSpanRv()
 
                 // 分组
-                R.id.action_group_two_level -> ThreeLevelGroupFrag()
+                R.id.action_group_two_level -> Group3Frag()
                 R.id.action_group_rv -> FragmentGroupList.newInstance(bundle_default)
                 R.id.action_group_rv_no_header -> FragmentGroupList.newInstance(bundle_no_header)
                 R.id.action_group_rv_no_footer -> FragmentGroupList.newInstance(bundle_no_footer)

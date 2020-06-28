@@ -3,11 +3,11 @@
     <data>
 
         <variable
-            name="headerClick"
+            name="gHeaderClick"
             type="me.lx.rv.group.BaseFun1ClickGroupListener" />
 
         <variable
-            name="headerGroup"
+            name="gHeader"
             type="me.lx.sample.group.entity.GroupEntity" />
 
     </data>

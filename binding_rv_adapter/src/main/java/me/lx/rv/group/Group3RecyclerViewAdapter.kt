@@ -1034,7 +1034,6 @@ abstract class Group3RecyclerViewAdapter<G, CG, CC> :
         }
     }
 
-
     /**
      * 通知一组里的多个子项刷新
      *

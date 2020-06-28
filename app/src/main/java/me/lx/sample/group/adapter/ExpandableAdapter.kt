@@ -85,7 +85,7 @@ class ExpandableAdapter : GroupedRecyclerViewAdapter<ExpandableGroupEntity, Chil
      * @return
      */
     fun isExpand(groupPosition: Int): Boolean {
-        val entity = getItemList()[groupPosition]
+        val entity = getGroupList()[groupPosition]
         return entity.isExpand
     }
 

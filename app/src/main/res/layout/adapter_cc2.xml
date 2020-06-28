@@ -3,14 +3,14 @@
 
     <data>
 
-        <import type="me.lx.sample.model.ThreeLevelGroupModel" />
+        <import type="me.lx.sample.Group3Frag" />
 
         <variable
-            name="childChildClick"
+            name="ccClick"
             type="me.lx.rv.group.BaseFun2ClickGroupListener" />
 
         <variable
-            name="childChild"
+            name="cc"
             type="me.lx.sample.group.entity.TwoLevelGroupEntity.CgEntity.CcEntity" />
 
     </data>
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="#398"
-        android:onClick="@{()->childChildClick.clickGroup(childChild,ThreeLevelGroupModel.click_cc)}"
+        android:onClick="@{()->childChildClick.clickGroup(childChild,Group3Frag.click_cc)}"
         android:orientation="vertical"
         android:paddingStart="20dp">
 
