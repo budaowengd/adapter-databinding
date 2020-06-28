@@ -20,20 +20,20 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="#398"
-        android:onClick="@{()->childChildClick.clickGroup(childChild,Group3Frag.click_cc)}"
+        android:onClick="@{()->ccClick.clickGroup(cc,Group3Frag.click_cc)}"
         android:orientation="vertical"
         android:paddingStart="20dp">
 
         <!--
          android:text="1112222"
-         android:text="@{childChild.childChildText}"
+         android:text="@{cc.childChildText}"
         -->
         <TextView
             android:id="@+id/tvChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{childChild.childChildText}"
+            android:text="@{cc.childChildText}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

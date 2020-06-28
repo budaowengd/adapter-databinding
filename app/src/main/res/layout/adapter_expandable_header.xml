@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_red_dark_ripple_bg"
-        android:onClick="@{()->headerClick.clickGroup(headerGroup)}"
+        android:onClick="@{()->gHeaderClick.clickGroup(gHeader)}"
         android:orientation="vertical">
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{headerGroup.header}"
+            android:text="@{gHeader.header}"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             tools:text="aaabbb" />
@@ -38,7 +38,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="10dp"
-            android:rotation="@{headerGroup.isExpand?90:0}"
+            android:rotation="@{gHeader.isExpand?90:0}"
             android:scaleType="centerInside"
          />
 

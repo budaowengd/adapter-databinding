@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="@drawable/white_ripple_bg"
-        android:onClick="@{()->childClick.clickGroup(child)}"
+        android:onClick="@{()->cClick.clickGroup(c)}"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{child.child}"
+            android:text="@{c.child}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

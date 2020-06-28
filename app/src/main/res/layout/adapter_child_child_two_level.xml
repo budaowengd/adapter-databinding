@@ -19,19 +19,19 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:background="@drawable/white_ripple_bg"
-        android:onClick="@{()->childChildClick.clickGroup(childChild)}"
+        android:onClick="@{()->ccClick.clickGroup(cc)}"
         android:orientation="vertical">
 
         <!--
          android:text="1112222"
-         android:text="@{childChild.childChildText}"
+         android:text="@{cc.childChildText}"
         -->
         <TextView
             android:id="@+id/tvChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@{childChild.childChildText}"
+            android:text="@{cc.childChildText}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

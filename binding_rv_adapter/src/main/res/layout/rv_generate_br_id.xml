@@ -13,11 +13,6 @@
             type="java.lang.String" />
 
         <variable
-            name="headerGroupClick"
-            type="java.lang.String" />
-
-
-        <variable
             name="click"
             type="java.lang.String" />
 
@@ -28,11 +23,36 @@
             type="java.lang.String" />
 
         <variable
-            name="gHeader"
+            name="cClick"
             type="java.lang.String" />
 
         <variable
-            name="childGroupHeader"
+            name="gHeader"
+            type="java.lang.String" />
+        <variable
+            name="gHeaderClick"
+            type="java.lang.String" />
+
+        <variable
+            name="gFooter"
+            type="java.lang.String" />
+
+        <variable
+            name="gFooterClick"
+            type="java.lang.String" />
+        <variable
+            name="cgHeader"
+            type="java.lang.String" />
+
+        <variable
+            name="cgHeaderClick"
+            type="java.lang.String" />
+        <variable
+            name="cc"
+            type="java.lang.String" />
+
+        <variable
+            name="ccClick"
             type="java.lang.String" />
 
         <variable
@@ -44,35 +64,6 @@
             type="java.lang.String" />
 
         <variable
-            name="childChild"
-            type="java.lang.String" />
-
-        <variable
-            name="gFooter"
-            type="java.lang.String" />
-
-        <variable
-            name="cClick"
-            type="java.lang.String" />
-
-        <variable
-            name="childGroupHeaderClick"
-            type="java.lang.String" />
-
-        <variable
-            name="childGroupFooterClick"
-            type="java.lang.String" />
-
-        <variable
-            name="childChildClick"
-            type="java.lang.String" />
-
-
-        <variable
-            name="gHeaderClick"
-            type="java.lang.String" />
-
-        <variable
             name="rvBindGroup3"
             type="java.lang.String" />
 
@@ -80,41 +71,6 @@
             name="rvBindGroup"
             type="java.lang.String" />
 
-        <variable
-            name="gFooterClick"
-            type="java.lang.String" />
-
-        <variable
-            name="cc"
-            type="java.lang.String" />
-
-        <variable
-            name="ccClick"
-            type="java.lang.String" />
-
-        <variable
-            name="cgHeader"
-            type="java.lang.String" />
-
-        <variable
-            name="cgHeaderClick"
-            type="java.lang.String" />
-
-        <variable
-            name="gHeader"
-            type="java.lang.String" />
-
-        <variable
-            name="gHeaderClick"
-            type="java.lang.String" />
-
-        <variable
-            name="gFooter"
-            type="java.lang.String" />
-
-        <variable
-            name="gFooterClick"
-            type="java.lang.String" />
     </data>
 
 

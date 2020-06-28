@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_orange_light_ripple_bg"
-        android:onClick="@{()->footerClick.clickGroup(footerGroup,Group3Frag.click_g_footer)}"
+        android:onClick="@{()->gFooterClick.clickGroup(gFooter,Group3Frag.click_g_footer)}"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{footerGroup.footerText}"
+            android:text="@{gFooter.footerText}"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 

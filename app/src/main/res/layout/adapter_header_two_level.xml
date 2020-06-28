@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/holo_red_dark_ripple_bg"
-        android:onClick="@{()->headerClick.clickGroup(headerGroup,Group3Frag.click_g_header)}"
+        android:onClick="@{()->gHeaderClick.clickGroup(gHeader,Group3Frag.click_g_header)}"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{headerGroup.headerText}"
+            android:text="@{gHeader.headerText}"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 

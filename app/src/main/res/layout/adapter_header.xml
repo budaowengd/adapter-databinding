@@ -14,7 +14,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->headerClick.clickGroup(headerGroup)}"
+        android:onClick="@{()->gHeaderClick.clickGroup(gHeader)}"
         android:background="@drawable/holo_red_dark_ripple_bg"
         android:orientation="vertical">
 
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@{headerGroup.header}"
+            android:text="@{gHeader.header}"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 

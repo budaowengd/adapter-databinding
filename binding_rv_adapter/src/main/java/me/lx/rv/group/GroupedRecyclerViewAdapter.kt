@@ -117,25 +117,25 @@ abstract class GroupedRecyclerViewAdapter<G, C> :
         val group = groupList!![groupPosition]
         when (type) {
             TYPE_HEADER -> {
-                binding.setVariable(BR.headerGroup, group)
+                binding.setVariable(BR.gHeader, group)
                 if (mClickHeaderListener != null) {
-                    binding.setVariable(BR.headerClick, mClickHeaderListener)
+                    binding.setVariable(BR.gHeaderClick, mClickHeaderListener)
                 }
                 onBindHeaderViewHolder(binding, group, groupPosition)
             }
             TYPE_FOOTER -> {
-                binding.setVariable(BR.footerGroup, group)
+                binding.setVariable(BR.gFooter, group)
                 if (mClickFooterListener != null) {
-                    binding.setVariable(BR.footerClick, mClickFooterListener)
+                    binding.setVariable(BR.gFooterClick, mClickFooterListener)
                 }
                 onBindFooterViewHolder(binding, group, groupPosition)
             }
             TYPE_CHILD -> {
                 val childPosition = getChildPositionForPosition(groupPosition, position)
                 val child = getChildrenList(group)[childPosition]
-                binding.setVariable(BR.child, child)
+                binding.setVariable(BR.c, child)
                 if (mClickChildListener != null) {
-                    binding.setVariable(BR.childClick, mClickChildListener)
+                    binding.setVariable(BR.cClick, mClickChildListener)
                 }
                 onBindChildViewHolder(binding, group, child, groupPosition, childPosition)
             }

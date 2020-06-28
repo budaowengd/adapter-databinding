@@ -14,7 +14,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->footerClick.clickGroup(footerGroup)}"
+        android:onClick="@{()->gFooterClick.clickGroup(gFooter)}"
         android:background="@drawable/holo_green_light_ripple_bg"
         android:orientation="vertical">
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:gravity="center"
-            android:text='@{footerGroup.footer}'
+            android:text='@{gFooter.footer}'
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
