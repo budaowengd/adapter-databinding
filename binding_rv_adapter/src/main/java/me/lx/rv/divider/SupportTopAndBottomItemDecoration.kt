@@ -152,7 +152,7 @@ class SupportTopAndBottomItemDecoration : RecyclerView.ItemDecoration {
         gd.setColor(itemDividerColor)
         var height = pxHeight
         if (height == null || height == 0) {
-            height = Resources.getSystem().displayMetrics.density.toInt()
+            height = (Resources.getSystem().displayMetrics.density*0.5).toInt()
         }
         gd.setSize(0, height)
         mDivider = gd
